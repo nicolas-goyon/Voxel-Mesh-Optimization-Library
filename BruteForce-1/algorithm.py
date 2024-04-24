@@ -1,5 +1,6 @@
 from base import *
 import sys
+from generalUtils import *
 
 TOP = "top"
 BOTTOM = "bottom"
@@ -8,17 +9,9 @@ RIGHT = "right"
 
 MAX_VALUE = sys.maxsize
 
-
-def fillArray(n, m):
-    arr = [[0 for i in range(m)] for j in range(n)]
-    index = 0
-    for i in range(n):
-        for j in range(m):
-            arr[i][j] = index
-            index += 1
-    return arr
-
-test = fillArray(3, 3)
+# ---------------------------------------------------------------------------- #
+#                                   algorithm                                  #
+# ---------------------------------------------------------------------------- #
 
 def algorithm(baseArr, steps):
     n = len(baseArr)
@@ -31,6 +24,12 @@ def algorithm(baseArr, steps):
         display_array(mathArray)
         print("================")
         print("================")
+
+
+
+# ---------------------------------------------------------------------------- #
+#                                 algorithmStep                                #
+# ---------------------------------------------------------------------------- #
 
 def algorithmStep(baseArr, mathArray):
     n = len(baseArr)
@@ -49,9 +48,39 @@ def algorithmStep(baseArr, mathArray):
                 if (areTouchingSideGluable(mathArray, i, j, i, j + 1)):
                     Glue(mathArray, i, j, i, j + 1, mathArray[i][j])
                     changeDone = True
-                    display_array(mathArray)
-                    print("================")
 
+
+
+# ---------------------------------------------------------------------------- #
+#                        areCellsFromDifferentRectangles                       #
+# ---------------------------------------------------------------------------- #
+
+
+
+# input: [
+#    [0, 1, 1, 0],
+#    [0, 1, 1, 0],
+#    [0, 2, 2, 0],
+#    [1, 1, 1, 1],
+# ]
+# xA = 1
+# yA = 1
+# xB = 2
+# yB = 1
+# output: True
+
+
+# input: [
+#    [0, 1, 1, 0],
+#    [0, 1, 1, 0],
+#    [0, 2, 2, 0],
+#    [1, 1, 1, 1],
+# ]
+# xA = 1
+# yA = 1
+# xB = 1
+# yB = 2
+# output: False
 def areCellsFromDifferentRectangles(mathArray, xA, yA, xB, yB):
     rectangleA = getFlatRectangleFromCoordinates(mathArray, xA, yA)
     rectangleB = getFlatRectangleFromCoordinates(mathArray, xB, yB)
@@ -61,6 +90,31 @@ def areCellsFromDifferentRectangles(mathArray, xA, yA, xB, yB):
             if rectangleA[i] == rectangleB[j]:
                 return False
     return True
+
+
+# ---------------------------------------------------------------------------- #
+#                                     Glue                                     #
+# ---------------------------------------------------------------------------- #
+
+
+# input: [
+#    [0, 1, 1, 0],
+#    [0, 1, 1, 0],
+#    [0, 2, 2, 0],
+#    [1, 1, 1, 1],
+# ]
+# xA = 1
+# yA = 1
+# xB = 2
+# yB = 1
+# newValues = 3
+# output: [
+#    [0, 3, 3, 0],
+#    [0, 3, 3, 0],
+#    [0, 3, 3, 0],
+#    [1, 1, 1, 1],
+# ]
+
 
 def Glue(mathArray, xA, yA, xB, yB, newValues):
     rectangleA = getFlatRectangleFromCoordinates(mathArray, xA, yA)
@@ -74,13 +128,23 @@ def Glue(mathArray, xA, yA, xB, yB, newValues):
     
 
 
-def areTouching(xA, yA, xB, yB):
-    if xA == xB:
-        return yA == yB + 1 or yA == yB - 1
-    if yA == yB:
-        return xA == xB + 1 or xA == xB - 1
-    return False
 
+
+# ---------------------------------------------------------------------------- #
+#                            areTouchingSideGluable                            #
+# ---------------------------------------------------------------------------- #
+
+# input: [
+#    [0, 1, 1, 0],
+#    [0, 1, 1, 0],
+#    [0, 2, 2, 0],
+#    [1, 1, 1, 1],
+# ]
+# xA = 1
+# yA = 1
+# xB = 2
+# yB = 1
+# output: True
 def areTouchingSideGluable(mathArr, xA, yA, xB, yB):
     sides = getGluableSideList(mathArr, xA, yA, xB, yB)
     
@@ -98,7 +162,27 @@ def areTouchingSideGluable(mathArr, xA, yA, xB, yB):
     if len(sideA) != len(sideB):
         return False
     return True
-    
+
+
+
+# ---------------------------------------------------------------------------- #
+#                              getGluableSideList                              #
+# ---------------------------------------------------------------------------- #
+
+# input: [
+#    [0, 1, 1, 0],
+#    [0, 1, 1, 0],
+#    [0, 2, 2, 0],
+#    [1, 1, 1, 1],
+# ]
+# xA = 1
+# yA = 1
+# xB = 2
+# yB = 1
+# output: {
+#    "sideA" : [(1, 1), (1, 2)],
+#    "sideB" : [(2, 1), (2, 2)],
+# }
 def getGluableSideList(mathArr, xA, yA, xB, yB):
     # for a and for b, check which side is touching the other
     sideOfA = ""
@@ -127,6 +211,23 @@ def getGluableSideList(mathArr, xA, yA, xB, yB):
     
     return res
     
+    
+    
+    
+# ---------------------------------------------------------------------------- #
+#                                getListFromSide                               #
+# ---------------------------------------------------------------------------- #
+
+# input: [
+#    [0, 1, 1, 0],
+#    [0, 1, 1, 0],
+#    [0, 0, 0, 0],
+#    [1, 1, 1, 1],
+# ]
+# x = 1
+# y = 1
+# side = BOTTOM
+# output: [(1, 1), (1, 2)]
 def getListFromSide(mathArr, x, y, side): # ex: 1, 1, TOP -> all top elements of the rectangle (with offset x, y)
     matrix = getRectangleMatrix(mathArr, x, y)
     dimensions = getMatrixDimensionsFromCoordinates(mathArr, x, y)
@@ -150,6 +251,26 @@ def getListFromSide(mathArr, x, y, side): # ex: 1, 1, TOP -> all top elements of
     
     return None
 
+
+
+# ---------------------------------------------------------------------------- #
+#                              getRectangleMatrix                              #
+# ---------------------------------------------------------------------------- #
+
+
+
+# input: [
+#    [0, 1, 1, 0],
+#    [0, 1, 1, 0],
+#    [0, 0, 0, 0],
+#    [1, 1, 1, 1],
+# ]
+# x = 1
+# y = 1
+# output: [
+#    [1, 1],
+#    [1, 1]
+# ]
 def getRectangleMatrix(mathArr, x, y):
     rectangle = getFlatRectangleFromCoordinates(mathArr, x, y)
     
@@ -167,6 +288,19 @@ def getRectangleMatrix(mathArr, x, y):
     return matrix
     
     
+# ---------------------------------------------------------------------------- #
+#                           sideOfElementInRectangle                           #
+# ---------------------------------------------------------------------------- #
+
+# input: [
+#    [0, 1, 1, 0],
+#    [0, 1, 1, 0],
+#    [0, 0, 0, 0],
+#    [1, 1, 1, 1],
+# ]
+# x = 1
+# y = 1
+# output: [BOTTOM, LEFT]
 def sideOfElementInRectangle(mathArr, x, y): # Check if (x,y) is on the top, bottom, left or right of its rectangle
     rectangle = getFlatRectangleFromCoordinates(mathArr, x, y)
     # check if rectangle is a rectangle
@@ -194,6 +328,29 @@ def sideOfElementInRectangle(mathArr, x, y): # Check if (x,y) is on the top, bot
     return sides
     
 
+
+
+# ---------------------------------------------------------------------------- #
+#                              getMatrixDimensions                             #
+# ---------------------------------------------------------------------------- #
+
+
+# input: [
+#    [0, 1, 1, 0],
+#    [0, 1, 1, 0],
+#    [0, 0, 0, 0],
+#    [1, 1, 1, 1],
+# ]
+# x = 1
+# y = 1
+# output: {
+#    "offsetX" : 0,
+#    "offsetY" : 1,
+#    "lengthX" : 2,
+#    "lengthY" : 2,
+#    "maxX" : 3,
+#    "maxX" : 2,
+# }
 def getMatrixDimensions(input):
     maxX = 0
     maxY = 0
@@ -221,11 +378,46 @@ def getMatrixDimensions(input):
     
     return res
 
+
+# ---------------------------------------------------------------------------- #
+#                      getMatrixDimensionsFromCoordinates                      #
+# ---------------------------------------------------------------------------- #
+
+# input: [
+#    [0, 1, 1, 0],
+#    [0, 1, 1, 0],
+#    [0, 0, 0, 0],
+#    [1, 1, 1, 1],
+# ]
+# x = 1
+# y = 1
+# output: {
+#    "offsetX" : 0,
+#    "offsetY" : 1,
+#    "lengthX" : 2,
+#    "lengthY" : 2,
+#    "maxX" : 3,
+#    "maxX" : 2,
+# }
 def getMatrixDimensionsFromCoordinates(mathArr,x, y):
     rectangle = getFlatRectangleFromCoordinates(mathArr, x, y)
     
     return getMatrixDimensions(rectangle)
 
+
+# ---------------------------------------------------------------------------- #
+#                        getFlatRectangleFromCoordinates                       #
+# ---------------------------------------------------------------------------- #
+
+# input: [
+#    [0, 1, 1, 0],
+#    [0, 1, 1, 0],
+#    [0, 0, 0, 0],
+#    [1, 1, 1, 1],
+# ]
+# x = 1
+# y = 1
+# output: [(0, 1), (0, 2), (1, 1), (1, 2)]
 def getFlatRectangleFromCoordinates(mathArr, x, y):
     n = len(mathArr)
     m = len(mathArr[0])
@@ -241,6 +433,18 @@ def getFlatRectangleFromCoordinates(mathArr, x, y):
                 rectangle.append((i, j))
     
     return rectangle
+
+
+# ---------------------------------------------------------------------------- #
+#                              fromTuplesToMatrix                              #
+# ---------------------------------------------------------------------------- #
+
+
+# input: [(1, 1), (1, 2), (2, 1), (2, 2)]
+# output: [
+#    [1, 1],
+#    [1, 1]
+# ]
 
 def fromTuplesToMatrix(input):
     # get the dimensions of the matrix
@@ -260,6 +464,14 @@ def fromTuplesToMatrix(input):
         matrix[input[i][0] - offsetX][input[i][1] - offsetY] = 1
     
     return matrix
+
+
+
+
+# ---------------------------------------------------------------------------- #
+#                                     MAIN                                     #
+# ---------------------------------------------------------------------------- #
+
 
 testArr = [
     [1, 1, 1, 1],
