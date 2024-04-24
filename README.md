@@ -1,4 +1,4 @@
-# RectangelMerging
+# RectangleMerging
 
 
 My problem 
