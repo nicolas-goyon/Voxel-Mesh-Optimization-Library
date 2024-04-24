@@ -20,11 +20,21 @@ def fillArray(n, m):
 
 test = fillArray(3, 3)
 
-def algorithm(baseArr):
+def algorithm(baseArr, steps):
     n = len(baseArr)
     m = len(baseArr[0])
     mathArray = [n, m]
     mathArray = fillArray(n, m) # Array of cosecutive numbers
+    for i in range(steps):
+        algorithmStep(baseArr, mathArray)
+        print("Step ", i + 1)
+        display_array(mathArray)
+        print("================")
+        print("================")
+
+def algorithmStep(baseArr, mathArray):
+    n = len(baseArr)
+    m = len(baseArr[0])
     changeDone = False
     
     for i in range(n):
@@ -35,23 +45,32 @@ def algorithm(baseArr):
             if (i == 0 and j == 0) or (i == n - 1 and j == m - 1): # Skip the first and last cell
                 continue
             
-            if j + 1 < m and baseArr[i][j] == baseArr[i][j + 1]:
+            if j + 1 < m and baseArr[i][j] == baseArr[i][j + 1] and areCellsFromDifferentRectangles(mathArray, i, j, i, j + 1):
                 if (areTouchingSideGluable(mathArray, i, j, i, j + 1)):
-                    Glue(mathArray, i, j, i, j + 1, [baseArr[i][j], baseArr[i][j + 1]])
+                    Glue(mathArray, i, j, i, j + 1, mathArray[i][j])
                     changeDone = True
                     display_array(mathArray)
                     print("================")
 
+def areCellsFromDifferentRectangles(mathArray, xA, yA, xB, yB):
+    rectangleA = getFlatRectangleFromCoordinates(mathArray, xA, yA)
+    rectangleB = getFlatRectangleFromCoordinates(mathArray, xB, yB)
+    
+    for i in range(len(rectangleA)):
+        for j in range(len(rectangleB)):
+            if rectangleA[i] == rectangleB[j]:
+                return False
+    return True
 
 def Glue(mathArray, xA, yA, xB, yB, newValues):
     rectangleA = getFlatRectangleFromCoordinates(mathArray, xA, yA)
     rectangleB = getFlatRectangleFromCoordinates(mathArray, xB, yB)
     
     for i in range(len(rectangleA)):
-        mathArray[rectangleA[i][0]][rectangleA[i][1]] = newValues[0]
+        mathArray[rectangleA[i][0]][rectangleA[i][1]] = newValues
         
     for i in range(len(rectangleB)):
-        mathArray[rectangleB[i][0]][rectangleB[i][1]] = newValues[1]
+        mathArray[rectangleB[i][0]][rectangleB[i][1]] = newValues
     
 
 
@@ -252,4 +271,4 @@ testArr = [
     
 display_array(testArr)
 print("-----------------")
-algorithm(testArr)
+algorithm(testArr, 5)
