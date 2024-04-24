@@ -133,7 +133,6 @@ class Rectangle:
         maxY = 0
         minX = MAX_VALUE
         minY = MAX_VALUE
-        matrix = [[0 for i in range(self.lengthY)] for j in range(self.lengthX)] # NOTE : Complexity : n*m
         
         for i in range(len(self.flat)): # NOTE : Complexity : n*m
             cell = self.flat[i]
@@ -145,8 +144,8 @@ class Rectangle:
                 minX = cell[0]
             if cell[1] < minY:
                 minY = cell[1]
-                
-            matrix[cell[0] - self.offsetY][cell[1] - self.offsetY] = 1
+            
+            
     
         self.offsetX = minX
         self.offsetY = minY
@@ -154,13 +153,22 @@ class Rectangle:
         self.lengthY = maxY - minY + 1
         self.maxX = maxX
         self.maxY = maxY
+        matrix = [[0 for i in range(self.lengthY)] for j in range(self.lengthX)] # NOTE : Complexity : n*m
         
-        
+        for i in range(len(self.flat)):
+            cell = self.flat[i]
+            xPos = cell[0] - self.offsetX
+            yPos = cell[1] - self.offsetY
+            # print(xPos, yPos)
+            # print(matrix)
+            
+            matrix[xPos][yPos] = 1
         # check if the matrix is a rectangle
         for i in range(len(matrix)): # NOTE : Complexity : n*m
             for j in range(len(matrix[i])):
                 if matrix[i][j] == 0:
-                    raise Exception("Not a rectangle : " + str(self.flat))
+                    displayGrid(matrix)
+                    raise Exception("Not a rectangle ")
         
         return self 
     
@@ -169,13 +177,13 @@ class Rectangle:
     # Complexity : constant
     def getTouchingSide(self, other):
         if self.offsetX == other.offsetX:
-            if self.offsetY == other.offsetY + 1:
-                return LEFT
-            if self.offsetY == other.offsetY - 1:
+            if self.offsetY == other.offsetY + other.lengthY:
                 return RIGHT
+            if self.offsetY + self.lengthY == other.offsetY:
+                return LEFT
         if self.offsetY == other.offsetY:
-            if self.offsetX == other.offsetX + 1:
+            if self.offsetX == other.offsetX + other.lengthX:
                 return BOTTOM
-            if self.offsetX == other.offsetX - 1:
+            if self.offsetX + self.lengthX == other.offsetX:
                 return TOP
         return None

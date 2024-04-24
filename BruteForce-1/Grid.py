@@ -1,4 +1,5 @@
 from Rectangle import Rectangle
+from generalUtils import displayGrid
 
 class SolveGrid :
     grid = [] # [[...], [...], [...], ...]
@@ -26,6 +27,26 @@ class SolveGrid :
         for i in range(steps):
             self.solveStep()
 
+    def solveMax(self):
+        isSolved = False
+        numberOfSteps = 0
+        while not isSolved:
+            gridCopy = [[0 for i in range(self.width)] for j in range(self.height)]
+            for i in range(self.height):
+                for j in range(self.width):
+                    gridCopy[i][j] = self.grid[i][j]
+            self.solveStep()
+            numberOfSteps += 1
+            areEquals = True
+            for i in range(self.height):
+                for j in range(self.width):
+                    if gridCopy[i][j] != self.grid[i][j]:
+                        areEquals = False
+                        break
+                if not areEquals:
+                    break
+            isSolved = areEquals
+        return numberOfSteps
     
     
     # Complexity : (n*m)^3
@@ -51,34 +72,6 @@ class SolveGrid :
     # ---------------------------------------------------------------------------- #
     
     def display(self):
-        for i in range(self.height):
-            for j in range(self.width):
-                print(self.baseGrid[i][j], end=" ")
-            print()
-    
-    def displayRectangleIndex(self):
-        
-        maxIndexLength = len(str(len(self.rectangleCollection))) +1
-        
-        for i in range(self.height):
-            for j in range(self.width):
-                # print(self.grid[i][j], end=" ")
-                print(str(self.grid[i][j]).ljust(maxIndexLength), end=" ")
-            print()
-            
-            
-    def printRectangles(self):
-        for rectangle in self.rectangleCollection:
-            print("Rectangle ", rectangle.value)
-            print("OffsetX ", rectangle.offsetX)
-            print("OffsetY ", rectangle.offsetY)
-            print("LengthX ", rectangle.lengthX)
-            print("LengthY ", rectangle.lengthY)
-            print("MaxX ", rectangle.maxX)
-            print("MaxY ", rectangle.maxY)
-            print("-------")
-            
-    def printRectanglesCompact(self):
-        for rectangle in self.rectangleCollection:
-            print("Rectangle ", rectangle.value)
-        
+        displayGrid(self.grid)
+    def displayBase(self):
+        displayGrid(self.baseGrid)

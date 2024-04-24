@@ -8,17 +8,18 @@ from generalUtils import *
 # ---------------------------------------------------------------------------- #
 
 
-testArr = [
-    [1, 1, 1, 1],
-    [0, 1, 1, 0],
-    [0, 0, 0, 0],
-    [1, 1, 1, 1],
-]
+# testArr = [
+#     [1, 1, 1, 1],
+#     [0, 1, 1, 0],
+#     [0, 0, 0, 0],
+#     [1, 1, 1, 1],
+# ]
 
-testGrid = SolveGrid(testArr)
+testGrid = SolveGrid(echec_table)
     
-display_array(testArr)
+display_array(echec_table)
 print("-----------------")
-testGrid.solve(5)
-
-testGrid.displayRectangleIndex()
+# testGrid.solve(5)
+numberOfSteps = testGrid.solveMax()
+testGrid.display()
+print("Number of steps : ", numberOfSteps)
