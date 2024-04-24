@@ -30,29 +30,33 @@ class Rectangle:
     # ---------------------------------------------------------------------------- #
     #                                    PUBLIC                                    #
     # ---------------------------------------------------------------------------- #
-        
+
+    # Complexity : n*m
     def equals(self, other):
-        if self.index == other.index:
+        if self.index == other.index: # NOTE : Complexity : constant
             return True
-        if len(self.flat) != len(other.flat):
+        if len(self.flat) != len(other.flat): # NOTE : Complexity : constant
             return False
-        for i in range(len(self.flat)):
+        for i in range(len(self.flat)): # NOTE : Complexity : n*m
             if self.flat[i] != other.flat[i]:
                 return False
         return True
     
+    
+    # Complexity : 5 * n*m
     def merge(self, other, newValues, into):
-        for i in range(self.lengthX):
+        for i in range(self.lengthX): # NOTE : Complexity : n*m
             for j in range(self.lengthY):
                 into[self.offsetX + i][self.offsetY + j] = self.index
-        for i in range(other.lengthX):
+        for i in range(other.lengthX): # NOTE : Complexity : n*m
             for j in range(other.lengthY):
                 into[other.offsetX + i][other.offsetY + j] = self.index
         
-        self = self.rectangleFromCoordinates(into, self.flat[0][0], self.flat[0][1])
+        self = self.rectangleFromCoordinates(into, self.flat[0][0], self.flat[0][1]) # NOTE : Complexity : 3 * n*m
         self.value = newValues
         return self
     
+    # Complexity : constant
     def isTouching(self, other):
         if self.offsetX == other.offsetX:
             if self.offsetY == other.offsetY + other.lengthY:
@@ -66,15 +70,16 @@ class Rectangle:
                 return True
         return False
     
+    # Complexity : constant
     def isGluableTo(self, other):
-        if not self.isTouching(other):
+        if not self.isTouching(other): # NOTE : Complexity : constant
             return False
         
-        if not self.isCompatibleTo(other):
+        if not self.isCompatibleTo(other): # NOTE : Complexity : constant
             return False
         
 
-        touchingSide = self.getTouchingSide(other)
+        touchingSide = self.getTouchingSide(other) # NOTE : Complexity : constant
         
         selfTouchingSideLength = 0
         otherTouchingSideLength = 0
@@ -92,11 +97,13 @@ class Rectangle:
             otherTouchingSideLength = other.lengthX
         return selfTouchingSideLength == otherTouchingSideLength
             
+    # Complexity : constant
     def isCompatibleTo(self, other):
         return self.value == other.value
     
     
-    def fillIndex(self, grid):
+    # Complexity : n*m
+    def fillIndex(self, grid): 
         for i in range(self.lengthX):
             for j in range(self.lengthY):
                 grid[self.offsetX + i][self.offsetY + j] = self.index
@@ -107,16 +114,18 @@ class Rectangle:
     #                                    PRIVATE                                   #
     # ---------------------------------------------------------------------------- #
     
+    # Complexity : 3 * n*m 
     def rectangleFromCoordinates(self, grid, x, y):
-        n = len(grid)
-        m = len(grid[0])
+        
+        n = len(grid) # NOTE : Complexity : constant
+        m = len(grid[0]) # NOTE : Complexity : constant
         
         # get the number of the element
-        self.index = grid[x][y]
+        self.index = grid[x][y] # NOTE : Complexity : constant
         
         # get the rectangle of number
         self.flat = []
-        for i in range(n):
+        for i in range(n): # NOTE : Complexity : n*m
             for j in range(m):
                 if grid[i][j] == self.index:
                     self.flat.append((i, j))
@@ -124,19 +133,20 @@ class Rectangle:
         maxY = 0
         minX = MAX_VALUE
         minY = MAX_VALUE
-        matrix = [[0 for i in range(self.lengthY)] for j in range(self.lengthX)]
+        matrix = [[0 for i in range(self.lengthY)] for j in range(self.lengthX)] # NOTE : Complexity : n*m
         
-        for i in range(len(self.flat)):
-            if self.flat[i][0] > maxX:
-                maxX = self.flat[i][0]
-            if self.flat[i][1] > maxY:
-                maxY = self.flat[i][1]
-            if self.flat[i][0] < minX:
-                minX = self.flat[i][0]
-            if self.flat[i][1] < minY:
-                minY = self.flat[i][1]
+        for i in range(len(self.flat)): # NOTE : Complexity : n*m
+            cell = self.flat[i]
+            if cell[0] > maxX:
+                maxX = cell[0]
+            if cell[1] > maxY:
+                maxY = cell[1]
+            if cell[0] < minX:
+                minX = cell[0]
+            if cell[1] < minY:
+                minY = cell[1]
                 
-            matrix[self.flat[i][0] - self.offsetY][self.flat[i][1] - self.offsetY] = 1
+            matrix[cell[0] - self.offsetY][cell[1] - self.offsetY] = 1
     
         self.offsetX = minX
         self.offsetY = minY
@@ -147,7 +157,7 @@ class Rectangle:
         
         
         # check if the matrix is a rectangle
-        for i in range(len(matrix)):
+        for i in range(len(matrix)): # NOTE : Complexity : n*m
             for j in range(len(matrix[i])):
                 if matrix[i][j] == 0:
                     raise Exception("Not a rectangle : " + str(self.flat))
@@ -156,7 +166,7 @@ class Rectangle:
     
 
 
-        
+    # Complexity : constant
     def getTouchingSide(self, other):
         if self.offsetX == other.offsetX:
             if self.offsetY == other.offsetY + 1:

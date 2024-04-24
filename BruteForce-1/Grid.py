@@ -21,22 +21,26 @@ class SolveGrid :
                 self.rectangleCollection[index] = Rectangle(i, j, self.baseGrid[i][j], index)
                 index += 1
         
-
+    # Complexity : steps * (n*m)^3
     def solve(self, steps):
         for i in range(steps):
             self.solveStep()
 
     
     
+    # Complexity : (n*m)^3
     def solveStep(self):
-        for rectangleA in self.rectangleCollection:
-            for rectangleB in self.rectangleCollection:
-                if rectangleA.equals(rectangleB):
+        # p : number of rectangles
+        for rectangleA in self.rectangleCollection: # NOTE : Complexity : p
+            for rectangleB in self.rectangleCollection: # NOTE : Complexity : p
+                if rectangleA.equals(rectangleB): # NOTE : Complexity : n*m
                     continue
-                if rectangleA.isGluableTo(rectangleB):
-                    rectangleA.merge(rectangleB, rectangleA.value, self.grid)
-                    self.rectangleCollection.remove(rectangleB)
+                if rectangleA.isGluableTo(rectangleB): # NOTE : Complexity : constant
+                    rectangleA.merge(rectangleB, rectangleA.value, self.grid) # NOTE : Complexity : 5 * n*m
+                    self.rectangleCollection.remove(rectangleB) # TODO : find the complexity
         
+        # complexity : p^2 * (5)n*m => p^2 * n*m
+        # p in worst case : n*m => (n*m)^2 * n*m => (n*m)^3
 
     
     
