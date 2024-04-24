@@ -9,16 +9,18 @@ import time
 # ---------------------------------------------------------------------------- #
 
 
-# testArr = [
-#     [1, 1, 1, 1],
-#     [0, 1, 1, 0],
-#     [0, 0, 0, 0],
-#     [1, 1, 1, 1],
-# ]
+testArr = [
+    [1, 1, 1, 1],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0],
+    [1, 1, 1, 1],
+]
 
-testGrid = SolveGrid(big_lines)
+big = big_lines
+
+testGrid = SolveGrid(big)
 startTime = time.time()
-display_array(big_lines)
+display_array(big)
 print("-----------------")
 # testGrid.solve(5)
 numberOfSteps = testGrid.solveMax()

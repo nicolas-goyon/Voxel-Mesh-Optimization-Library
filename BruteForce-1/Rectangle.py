@@ -44,16 +44,37 @@ class Rectangle:
     
     
     # Complexity : 5 * n*m
-    def merge(self, other, newValues, into):
-        for i in range(self.lengthX): # NOTE : Complexity : n*m
-            for j in range(self.lengthY):
-                into[self.offsetX + i][self.offsetY + j] = self.index
-        for i in range(other.lengthX): # NOTE : Complexity : n*m
-            for j in range(other.lengthY):
-                into[other.offsetX + i][other.offsetY + j] = self.index
+    def merge(self, other, newValues):
         
-        self = self.rectangleFromCoordinates(into, self.flat[0][0], self.flat[0][1]) # NOTE : Complexity : 3 * n*m
+        mergeAxis = None
+        
+        if self.offsetX == other.offsetX:
+            mergeAxis = "y"
+        if self.offsetY == other.offsetY:
+            mergeAxis = "x"
+        
         self.value = newValues
+        self.flat = self.flat + other.flat # NOTE : Complexity : n*m
+        
+        
+        self.offsetX = min(self.offsetX, other.offsetX)
+        self.offsetY = min(self.offsetY, other.offsetY)
+        
+        self.lengthX = (mergeAxis == "x") * (self.lengthX + other.lengthX) + (mergeAxis != "x") * self.lengthX
+        self.lengthY = (mergeAxis == "y") * (self.lengthY + other.lengthY) + (mergeAxis != "y") * self.lengthY
+        self.maxX = self.offsetX + self.lengthX
+        self.maxY = self.offsetY + self.lengthY
+        
+        
+        self.matrix = [[0 for i in range(self.lengthY)] for j in range(self.lengthX)]
+        for i in range(len(self.flat)):
+            cell = self.flat[i]
+            xPos = cell[0] - self.offsetX
+            yPos = cell[1] - self.offsetY
+            self.matrix[xPos][yPos] = 1
+            
+        
+        
         return self
     
     # Complexity : constant
@@ -114,65 +135,6 @@ class Rectangle:
     #                                    PRIVATE                                   #
     # ---------------------------------------------------------------------------- #
     
-    # Complexity : 3 * n*m 
-    def rectangleFromCoordinates(self, grid, x, y):
-        
-        n = len(grid) # NOTE : Complexity : constant
-        m = len(grid[0]) # NOTE : Complexity : constant
-        
-        # get the number of the element
-        self.index = grid[x][y] # NOTE : Complexity : constant
-        
-        # get the rectangle of number
-        self.flat = []
-        for i in range(n): # NOTE : Complexity : n*m
-            for j in range(m):
-                if grid[i][j] == self.index:
-                    self.flat.append((i, j))
-        maxX = 0
-        maxY = 0
-        minX = MAX_VALUE
-        minY = MAX_VALUE
-        
-        for i in range(len(self.flat)): # NOTE : Complexity : n*m
-            cell = self.flat[i]
-            if cell[0] > maxX:
-                maxX = cell[0]
-            if cell[1] > maxY:
-                maxY = cell[1]
-            if cell[0] < minX:
-                minX = cell[0]
-            if cell[1] < minY:
-                minY = cell[1]
-            
-            
-    
-        self.offsetX = minX
-        self.offsetY = minY
-        self.lengthX = maxX - minX + 1
-        self.lengthY = maxY - minY + 1
-        self.maxX = maxX
-        self.maxY = maxY
-        matrix = [[0 for i in range(self.lengthY)] for j in range(self.lengthX)] # NOTE : Complexity : n*m
-        
-        for i in range(len(self.flat)):
-            cell = self.flat[i]
-            xPos = cell[0] - self.offsetX
-            yPos = cell[1] - self.offsetY
-            # print(xPos, yPos)
-            # print(matrix)
-            
-            matrix[xPos][yPos] = 1
-        # check if the matrix is a rectangle
-        for i in range(len(matrix)): # NOTE : Complexity : n*m
-            for j in range(len(matrix[i])):
-                if matrix[i][j] == 0:
-                    displayGrid(matrix)
-                    raise Exception("Not a rectangle ")
-        
-        return self 
-    
-
 
     # Complexity : constant
     def getTouchingSide(self, other):

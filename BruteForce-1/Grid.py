@@ -28,37 +28,27 @@ class SolveGrid :
             self.solveStep()
 
     def solveMax(self):
-        isSolved = False
+        hasChanged = True
         numberOfSteps = 0
-        while not isSolved:
-            gridCopy = [[0 for i in range(self.width)] for j in range(self.height)]
-            for i in range(self.height):
-                for j in range(self.width):
-                    gridCopy[i][j] = self.grid[i][j]
-            self.solveStep()
+        while hasChanged:
+            hasChanged = self.solveStep()
             numberOfSteps += 1
-            areEquals = True
-            for i in range(self.height):
-                for j in range(self.width):
-                    if gridCopy[i][j] != self.grid[i][j]:
-                        areEquals = False
-                        break
-                if not areEquals:
-                    break
-            isSolved = areEquals
         return numberOfSteps
     
     
     # Complexity : (n*m)^3
     def solveStep(self):
+        hasChanged = False
         # p : number of rectangles
         for rectangleA in self.rectangleCollection: # NOTE : Complexity : p
             for rectangleB in self.rectangleCollection: # NOTE : Complexity : p
                 if rectangleA.equals(rectangleB): # NOTE : Complexity : n*m
                     continue
                 if rectangleA.isGluableTo(rectangleB): # NOTE : Complexity : constant
-                    rectangleA.merge(rectangleB, rectangleA.value, self.grid) # NOTE : Complexity : 5 * n*m
+                    rectangleA.merge(rectangleB, rectangleA.value) # NOTE : Complexity : 5 * n*m
                     self.rectangleCollection.remove(rectangleB) # TODO : find the complexity
+                    hasChanged = True
+        return hasChanged
         
         # complexity : p^2 * (5)n*m => p^2 * n*m
         # p in worst case : n*m => (n*m)^2 * n*m => (n*m)^3
