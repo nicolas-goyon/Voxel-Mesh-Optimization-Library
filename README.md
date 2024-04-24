@@ -1,5 +1,8 @@
 # RectangleMerging
 
+The bruteforce seems to be way too fast, i know the result isn't the one that has the less of rectangles, but the result is close enough for voxel verts reduction.
+
+# Explanations
 
 My problem 
 To give you some context, I'm currently working on optimizing the display in a voxel-based video game, which are essentially single-color cubes, the equivalent of a pixel in 3D.
