@@ -2,6 +2,7 @@ from base import *
 from Grid import *
 from Rectangle import *
 from generalUtils import *
+import time
 
 # ---------------------------------------------------------------------------- #
 #                                     MAIN                                     #
@@ -15,11 +16,13 @@ from generalUtils import *
 #     [1, 1, 1, 1],
 # ]
 
-testGrid = SolveGrid(echec_table)
-    
-display_array(echec_table)
+testGrid = SolveGrid(big_lines)
+startTime = time.time()
+display_array(big_lines)
 print("-----------------")
 # testGrid.solve(5)
 numberOfSteps = testGrid.solveMax()
 testGrid.display()
+endTime = time.time()
 print("Number of steps : ", numberOfSteps)
+print("Time : ", endTime - startTime)

@@ -28,6 +28,13 @@ lines = [
     [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
 ]
 
+# 100x100
+big_lines = []
+
+for i in range(50):
+    big_lines.append([1 for j in range(100)])
+    big_lines.append([2 for j in range(100)]) 
+
 # 4x4
 echec_table = [
     [1, 2, 1, 2],
