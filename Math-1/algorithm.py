@@ -25,16 +25,8 @@ def algorithm(baseArr):
     m = len(baseArr[0])
     mathArray = [n, m]
     mathArray = fillArray(n, m) # Array of cosecutive numbers
-
-    algoAUX_horizontal(baseArr, mathArray, n, m)
-    
-    display_array(mathArray)
-    isGluable(baseArr, mathArray, 1, 3, n, m)
-    
-    
-def algoAUX_horizontal(baseArr, mathArray, n, m):
     changeDone = False
-    # For every couple of consecutive numbers, if the baseArr have the same number for both, merge the cells by putting the same number
+    
     for i in range(n):
         for j in range(m):
             if (changeDone):
@@ -44,37 +36,25 @@ def algoAUX_horizontal(baseArr, mathArray, n, m):
                 continue
             
             if j + 1 < m and baseArr[i][j] == baseArr[i][j + 1]:
-                mathArray[i][j+ 1] = mathArray[i][j]
-                changeDone = True
+                if (areTouchingSideGluable(mathArray, i, j, i, j + 1)):
+                    Glue(mathArray, i, j, i, j + 1, [baseArr[i][j], baseArr[i][j + 1]])
+                    changeDone = True
+                    display_array(mathArray)
+                    print("================")
 
 
-def isGluable(baseArr, mathArray, x, y, n, m):
-    if x < 0 or y < 0:
-        return False
-    # List of coordonates of every X in BaseArr 
-    listOfX = []
-    listOfY = []
-    for i in range(n):
-        for j in range(m):
-            if mathArray[i][j] == x:
-                listOfX.append((i, j))
-            if mathArray[i][j] == y:
-                listOfY.append((i, j))
-                
-    # The list of x and list of y should be rectangular, also both should have at least 2 elements touching each other
-    touchingX = []
-    touchingY = []
-    for i in range(len(listOfX)):
-        for j in range(len(listOfY)):
-            if areTouching(listOfX[i][0], listOfX[i][1], listOfY[j][0], listOfY[j][1]):
-                touchingX.append(listOfX[i])
-                touchingY.append(listOfY[j])
+def Glue(mathArray, xA, yA, xB, yB, newValues):
+    rectangleA = getFlatRectangleFromCoordinates(mathArray, xA, yA)
+    rectangleB = getFlatRectangleFromCoordinates(mathArray, xB, yB)
     
+    for i in range(len(rectangleA)):
+        mathArray[rectangleA[i][0]][rectangleA[i][1]] = newValues[0]
+        
+    for i in range(len(rectangleB)):
+        mathArray[rectangleB[i][0]][rectangleB[i][1]] = newValues[1]
     
-    print(areTouchingSideGluable(mathArray, 2, 1, 1, 0))
-    
-    print("End of isGluable")
-    
+
+
 def areTouching(xA, yA, xB, yB):
     if xA == xB:
         return yA == yB + 1 or yA == yB - 1
@@ -87,9 +67,6 @@ def areTouchingSideGluable(mathArr, xA, yA, xB, yB):
     
     sideA = sides["sideA"]
     sideB = sides["sideB"]
-    
-    print(sideA)
-    print(sideB)
     
     for i in range(len(sideA)):
         isTouchingOne = False
@@ -264,5 +241,15 @@ def fromTuplesToMatrix(input):
         matrix[input[i][0] - offsetX][input[i][1] - offsetY] = 1
     
     return matrix
+
+testArr = [
+    [1, 1, 1, 1],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0],
+    [1, 1, 1, 1],
+]
     
-algorithm([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
+    
+display_array(testArr)
+print("-----------------")
+algorithm(testArr)
