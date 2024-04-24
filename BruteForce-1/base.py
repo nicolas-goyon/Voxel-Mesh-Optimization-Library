@@ -28,6 +28,12 @@ lines = [
     [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
 ]
 
+big_one = []
+
+for i in range(100):
+    big_one.append([1 for j in range(100)])
+    
+
 # 100x100
 big_lines = []
 

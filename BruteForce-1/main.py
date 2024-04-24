@@ -16,6 +16,8 @@ testArr = [
     [1, 1, 1, 1],
 ]
 
+
+
 big = big_lines
 
 testGrid = SolveGrid(big)
@@ -24,7 +26,7 @@ print("-----------------")
 startTime = time.time()
 # testGrid.solve(5)
 numberOfSteps = testGrid.solveMax()
-# testGrid.display()
 endTime = time.time()
+testGrid.display()
 print("Number of steps : ", numberOfSteps)
 print("Time : ", endTime - startTime)
