@@ -1,3 +1,13 @@
+import sys
+
+TOP = "top"
+BOTTOM = "bottom"
+LEFT = "left"
+RIGHT = "right"
+
+MAX_VALUE = sys.maxsize
+
+
 
 def fillArray(n, m):
     arr = [[0 for i in range(m)] for j in range(n)]
