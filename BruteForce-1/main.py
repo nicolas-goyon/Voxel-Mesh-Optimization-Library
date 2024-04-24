@@ -19,12 +19,12 @@ testArr = [
 big = big_lines
 
 testGrid = SolveGrid(big)
-startTime = time.time()
 display_array(big)
 print("-----------------")
+startTime = time.time()
 # testGrid.solve(5)
 numberOfSteps = testGrid.solveMax()
-testGrid.display()
+# testGrid.display()
 endTime = time.time()
 print("Number of steps : ", numberOfSteps)
 print("Time : ", endTime - startTime)

@@ -37,7 +37,7 @@ class Rectangle:
     
     
     # Complexity : constant
-    def merge(self, other, newValues):
+    def merge(self, other, newIndex):
         mergeAxis = None
         
         if self.offsetX == other.offsetX:
@@ -45,14 +45,17 @@ class Rectangle:
         if self.offsetY == other.offsetY:
             mergeAxis = "x"
         
-        self.value = newValues
+        self.index = newIndex
         
         self.offsetX = min(self.offsetX, other.offsetX)
         self.offsetY = min(self.offsetY, other.offsetY)
         
-        self.lengthX = (mergeAxis == "x") * (self.lengthX + other.lengthX) + (mergeAxis != "x") * self.lengthX
-        self.lengthY = (mergeAxis == "y") * (self.lengthY + other.lengthY) + (mergeAxis != "y") * self.lengthY
-        
+        if mergeAxis == "x":
+            self.lengthX += other.lengthX
+            self.lengthY = max(self.lengthY, other.lengthY)
+        else :
+            self.lengthY += other.lengthY
+            self.lengthX = max(self.lengthX, other.lengthX)
         
         return self
     
