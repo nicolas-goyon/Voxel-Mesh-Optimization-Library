@@ -2,7 +2,6 @@ from Rectangle import Rectangle
 from generalUtils import displayGrid
 
 class SolveGrid :
-    grid = [] # [[...], [...], [...], ...]
     width = 0
     height = 0
     rectangleCollection = [] # [Rectangle, Rectangle, ...]
@@ -12,13 +11,11 @@ class SolveGrid :
     def __init__(self, baseGrid):
         self.height = len(baseGrid)
         self.width = len(baseGrid[0])
-        self.grid = [[0 for i in range(self.width)] for j in range(self.height)]
         self.baseGrid = baseGrid
         self.rectangleCollection = [Rectangle(0, 0, 0, 0) for i in range(self.height * self.width)]
         index = 0
         for i in range(self.height):
             for j in range(self.width):
-                self.grid[i][j] = index
                 self.rectangleCollection[index] = Rectangle(i, j, self.baseGrid[i][j], index)
                 index += 1
         
@@ -36,22 +33,21 @@ class SolveGrid :
         return numberOfSteps
     
     
-    # Complexity : (n*m)^3
+    # Complexity : 
     def solveStep(self):
         hasChanged = False
         # p : number of rectangles
-        for rectangleA in self.rectangleCollection: # NOTE : Complexity : p
-            for rectangleB in self.rectangleCollection: # NOTE : Complexity : p
-                if rectangleA.equals(rectangleB): # NOTE : Complexity : n*m
+        for rectangleA in self.rectangleCollection: # NOTE : Complexity : n*m
+            for rectangleB in self.rectangleCollection: # NOTE : Complexity : n*m
+                if rectangleA.equals(rectangleB): # NOTE : Complexity : constant
                     continue
                 if rectangleA.isGluableTo(rectangleB): # NOTE : Complexity : constant
-                    rectangleA.merge(rectangleB, rectangleA.value) # NOTE : Complexity : 5 * n*m
+                    rectangleA.merge(rectangleB, rectangleA.value) # NOTE : Complexity : constant
                     self.rectangleCollection.remove(rectangleB) # TODO : find the complexity
                     hasChanged = True
         return hasChanged
         
-        # complexity : p^2 * (5)n*m => p^2 * n*m
-        # p in worst case : n*m => (n*m)^2 * n*m => (n*m)^3
+        # complexity : n*m * n*m * constant = n^2 * m^2 = (n*m)^2
 
     
     
@@ -62,6 +58,9 @@ class SolveGrid :
     # ---------------------------------------------------------------------------- #
     
     def display(self):
-        displayGrid(self.grid)
+        grid = [[-1 for i in range(self.width)] for j in range(self.height)]
+        for rectangle in self.rectangleCollection:
+            grid = rectangle.fillIndex(grid)
+        displayGrid(grid)
     def displayBase(self):
         displayGrid(self.baseGrid)

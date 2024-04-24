@@ -1,14 +1,10 @@
 from generalUtils import *
 
 class Rectangle: 
-    flat = [] # [(x1, y1), (x2, y2), ...]
-    matrix = [] # [[0, 0, 0], [0, 0, 0], ...]
     offsetX = 0
     offsetY = 0
     lengthX = 0
     lengthY = 0
-    maxX = 0
-    maxY = 0
     value = 0
     index = 0
     
@@ -18,10 +14,6 @@ class Rectangle:
         self.value = value
         self.lengthX = 1
         self.lengthY = 1
-        self.maxX = x
-        self.maxY = y
-        self.flat = [(x, y)]
-        self.matrix = [[1]]
         self.index = index
         
         
@@ -31,21 +23,21 @@ class Rectangle:
     #                                    PUBLIC                                    #
     # ---------------------------------------------------------------------------- #
 
-    # Complexity : n*m
+    # Complexity : constant
     def equals(self, other):
         if self.index == other.index: # NOTE : Complexity : constant
             return True
-        if len(self.flat) != len(other.flat): # NOTE : Complexity : constant
+        if (self.offsetX != other.offsetX or 
+            self.offsetY != other.offsetY or 
+            self.lengthX != other.lengthX or 
+            self.lengthY != other.lengthY or 
+            self.value != other.value): # NOTE : Complexity : constant
             return False
-        for i in range(len(self.flat)): # NOTE : Complexity : n*m
-            if self.flat[i] != other.flat[i]:
-                return False
         return True
     
     
-    # Complexity : 5 * n*m
+    # Complexity : constant
     def merge(self, other, newValues):
-        
         mergeAxis = None
         
         if self.offsetX == other.offsetX:
@@ -54,25 +46,12 @@ class Rectangle:
             mergeAxis = "x"
         
         self.value = newValues
-        self.flat = self.flat + other.flat # NOTE : Complexity : n*m
-        
         
         self.offsetX = min(self.offsetX, other.offsetX)
         self.offsetY = min(self.offsetY, other.offsetY)
         
         self.lengthX = (mergeAxis == "x") * (self.lengthX + other.lengthX) + (mergeAxis != "x") * self.lengthX
         self.lengthY = (mergeAxis == "y") * (self.lengthY + other.lengthY) + (mergeAxis != "y") * self.lengthY
-        self.maxX = self.offsetX + self.lengthX
-        self.maxY = self.offsetY + self.lengthY
-        
-        
-        self.matrix = [[0 for i in range(self.lengthY)] for j in range(self.lengthX)]
-        for i in range(len(self.flat)):
-            cell = self.flat[i]
-            xPos = cell[0] - self.offsetX
-            yPos = cell[1] - self.offsetY
-            self.matrix[xPos][yPos] = 1
-            
         
         
         return self
