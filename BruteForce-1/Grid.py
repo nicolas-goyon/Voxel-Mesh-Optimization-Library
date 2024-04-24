@@ -36,7 +36,6 @@ class SolveGrid :
                 if rectangleA.isGluableTo(rectangleB):
                     rectangleA.merge(rectangleB, rectangleA.value, self.grid)
                     self.rectangleCollection.remove(rectangleB)
-                # return
         
 
     

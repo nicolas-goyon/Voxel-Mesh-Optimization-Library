@@ -12,9 +12,6 @@ class Rectangle:
     value = 0
     index = 0
     
-    # def __init__(self, grid, x, y):
-    #     self.rectangleFromCoordinates(grid, x, y)
-        
     def __init__(self, x, y, value, index):
         self.offsetX = x
         self.offsetY = y
@@ -44,11 +41,6 @@ class Rectangle:
                 return False
         return True
     
-    def setValues(self, values, into):
-        for i in range(self.lengthX):
-            for j in range(self.lengthY):
-                into[self.offsetX + i][self.offsetY + j] = values
-                
     def merge(self, other, newValues, into):
         for i in range(self.lengthX):
             for j in range(self.lengthY):
@@ -58,6 +50,7 @@ class Rectangle:
                 into[other.offsetX + i][other.offsetY + j] = self.index
         
         self = self.rectangleFromCoordinates(into, self.flat[0][0], self.flat[0][1])
+        self.value = newValues
         return self
     
     def isTouching(self, other):
@@ -122,116 +115,46 @@ class Rectangle:
         self.index = grid[x][y]
         
         # get the rectangle of number
-        rectangle = []
+        self.flat = []
         for i in range(n):
             for j in range(m):
                 if grid[i][j] == self.index:
-                    rectangle.append((i, j))
-    
-        self.flat = rectangle
-    
-        # create a matrix from the input
-        
-        matrix = self.fromTuplesToMatrix(rectangle)
-        # check if the matrix is a rectangle
-        for i in range(len(matrix)):
-            for j in range(len(matrix[i])):
-                if matrix[i][j] == 0:
-                    raise Exception("Not a rectangle : " + str(rectangle))
-        
-        self.matrix = self.fromTuplesToMatrix(rectangle)
-        
-        dimensions = self.getMatrixDimensions(rectangle)
-        
-        self.offsetX = dimensions["offsetX"]
-        self.offsetY = dimensions["offsetY"]
-        self.lengthX = dimensions["lengthX"]
-        self.lengthY = dimensions["lengthY"]
-        self.maxX = dimensions["maxX"]
-        self.maxY = dimensions["maxY"]
-        
-        return self 
-    
-
-    # ---------------------------------------------------------------------------- #
-    #                              fromTuplesToMatrix                              #
-    # ---------------------------------------------------------------------------- #
-
-
-    # input: [(1, 1), (1, 2), (2, 1), (2, 2)]
-    # output: [
-    #    [1, 1],
-    #    [1, 1]
-    # ]
-
-    def fromTuplesToMatrix(self, input):
-        # get the dimensions of the matrix
-        dimensions = self.getMatrixDimensions(input)
-        minX = dimensions["offsetX"]
-        minY = dimensions["offsetY"]
-        dimX = dimensions["lengthX"]
-        dimY = dimensions["lengthY"]
-        
-        
-        matrix = [[0 for i in range(dimY)] for j in range(dimX)]
-        # put a 1 in the matrix for every element in the input
-        offsetX = minX
-        offsetY = minY
-        
-        for i in range(len(input)):
-            matrix[input[i][0] - offsetX][input[i][1] - offsetY] = 1
-        
-        return matrix
-
-
-
-    # ---------------------------------------------------------------------------- #
-    #                              getMatrixDimensions                             #
-    # ---------------------------------------------------------------------------- #
-
-
-    # input: [
-    #    [0, 1, 1, 0],
-    #    [0, 1, 1, 0],
-    #    [0, 0, 0, 0],
-    #    [1, 1, 1, 1],
-    # ]
-    # x = 1
-    # y = 1
-    # output: {
-    #    "offsetX" : 0,
-    #    "offsetY" : 1,
-    #    "lengthX" : 2,
-    #    "lengthY" : 2,
-    #    "maxX" : 3,
-    #    "maxX" : 2,
-    # }
-    def getMatrixDimensions(self, input):
+                    self.flat.append((i, j))
         maxX = 0
         maxY = 0
         minX = MAX_VALUE
         minY = MAX_VALUE
+        matrix = [[0 for i in range(self.lengthY)] for j in range(self.lengthX)]
         
-        for i in range(len(input)):
-            if input[i][0] > maxX:
-                maxX = input[i][0]
-            if input[i][1] > maxY:
-                maxY = input[i][1]
-            if input[i][0] < minX:
-                minX = input[i][0]
-            if input[i][1] < minY:
-                minY = input[i][1]
+        for i in range(len(self.flat)):
+            if self.flat[i][0] > maxX:
+                maxX = self.flat[i][0]
+            if self.flat[i][1] > maxY:
+                maxY = self.flat[i][1]
+            if self.flat[i][0] < minX:
+                minX = self.flat[i][0]
+            if self.flat[i][1] < minY:
+                minY = self.flat[i][1]
                 
-        res = {
-            "offsetX" : minX,
-            "offsetY" : minY,
-            "lengthX" : maxX - minX + 1,
-            "lengthY" : maxY - minY + 1,
-            "maxX" : maxX,
-            "maxY" : maxY,
-        }
+            matrix[self.flat[i][0] - self.offsetY][self.flat[i][1] - self.offsetY] = 1
+    
+        self.offsetX = minX
+        self.offsetY = minY
+        self.lengthX = maxX - minX + 1
+        self.lengthY = maxY - minY + 1
+        self.maxX = maxX
+        self.maxY = maxY
         
-        return res
+        
+        # check if the matrix is a rectangle
+        for i in range(len(matrix)):
+            for j in range(len(matrix[i])):
+                if matrix[i][j] == 0:
+                    raise Exception("Not a rectangle : " + str(self.flat))
+        
+        return self 
+    
+
 
         
     def getTouchingSide(self, other):
