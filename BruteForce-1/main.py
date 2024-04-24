@@ -18,7 +18,7 @@ testArr = [
 
 
 
-big = big_lines
+big = big_echec_table
 
 testGrid = SolveGrid(big)
 display_array(big)

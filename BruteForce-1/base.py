@@ -41,6 +41,18 @@ for i in range(50):
     big_lines.append([1 for j in range(100)])
     big_lines.append([2 for j in range(100)]) 
 
+
+big_echec_table = []
+
+isOne = True
+for i in range(100):
+    isOne = i % 2 == 0
+    big_echec_table.append([1 for j in range(100)])
+    for j in range(100):
+        big_echec_table[i][j] = 1 if isOne else 2
+        isOne = not isOne
+    
+
 # 4x4
 echec_table = [
     [1, 2, 1, 2],
