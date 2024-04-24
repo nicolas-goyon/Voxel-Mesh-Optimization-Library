@@ -1,0 +1,17 @@
+
+    # for X and Y, get the touching side (left, right, up, down), can't be more than 1
+    
+    sameColumn = 0
+    sameRow = 1
+    
+    touchingAxisX = -1
+    touchingAxisY = -1
+    
+    for i in range(len(touchingX)):
+        for j in range(len(touchingY)):
+            if touchingX[i][0] == touchingY[j][0]:
+                print("Same row")
+            if touchingX[i][1] == touchingY[j][1]:
+                print("Same column")
+    
+    
