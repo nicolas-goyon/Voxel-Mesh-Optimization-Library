@@ -12,13 +12,13 @@ import time
 testArr = [
     [1, 1, 1, 1],
     [0, 1, 1, 0],
-    [0, 0, 0, 0],
+    [0, 0, 2, 0],
     [1, 1, 1, 1],
 ]
 
 
 
-big = big_echec_table
+big = testArr
 
 testGrid = SolveGrid(big)
 display_array(big)
