@@ -20,23 +20,27 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
+        working-directory: ./VoxelMeshOptimizerLibrary
 
       - name: Build
         run: dotnet build --configuration Release --no-restore
+        working-directory: ./VoxelMeshOptimizerLibrary
 
       - name: Run tests with coverage
         run: |
-          dotnet test VoxelMeshOptimizerLibrary/tests/VoxelMeshOptimizer.Tests/VoxelMeshOptimizer.Tests.csproj \
+          dotnet test tests/VoxelMeshOptimizer.Tests/VoxelMeshOptimizer.Tests.csproj \
             --configuration Release \
             --collect:"XPlat Code Coverage" \
             --logger trx \
             --results-directory ./TestResults
+        working-directory: ./VoxelMeshOptimizerLibrary
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: TestResults
+        working-directory: ./VoxelMeshOptimizerLibrary
 
       - name: Generate coverage report
         run: |
@@ -44,6 +48,7 @@ jobs:
           reportgenerator -reports:TestResults/*/coverage.cobertura.xml \
             -targetdir:TestResults/CoverageReport \
             -reporttypes:HtmlInline;Cobertura
+        working-directory: ./VoxelMeshOptimizerLibrary
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
