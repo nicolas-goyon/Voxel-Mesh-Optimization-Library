@@ -46,7 +46,7 @@ jobs:
           dotnet tool install --global dotnet-reportgenerator-globaltool
           reportgenerator -reports:TestResults/*/coverage.cobertura.xml \
             -targetdir:TestResults/CoverageReport \
-            -reporttypes:HtmlInline;Cobertura
+            -reporttypes:Html
         working-directory: ./VoxelMeshOptimizerLibrary
 
       - name: Upload coverage report
