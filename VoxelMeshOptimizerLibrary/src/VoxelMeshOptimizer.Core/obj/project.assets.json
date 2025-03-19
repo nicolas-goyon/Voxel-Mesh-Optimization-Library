@@ -1,11 +1,48 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {}
+    "net8.0": {
+      "CommunityToolkit.Diagnostics/8.4.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/CommunityToolkit.Diagnostics.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Diagnostics.dll": {
+            "related": ".pdb"
+          }
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "CommunityToolkit.Diagnostics/8.4.0": {
+      "sha512": "/9Nuy8EWo0ZYQsjn3h4OGxjCWVYXl3TV3fvv29f8IVqplXgXGRzIpbtHEHGOfykh+TPbzUclzIfMCBzmgblKDA==",
+      "type": "package",
+      "path": "communitytoolkit.diagnostics/8.4.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "License.md",
+        "ThirdPartyNotices.txt",
+        "communitytoolkit.diagnostics.8.4.0.nupkg.sha512",
+        "communitytoolkit.diagnostics.nuspec",
+        "lib/net8.0/CommunityToolkit.Diagnostics.dll",
+        "lib/net8.0/CommunityToolkit.Diagnostics.pdb",
+        "lib/netstandard2.0/CommunityToolkit.Diagnostics.dll",
+        "lib/netstandard2.0/CommunityToolkit.Diagnostics.pdb",
+        "lib/netstandard2.1/CommunityToolkit.Diagnostics.dll",
+        "lib/netstandard2.1/CommunityToolkit.Diagnostics.pdb"
+      ]
+    }
+  },
   "projectFileDependencyGroups": {
-    "net8.0": []
+    "net8.0": [
+      "CommunityToolkit.Diagnostics >= 8.4.0"
+    ]
   },
   "packageFolders": {
     "/home/codespace/.nuget/packages/": {}
@@ -48,6 +85,12 @@
     "frameworks": {
       "net8.0": {
         "targetAlias": "net8.0",
+        "dependencies": {
+          "CommunityToolkit.Diagnostics": {
+            "target": "Package",
+            "version": "[8.4.0, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",

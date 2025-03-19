@@ -10,3 +10,4 @@
 /workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/src/VoxelMeshOptimizer.Core/obj/Debug/net8.0/refint/VoxelMeshOptimizer.Core.dll
 /workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/src/VoxelMeshOptimizer.Core/obj/Debug/net8.0/VoxelMeshOptimizer.Core.pdb
 /workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/src/VoxelMeshOptimizer.Core/obj/Debug/net8.0/ref/VoxelMeshOptimizer.Core.dll
+/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/src/VoxelMeshOptimizer.Core/obj/Debug/net8.0/VoxelMeshOptimizer.Core.csproj.AssemblyReference.cache

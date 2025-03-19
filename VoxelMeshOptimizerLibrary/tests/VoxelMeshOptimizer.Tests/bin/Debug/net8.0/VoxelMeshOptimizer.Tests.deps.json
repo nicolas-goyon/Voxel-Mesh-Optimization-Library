@@ -18,6 +18,14 @@
           "VoxelMeshOptimizer.Tests.dll": {}
         }
       },
+      "CommunityToolkit.Diagnostics/8.4.0": {
+        "runtime": {
+          "lib/net8.0/CommunityToolkit.Diagnostics.dll": {
+            "assemblyVersion": "8.4.0.0",
+            "fileVersion": "8.4.0.1"
+          }
+        }
+      },
       "coverlet.collector/6.0.0": {},
       "Microsoft.CodeCoverage/17.8.0": {
         "runtime": {
@@ -1022,6 +1030,9 @@
       },
       "xunit.runner.visualstudio/2.5.3": {},
       "VoxelMeshOptimizer.Core/1.0.0": {
+        "dependencies": {
+          "CommunityToolkit.Diagnostics": "8.4.0"
+        },
         "runtime": {
           "VoxelMeshOptimizer.Core.dll": {
             "assemblyVersion": "1.0.0",
@@ -1036,6 +1047,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "CommunityToolkit.Diagnostics/8.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/9Nuy8EWo0ZYQsjn3h4OGxjCWVYXl3TV3fvv29f8IVqplXgXGRzIpbtHEHGOfykh+TPbzUclzIfMCBzmgblKDA==",
+      "path": "communitytoolkit.diagnostics/8.4.0",
+      "hashPath": "communitytoolkit.diagnostics.8.4.0.nupkg.sha512"
     },
     "coverlet.collector/6.0.0": {
       "type": "package",

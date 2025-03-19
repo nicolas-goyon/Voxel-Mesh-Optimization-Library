@@ -100,3 +100,4 @@
 /workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/tests/VoxelMeshOptimizer.Tests/obj/Debug/net8.0/VoxelMeshOptimizer.Tests.pdb
 /workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/tests/VoxelMeshOptimizer.Tests/obj/Debug/net8.0/VoxelMeshOptimizer.Tests.genruntimeconfig.cache
 /workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/tests/VoxelMeshOptimizer.Tests/obj/Debug/net8.0/ref/VoxelMeshOptimizer.Tests.dll
+/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/tests/VoxelMeshOptimizer.Tests/bin/Debug/net8.0/CommunityToolkit.Diagnostics.dll

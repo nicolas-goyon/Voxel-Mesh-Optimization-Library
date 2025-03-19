@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VoxelMeshOptimizer.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+03e44109abf5bcf18e18c0e97d8d6cb9fb88e9ed")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ff72709a23438382f2805fbbda2fa294953394e2")]
 [assembly: System.Reflection.AssemblyProductAttribute("VoxelMeshOptimizer.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VoxelMeshOptimizer.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

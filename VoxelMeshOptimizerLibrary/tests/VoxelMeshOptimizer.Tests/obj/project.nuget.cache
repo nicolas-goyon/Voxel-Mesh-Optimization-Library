@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "kWuGsd4CgI0=",
+  "dgSpecHash": "ZEcCMgzMSEg=",
   "success": true,
   "projectFilePath": "/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/tests/VoxelMeshOptimizer.Tests/VoxelMeshOptimizer.Tests.csproj",
   "expectedPackageFiles": [
+    "/home/codespace/.nuget/packages/communitytoolkit.diagnostics/8.4.0/communitytoolkit.diagnostics.8.4.0.nupkg.sha512",
     "/home/codespace/.nuget/packages/coverlet.collector/6.0.0/coverlet.collector.6.0.0.nupkg.sha512",
     "/home/codespace/.nuget/packages/microsoft.codecoverage/17.8.0/microsoft.codecoverage.17.8.0.nupkg.sha512",
     "/home/codespace/.nuget/packages/microsoft.net.test.sdk/17.8.0/microsoft.net.test.sdk.17.8.0.nupkg.sha512",
