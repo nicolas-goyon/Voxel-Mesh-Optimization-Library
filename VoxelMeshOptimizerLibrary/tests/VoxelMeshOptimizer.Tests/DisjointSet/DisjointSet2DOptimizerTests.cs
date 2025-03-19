@@ -1,6 +1,8 @@
 using Xunit;
 using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
 
+namespace VoxelMeshOptimizer.Tests;
+
 public class DisjointSet2DOptimizerTests
 {
     [Fact]
@@ -113,4 +115,86 @@ public class DisjointSet2DOptimizerTests
 
         Assert.Equal(expected, optimizer.ToResult());
     }
+
+
+
+    [Fact]
+    public void Constructor_NullPixels_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => new DisjointSet2DOptimizer(null));
+    }
+
+    [Fact]
+    public void Constructor_EmptyPixels_ThrowsArgumentException()
+    {
+        int[,] emptyPixels = new int[0, 0];
+        Assert.Throws<ArgumentOutOfRangeException>(() => new DisjointSet2DOptimizer(emptyPixels));
+    }
+
+    [Fact]
+    public void Optimize_SinglePixel_NoUnionPerformed()
+    {
+        int[,] pixels = { { 1 } };
+        var optimizer = new DisjointSet2DOptimizer(pixels);
+        optimizer.Optimize();
+
+        var result = optimizer.ToResult();
+        Assert.Single(result);
+        Assert.Single(result[0]);
+        Assert.Equal((0, 0), result[0][0]);
+    }
+
+    [Fact]
+    public void Optimize_TwoDifferentPixels_TwoSetsCreated()
+    {
+        int[,] pixels = { { 1, 2 } };
+        var optimizer = new DisjointSet2DOptimizer(pixels);
+        optimizer.Optimize();
+
+        var result = optimizer.ToResult();
+        Assert.Equal(2, result.Count);
+    }
+
+    [Fact]
+    public void Optimize_TwoSamePixels_OneSetCreated()
+    {
+        int[,] pixels = { { 1, 1 } };
+        var optimizer = new DisjointSet2DOptimizer(pixels);
+        optimizer.Optimize();
+
+        var result = optimizer.ToResult();
+        Assert.Single(result);
+        Assert.Equal(2, result[0].Count);
+    }
+
+    [Fact]
+    public void Optimize_RectangleOfSameColor_CreatesSingleSet()
+    {
+        int[,] pixels = {
+            { 1, 1 },
+            { 1, 1 }
+        };
+        var optimizer = new DisjointSet2DOptimizer(pixels);
+        optimizer.Optimize();
+
+        var result = optimizer.ToResult();
+        Assert.Single(result);
+        Assert.Equal(4, result[0].Count);
+    }
+
+    [Fact]
+    public void Optimize_MixedColors_CreatesCorrectSets()
+    {
+        int[,] pixels = {
+            { 1, 1, 2 },
+            { 1, 2, 2 },
+            { 3, 3, 2 }
+        };
+        var optimizer = new DisjointSet2DOptimizer(pixels);
+        optimizer.Optimize();
+
+        var result = optimizer.ToResult();
+        Assert.Equal(5, result.Count);
+    }
+    
 }
