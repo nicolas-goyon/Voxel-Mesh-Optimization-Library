@@ -21,7 +21,7 @@ public class VoxelVisibilityMap
                 for (uint z = 0; z < chunk.Depth; z++)
                 {
                     Voxel voxel = chunk.Get(x, y, z);
-                    if (voxel == null || voxel.IsTransparent)
+                    if (voxel == null || !voxel.IsSolid)
                     {
                         visibilityMap[x, y, z] = VoxelFace.None;
                         continue;
@@ -46,7 +46,7 @@ public class VoxelVisibilityMap
     private bool IsAdjacentVoxelTransparent(uint x, uint y, uint z)
     {
         Voxel adjacentVoxel = chunk.Get(x, y, z);
-        return adjacentVoxel == null || adjacentVoxel.IsTransparent;
+        return adjacentVoxel == null || !adjacentVoxel.IsSolid;
     }
 
     public VoxelFace GetVisibleFaces(uint x, uint y, uint z)

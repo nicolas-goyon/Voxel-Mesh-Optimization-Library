@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DFC447EE-9B30-4903-A4A9-3B4F43916A1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelMeshOptimizer.Core", "src\VoxelMeshOptimizer.Core\VoxelMeshOptimizer.Core.csproj", "{B37B5C4D-DF28-4ADA-AE07-A7E36EB1D6B0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelMeshOptimizer.Core", "src\Core\VoxelMeshOptimizer.Core.csproj", "{B37B5C4D-DF28-4ADA-AE07-A7E36EB1D6B0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{963E0308-1875-4287-B1BF-6FD891F64832}"
 EndProject
@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppExample", "exampl
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6CFBA486-CBB3-4C9E-A0BA-216B461F9EA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelMeshOptimizer.Tests", "tests\VoxelMeshOptimizer.Tests\VoxelMeshOptimizer.Tests.csproj", "{ED0B0BDF-A53D-47DD-BCDC-1EC7A0E04C88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoxelMeshOptimizer.Tests", "tests\VoxelMeshOptimizer.Tests.csproj", "{ED0B0BDF-A53D-47DD-BCDC-1EC7A0E04C88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

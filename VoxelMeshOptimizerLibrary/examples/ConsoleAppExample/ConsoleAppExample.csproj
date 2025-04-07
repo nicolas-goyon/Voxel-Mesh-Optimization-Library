@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\VoxelMeshOptimizer.Core\VoxelMeshOptimizer.Core.csproj" />
+    <ProjectReference Include="..\..\src\Core\VoxelMeshOptimizer.Core.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

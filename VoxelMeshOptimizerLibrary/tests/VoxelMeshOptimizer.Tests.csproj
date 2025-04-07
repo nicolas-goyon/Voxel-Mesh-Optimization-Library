@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\VoxelMeshOptimizer.Core\VoxelMeshOptimizer.Core.csproj" />
+    <ProjectReference Include="..\src\Core\VoxelMeshOptimizer.Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -5,7 +5,7 @@ using System;
 public interface Voxel
 {
     public ushort ID { get;}
-    public bool IsTransparent {get;}
+    public bool IsSolid {get;}
 }
 
 

@@ -1,7 +1,7 @@
 using Xunit;
 using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
 
-namespace VoxelMeshOptimizer.Tests;
+namespace VoxelMeshOptimizer.Tests.DisjointSetTesting;
 
 public class DisjointSet2DOptimizerTests
 {
