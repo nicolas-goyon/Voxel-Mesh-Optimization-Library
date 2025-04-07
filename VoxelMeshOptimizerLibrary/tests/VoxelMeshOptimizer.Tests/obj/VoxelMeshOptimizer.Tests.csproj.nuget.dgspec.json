@@ -1,0 +1,152 @@
+{
+  "format": 1,
+  "restore": {
+    "/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/tests/VoxelMeshOptimizer.Tests/VoxelMeshOptimizer.Tests.csproj": {}
+  },
+  "projects": {
+    "/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/src/VoxelMeshOptimizer.Core/VoxelMeshOptimizer.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/src/VoxelMeshOptimizer.Core/VoxelMeshOptimizer.Core.csproj",
+        "projectName": "VoxelMeshOptimizer.Core",
+        "projectPath": "/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/src/VoxelMeshOptimizer.Core/VoxelMeshOptimizer.Core.csproj",
+        "packagesPath": "/home/codespace/.nuget/packages/",
+        "outputPath": "/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/src/VoxelMeshOptimizer.Core/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/codespace/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "CommunityToolkit.Diagnostics": {
+              "target": "Package",
+              "version": "[8.4.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.404/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/tests/VoxelMeshOptimizer.Tests/VoxelMeshOptimizer.Tests.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/tests/VoxelMeshOptimizer.Tests/VoxelMeshOptimizer.Tests.csproj",
+        "projectName": "VoxelMeshOptimizer.Tests",
+        "projectPath": "/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/tests/VoxelMeshOptimizer.Tests/VoxelMeshOptimizer.Tests.csproj",
+        "packagesPath": "/home/codespace/.nuget/packages/",
+        "outputPath": "/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/tests/VoxelMeshOptimizer.Tests/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/home/codespace/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/src/VoxelMeshOptimizer.Core/VoxelMeshOptimizer.Core.csproj": {
+                "projectPath": "/workspaces/RectangleMerging/VoxelMeshOptimizerLibrary/src/VoxelMeshOptimizer.Core/VoxelMeshOptimizer.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[17.8.0, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.5.3, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.5.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.404/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
