@@ -4,12 +4,11 @@ namespace ConsoleAppExample;
 
 public class ExampleVoxel : Voxel
 {
-    public int Color { get; }
-    public (int x, int y, int z) Position { get; }
+    public ushort ID { get; }
+    public bool IsTransparent => ID == 0;
 
-    public ExampleVoxel(int color, (int, int, int) position)
+    public ExampleVoxel(ushort id)
     {
-        Color = color;
-        Position = position;
+        ID = id;
     }
 }

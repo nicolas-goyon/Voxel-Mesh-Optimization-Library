@@ -1,17 +1,57 @@
 using VoxelMeshOptimizer.Core;
 
 namespace ConsoleAppExample;
-
-public class ExampleChunk : Chunk
+public class ExampleChunk : Chunk<ExampleVoxel>
 {
-    public IEnumerable<Voxel> GetVoxels()
+    private readonly ExampleVoxel[,,] _voxels;
+
+    public uint Width { get; }
+    public uint Height { get; }
+    public uint Depth { get; }
+
+    public ExampleChunk(ushort[,,] voxelArray)
     {
-        // Example data here
-        return new List<Voxel>
+        Width = (uint)voxelArray.GetLength(0);
+        Height = (uint)voxelArray.GetLength(1);
+        Depth = (uint)voxelArray.GetLength(2);
+
+        _voxels = new ExampleVoxel[Width, Height, Depth];
+
+        for (uint x = 0; x < Width; x++)
         {
-            new ExampleVoxel(1, (0,0,0)),
-            new ExampleVoxel(1, (1,0,0)),
-            // Add more example voxels as necessary
-        };
+            for (uint y = 0; y < Height; y++)
+            {
+                for (uint z = 0; z < Depth; z++)
+                {
+                    ushort value = voxelArray[x, y, z];
+                    _voxels[x, y, z] = new ExampleVoxel(value);
+                }
+            }
+        }
     }
+
+    public IEnumerable<ExampleVoxel> GetVoxels()
+    {
+        for (uint x = 0; x < Width; x++)
+        {
+            for (uint y = 0; y < Height; y++)
+            {
+                for (uint z = 0; z < Depth; z++)
+                {
+                    yield return _voxels[x, y, z];
+                }
+            }
+        }
+    }
+
+    public ExampleVoxel Get(uint x, uint y, uint z)
+    {
+        if (x >= Width || y >= Height || z >= Depth)
+        {
+            throw new ArgumentOutOfRangeException("Requested voxel coordinates are out of bounds.");
+        }
+
+        return _voxels[x, y, z];
+    }
+
 }
