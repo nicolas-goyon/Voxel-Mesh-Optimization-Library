@@ -1,4 +1,3 @@
-Here is the current readme/documentation of the project : 
 # Voxel Mesh Optimization Project Description
 
 ## Project Context
@@ -103,10 +102,12 @@ classDiagram
     Rectangle --> TouchingSide : Uses
 ```
 
+Get tree: `tree -I -f "bin|TestResults|obj"`
 
 Current file hierarchy : 
 ```
 .
+├── Readme.md
 ├── VoxelMeshOptimizerLibrary.sln
 ├── examples
 │   └── ConsoleAppExample
@@ -125,6 +126,8 @@ Current file hierarchy :
 │       │       ├── DisjointSet.cs
 │       │       ├── DisjointSet2DOptimizer.cs
 │       │       └── DisjointSetMeshOptimizer.cs
+│       ├── Testing
+│       │   └── VoxelVisibilityMap.cs
 │       ├── Voxel.cs
 │       └── VoxelMeshOptimizer.Core.csproj
 └── tests
