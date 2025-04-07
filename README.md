@@ -1,6 +1,6 @@
 # RectangleMerging
 
-The bruteforce seems to be way too fast, i know the result isn't the one that has the less of rectangles, but the result is close enough for voxel verts reduction.
+The DisjointSets seems to be way too fast, i know the result isn't the one that has the less of rectangles, but the result is close enough for voxel verts reduction.
 
 # Explanations
 
