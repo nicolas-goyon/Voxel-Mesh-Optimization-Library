@@ -102,7 +102,7 @@ classDiagram
     Rectangle --> TouchingSide : Uses
 ```
 
-Get tree: `tree -I -f "bin|TestResults|obj"`
+Get tree: `tree -I "bin|TestResults|obj"`
 
 Current file hierarchy : 
 ```
@@ -137,4 +137,23 @@ Current file hierarchy :
         │   ├── DisjointSetMeshOptimizerTests.cs
         │   └── DisjointSetTests.cs
         └── VoxelMeshOptimizer.Tests.csproj
+```
+
+
+## Getting started
+
+start :
+```sh
+cd VoxelMeshOptimizerLibrary
+dotnet restore
+cd example/ConsoleAppExample/
+dotnet run
+```
+
+
+tests :
+```sh
+cd VoxelMeshOptimizerLibrary
+dotnet restore
+dotnet test
 ```
