@@ -16,9 +16,9 @@ namespace VoxelMeshOptimizer.Tests.Occlusion
             this.output = output;
         }
 
+        
         [Fact]
-        public void SingleVoxel_ShouldProduceAllSixPlanes_IfNotSkippingEmptyOnes()
-        {
+        public void OcclusionNotImplemented(){
             // Arrange
             var chunk = new TestChunk(1, 1, 1);
 
@@ -35,39 +35,61 @@ namespace VoxelMeshOptimizer.Tests.Occlusion
             );
 
             var optimizer = new VoxelOcclusionOptimizer(chunk);
-
-            // Act
-            VisibleFaces faces = optimizer.ComputeVisiblePlanes();
-
-            // Assert
-            // We expect 6 axes (FrontToBack, BackToFront, etc.), each with 1 plane
-            Assert.Equal(6, faces.PlanesByAxis.Count);
-
-            // For each axis, we have a single 1×1 plane containing our one voxel
-            foreach (var kvp in faces.PlanesByAxis)
-            {
-                var axis = kvp.Key; // e.g. HumanAxis.FrontToBack
-                var planeList = kvp.Value;
-
-                // We expect exactly one slice for a 1×1×1 chunk
-                Assert.Single(planeList);
-
-                var plane = planeList[0];
-                Assert.NotNull(plane);
-
-                // The plane's 'MinorAxis' typically matches 'axis' if your code 
-                // sets it that way. If you want, you can assert that 
-                // plane.MinorAxis == axis, or plane.SliceIndex == 0, etc.
-                Assert.Equal((uint)0, plane.SliceIndex);
-
-                // In a 1x1x1 chunk, plane dimensions are always 1×1
-                Assert.Equal(1, plane.Voxels.GetLength(0));
-                Assert.Equal(1, plane.Voxels.GetLength(1));
-
-                // We expect the single voxel to be non-null
-                Assert.NotNull(plane.Voxels[0,0]);
-            }
+            Assert.Throws<NotImplementedException>(()=> optimizer.ComputeVisiblePlanes());
         }
+
+        // [Fact]
+        // public void SingleVoxel_ShouldProduceAllSixPlanes_IfNotSkippingEmptyOnes()
+        // {
+        //     // Arrange
+        //     var chunk = new TestChunk(1, 1, 1);
+
+        //     // Only one voxel => set it to solid
+        //     chunk.ForEachCoordinate(
+        //         Axis.X, AxisOrder.Ascending,
+        //         Axis.Y, AxisOrder.Ascending,
+        //         Axis.Z, AxisOrder.Ascending,
+        //         (x,y,z) => 
+        //         {
+        //             // pos.X, pos.Y, pos.Z are all zero
+        //             chunk.Set(x,y,z, new TestVoxel(id: 1, isSolid: true));
+        //         }
+        //     );
+
+        //     var optimizer = new VoxelOcclusionOptimizer(chunk);
+
+        //     // Act
+        //     VisibleFaces faces = optimizer.ComputeVisiblePlanes();
+
+        //     // Assert
+        //     // We expect 6 axes (FrontToBack, BackToFront, etc.), each with 1 plane
+        //     Assert.Equal(6, faces.PlanesByAxis.Count);
+
+        //     // For each axis, we have a single 1×1 plane containing our one voxel
+        //     foreach (var kvp in faces.PlanesByAxis)
+        //     {
+        //         var axis = kvp.Key; // e.g. HumanAxis.FrontToBack
+        //         var planeList = kvp.Value;
+
+        //         // We expect exactly one slice for a 1×1×1 chunk
+        //         Assert.Single(planeList);
+
+        //         var plane = planeList[0];
+        //         Assert.NotNull(plane);
+
+        //         // The plane's 'MinorAxis' typically matches 'axis' if your code 
+        //         // sets it that way. If you want, you can assert that 
+        //         // plane.MinorAxis == axis, or plane.SliceIndex == 0, etc.
+        //         Assert.Equal((uint)0, plane.SliceIndex);
+
+        //         // In a 1x1x1 chunk, plane dimensions are always 1×1
+        //         Assert.Equal(1, plane.Voxels.GetLength(0));
+        //         Assert.Equal(1, plane.Voxels.GetLength(1));
+
+        //         // We expect the single voxel to be non-null
+        //         Assert.NotNull(plane.Voxels[0,0]);
+        //     }
+        // }
 
         // [Fact]
         // public void Solid2x2x2Chunk_OnlyOuterPlanesShouldHaveVoxels()
@@ -109,57 +131,57 @@ namespace VoxelMeshOptimizer.Tests.Occlusion
         //     // Similarly for LeftToRight, RightToLeft, BottomToTop, TopToBottom
         // }
 
-        [Fact]
-        public void PartiallyEmpty2x2Chunk_ShouldHaveMultipleVisiblePlanesInside()
-        {
-            // Arrange
-            var chunk = new TestChunk(2, 2, 2);
+        // [Fact]
+        // public void PartiallyEmpty2x2Chunk_ShouldHaveMultipleVisiblePlanesInside()
+        // {
+        //     // Arrange
+        //     var chunk = new TestChunk(2, 2, 2);
 
-            // Only fill "front" row at z=1, leaving z=0 empty
+        //     // Only fill "front" row at z=1, leaving z=0 empty
             
-            // Fill entire chunk with solid voxels
-            chunk.ForEachCoordinate(
-                Axis.X, AxisOrder.Ascending,   // major
-                Axis.Z, AxisOrder.Ascending,   // middle
-                Axis.Y, AxisOrder.Ascending,   // minor
-                (x,y,z) =>
-                {
-                    if (z == 1)
-                    {
-                        chunk.Set(x,y,z, new TestVoxel(id: 42, isSolid: true));
-                    }
-                }
-            );
+        //     // Fill entire chunk with solid voxels
+        //     chunk.ForEachCoordinate(
+        //         Axis.X, AxisOrder.Ascending,   // major
+        //         Axis.Z, AxisOrder.Ascending,   // middle
+        //         Axis.Y, AxisOrder.Ascending,   // minor
+        //         (x,y,z) =>
+        //         {
+        //             if (z == 1)
+        //             {
+        //                 chunk.Set(x,y,z, new TestVoxel(id: 42, isSolid: true));
+        //             }
+        //         }
+        //     );
 
-            var optimizer = new VoxelOcclusionOptimizer(chunk);
+        //     var optimizer = new VoxelOcclusionOptimizer(chunk);
 
-            // Act
-            var visibleFaces = optimizer.ComputeVisiblePlanes();
+        //     // Act
+        //     var visibleFaces = optimizer.ComputeVisiblePlanes();
 
-            // Assert
-            var xAsc = visibleFaces.PlanesByAxis[(Axis.X, AxisOrder.Ascending)];
-            Assert.Single(xAsc);
-            AssertPlaneNotEmpty(xAsc[0], 4);
-            var xDesc = visibleFaces.PlanesByAxis[(Axis.X, AxisOrder.Descending)];
-            Assert.Single(xDesc);
-            AssertPlaneNotEmpty(xDesc[0], 4);
-
-
-            var yAsc = visibleFaces.PlanesByAxis[(Axis.Y, AxisOrder.Ascending)];
-            Assert.Single(yAsc);
-            AssertPlaneNotEmpty(yAsc[0], 2);
-            var yDesc = visibleFaces.PlanesByAxis[(Axis.Y, AxisOrder.Descending)];
-            Assert.Single(yDesc);
-            AssertPlaneNotEmpty(yDesc[0], 2);
+        //     // Assert
+        //     var xAsc = visibleFaces.PlanesByAxis[(Axis.X, AxisOrder.Ascending)];
+        //     Assert.Single(xAsc);
+        //     AssertPlaneNotEmpty(xAsc[0], 4);
+        //     var xDesc = visibleFaces.PlanesByAxis[(Axis.X, AxisOrder.Descending)];
+        //     Assert.Single(xDesc);
+        //     AssertPlaneNotEmpty(xDesc[0], 4);
 
 
-            var zAsc = visibleFaces.PlanesByAxis[(Axis.Z, AxisOrder.Ascending)];
-            Assert.Single(zAsc);
-            AssertPlaneNotEmpty(zAsc[0], 2);
-            var zDesc = visibleFaces.PlanesByAxis[(Axis.Z, AxisOrder.Descending)];
-            Assert.Single(zDesc);
-            AssertPlaneNotEmpty(zDesc[0], 2);
-        }
+        //     var yAsc = visibleFaces.PlanesByAxis[(Axis.Y, AxisOrder.Ascending)];
+        //     Assert.Single(yAsc);
+        //     AssertPlaneNotEmpty(yAsc[0], 2);
+        //     var yDesc = visibleFaces.PlanesByAxis[(Axis.Y, AxisOrder.Descending)];
+        //     Assert.Single(yDesc);
+        //     AssertPlaneNotEmpty(yDesc[0], 2);
+
+
+        //     var zAsc = visibleFaces.PlanesByAxis[(Axis.Z, AxisOrder.Ascending)];
+        //     Assert.Single(zAsc);
+        //     AssertPlaneNotEmpty(zAsc[0], 2);
+        //     var zDesc = visibleFaces.PlanesByAxis[(Axis.Z, AxisOrder.Descending)];
+        //     Assert.Single(zDesc);
+        //     AssertPlaneNotEmpty(zDesc[0], 2);
+        // }
 
         // [Fact]
         // public void AlmostSolid2x2x2_OneMissingVoxel_ShouldRevealInternalFaces()

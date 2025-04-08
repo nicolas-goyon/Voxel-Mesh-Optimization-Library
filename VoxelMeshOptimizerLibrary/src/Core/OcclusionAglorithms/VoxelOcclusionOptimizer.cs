@@ -43,7 +43,7 @@ namespace VoxelMeshOptimizer.Core.OcclusionAlgorithms
             // }
 
             // return result;
-            return null;
+            throw new NotImplementedException();
         }
 
         /// <summary>

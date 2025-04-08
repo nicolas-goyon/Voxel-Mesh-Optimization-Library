@@ -5,33 +5,17 @@ public class TestChunk : Chunk<TestVoxel>
 {
     private readonly TestVoxel[,,] data;
 
-    public uint Width { get; }
-    public uint Height { get; }
-    public uint Depth { get; }
+    public uint XDepth { get; }
+    public uint YDepth { get; }
+    public uint ZDepth { get; }
 
-    public TestChunk(uint width, uint height, uint depth)
+    public TestChunk(uint xDepth, uint yDepth, uint zDepth)
     {
-        Width = width;
-        Height = height;
-        Depth = depth;
-        data = new TestVoxel[width, height, depth];
+        XDepth = xDepth;
+        YDepth = yDepth;
+        ZDepth = zDepth;
+        data = new TestVoxel[xDepth, yDepth, zDepth];
     }
-
-    public IEnumerable<TestVoxel> GetVoxels()
-    {
-        for (uint x = 0; x < Width; x++)
-        {
-            for (uint y = 0; y < Height; y++)
-            {
-                for (uint z = 0; z < Depth; z++)
-                {
-                    var v = data[x, y, z];
-                    if (v != null) yield return v;
-                }
-            }
-        }
-    }
-
     
     /// <summary>
     /// Retrieves the voxel at the given position (X,Y,Z), ignoring the axis fields for now.
@@ -39,7 +23,7 @@ public class TestChunk : Chunk<TestVoxel>
     /// </summary>
     public TestVoxel Get(uint x, uint y, uint z)
     {
-        if (x >= Width || y >= Height || z >= Depth)
+        if (x >= XDepth || y >= YDepth || z >= ZDepth)
         {
             throw new ArgumentOutOfRangeException("Requested voxel coordinates are out of bounds.");
         }
@@ -52,7 +36,7 @@ public class TestChunk : Chunk<TestVoxel>
     /// </summary>
     public void Set(uint x, uint y, uint z, TestVoxel voxel)
     {
-        if (x >= Width || y >= Height || z >= Depth)
+        if (x >= XDepth || y >= YDepth || z >= ZDepth)
         {
             throw new ArgumentOutOfRangeException("Requested voxel coordinates are out of bounds.");
         }
@@ -128,11 +112,38 @@ public class TestChunk : Chunk<TestVoxel>
     {
         return axis switch
         {
-            Axis.X => Width,
-            Axis.Y => Height,
-            Axis.Z => Depth,
+            Axis.X => XDepth,
+            Axis.Y => YDepth,
+            Axis.Z => ZDepth,
             _ => throw new ArgumentOutOfRangeException(nameof(axis), axis, "Unknown axis.")
         };
     }
 
+    public bool IsOutOfBound(uint x, uint y, uint z){
+        return x < 0 || x >= GetDimension(Axis.X) 
+            || y < 0 || y >= GetDimension(Axis.Y)
+            || z < 0 || z >= GetDimension(Axis.Z);
+    }
+
+    public bool AreDifferentAxis(
+        Axis major,
+        Axis middle,
+        Axis minor
+    ){
+        return major != middle && middle != minor && minor != major;
+    }
+
+    public (uint planeWidth, uint planeHeight) GetPlaneDimensions(
+        Axis major,
+        Axis middle,
+        Axis minor
+    )
+    {
+        // "Plane dimensions" = minor dimension (x-axis of the plane),
+        //                      middle dimension (y-axis of the plane).
+        var planeWidth  = GetDimension(middle);
+        var planeHeight = GetDimension(minor);
+
+        return (planeWidth, planeHeight);
+    }
 }

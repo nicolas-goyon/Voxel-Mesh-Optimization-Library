@@ -8,24 +8,24 @@ namespace ConsoleAppExample
     {
         private readonly ExampleVoxel[,,] _voxels;
 
-        public uint Width { get; }
-        public uint Height { get; }
-        public uint Depth { get; }
+        public uint XDepth { get; }
+        public uint YDepth { get; }
+        public uint ZDepth { get; }
 
         public ExampleChunk(ushort[,,] voxelArray)
         {
-            Width = (uint)voxelArray.GetLength(0);
-            Height = (uint)voxelArray.GetLength(1);
-            Depth = (uint)voxelArray.GetLength(2);
+            XDepth = (uint)voxelArray.GetLength(0);
+            YDepth = (uint)voxelArray.GetLength(1);
+            ZDepth = (uint)voxelArray.GetLength(2);
 
-            _voxels = new ExampleVoxel[Width, Height, Depth];
+            _voxels = new ExampleVoxel[XDepth, YDepth, ZDepth];
 
             // Initialize from the ushort array
-            for (uint x = 0; x < Width; x++)
+            for (uint x = 0; x < XDepth; x++)
             {
-                for (uint y = 0; y < Height; y++)
+                for (uint y = 0; y < YDepth; y++)
                 {
-                    for (uint z = 0; z < Depth; z++)
+                    for (uint z = 0; z < ZDepth; z++)
                     {
                         ushort value = voxelArray[x, y, z];
                         _voxels[x, y, z] = new ExampleVoxel(value);
@@ -39,11 +39,11 @@ namespace ConsoleAppExample
         /// </summary>
         public IEnumerable<ExampleVoxel> GetVoxels()
         {
-            for (uint x = 0; x < Width; x++)
+            for (uint x = 0; x < XDepth; x++)
             {
-                for (uint y = 0; y < Height; y++)
+                for (uint y = 0; y < YDepth; y++)
                 {
-                    for (uint z = 0; z < Depth; z++)
+                    for (uint z = 0; z < ZDepth; z++)
                     {
                         yield return _voxels[x, y, z];
                     }
@@ -57,7 +57,7 @@ namespace ConsoleAppExample
         /// </summary>
         public ExampleVoxel Get(uint x, uint y, uint z)
         {
-            if (x >= Width || y >= Height || z >= Depth)
+            if (x >= XDepth || y >= YDepth || z >= ZDepth)
             {
                 throw new ArgumentOutOfRangeException("Requested voxel coordinates are out of bounds.");
             }
@@ -70,7 +70,7 @@ namespace ConsoleAppExample
         /// </summary>
         public void Set(uint x, uint y, uint z, ExampleVoxel voxel)
         {
-            if (x >= Width || y >= Height || z >= Depth)
+            if (x >= XDepth || y >= YDepth || z >= ZDepth)
             {
                 throw new ArgumentOutOfRangeException("Requested voxel coordinates are out of bounds.");
             }
@@ -139,6 +139,7 @@ namespace ConsoleAppExample
             }
         }
         
+    
         /// <summary>
         /// Simple helper to pick the chunk’s dimension (depth) by axis.
         /// </summary>
@@ -146,11 +147,39 @@ namespace ConsoleAppExample
         {
             return axis switch
             {
-                Axis.X => Width,
-                Axis.Y => Height,
-                Axis.Z => Depth,
+                Axis.X => XDepth,
+                Axis.Y => YDepth,
+                Axis.Z => ZDepth,
                 _ => throw new ArgumentOutOfRangeException(nameof(axis), axis, "Unknown axis.")
             };
+        }
+
+        public bool IsOutOfBound(uint x, uint y, uint z){
+            return x < 0 || x >= GetDimension(Axis.X) 
+                || y < 0 || y >= GetDimension(Axis.Y)
+                || z < 0 || z >= GetDimension(Axis.Z);
+        }
+
+        public bool AreDifferentAxis(
+            Axis major,
+            Axis middle,
+            Axis minor
+        ){
+            return major != middle && middle != minor && minor != major;
+        }
+
+        public (uint planeWidth, uint planeHeight) GetPlaneDimensions(
+            Axis major,
+            Axis middle,
+            Axis minor
+        )
+        {
+            // "Plane dimensions" = minor dimension (x-axis of the plane),
+            //                      middle dimension (y-axis of the plane).
+            var planeWidth  = GetDimension(middle);
+            var planeHeight = GetDimension(minor);
+
+            return (planeWidth, planeHeight);
         }
 
     }

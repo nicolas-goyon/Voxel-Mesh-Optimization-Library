@@ -8,7 +8,7 @@ public class VoxelVisibilityMap
     public VoxelVisibilityMap(Chunk<Voxel> chunk)
     {
         this.chunk = chunk;
-        visibilityMap = new VoxelFace[chunk.Width, chunk.Height, chunk.Depth];
+        visibilityMap = new VoxelFace[chunk.XDepth, chunk.YDepth, chunk.ZDepth];
         ComputeVisibilityMap();
     }
 
@@ -42,13 +42,15 @@ public class VoxelVisibilityMap
 
     private bool IsAdjacentVoxelTransparent(uint x, uint y, uint z)
     {
+        if (chunk.IsOutOfBound(x,y,z)) return true;
+
         Voxel adjacentVoxel = chunk.Get(x, y, z);
         return adjacentVoxel == null || !adjacentVoxel.IsSolid;
     }
 
     public VoxelFace GetVisibleFaces(uint x, uint y, uint z)
     {
-        if (x < 0 || x >= chunk.Width || y < 0 || y >= chunk.Height || z < 0 || z >= chunk.Depth)
+        if (x < 0 || x >= chunk.XDepth || y < 0 || y >= chunk.YDepth || z < 0 || z >= chunk.ZDepth)
             return VoxelFace.None;
         return visibilityMap[x, y, z];
     }
