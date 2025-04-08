@@ -2,7 +2,7 @@ using VoxelMeshOptimizer.Core;
 
 namespace ConsoleAppExample;
 
-public class ExampleVoxel : VoxelMeshOptimizer
+public class ExampleVoxel : Voxel
 {
     public ushort ID { get; }
     public bool IsSolid => ID != 0;

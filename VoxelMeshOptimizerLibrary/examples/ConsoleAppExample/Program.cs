@@ -15,10 +15,9 @@ class Program
         var exampleChunk = new ExampleChunk(voxels);
         var optimizer = new DisjointSetMeshOptimizer();
         Mesh optimizedMesh = optimizer.Optimize(exampleChunk);
-        
+
         Console.WriteLine("Mesh optimized successfully!");
     }
 }
-
 
 

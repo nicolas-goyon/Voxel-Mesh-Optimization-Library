@@ -19,7 +19,7 @@ public class VoxelVisibilityMapTests
             {
                 for (uint z = 0; z < 2; z++)
                 {
-                    chunk.SetVoxel(x, y, z, new TestVoxel(id: 1, isSolid: true));
+                    chunk.Set(x, y, z, new TestVoxel(id: 1, isSolid: true));
                 }
             }
         }
@@ -75,7 +75,7 @@ public class VoxelVisibilityMapTests
     {
         // Arrange
         var chunk = new TestChunk(1, 1, 1);
-        chunk.SetVoxel(0, 0, 0, new TestVoxel(id: 99, isSolid: true));
+        chunk.Set(0, 0, 0, new TestVoxel(id: 99, isSolid: true));
 
         // Act
         var visibilityMap = new VoxelVisibilityMap(chunk);
@@ -123,7 +123,7 @@ public class VoxelVisibilityMapTests
         var chunk = new TestChunk(2, 2, 2);
 
         // Place a solid voxel in one corner, empty in others.
-        chunk.SetVoxel(0, 0, 0, new TestVoxel(id: 1, isSolid: true));
+        chunk.Set(0, 0, 0, new TestVoxel(id: 1, isSolid: true));
         // Let (0,0,1), (0,1,0), (0,1,1), etc. remain null => air
         // so that (1,0,0) => also air, etc.
 
@@ -151,7 +151,7 @@ public class VoxelVisibilityMapTests
     {
         // Arrange
         var chunk = new TestChunk(1, 1, 1);
-        chunk.SetVoxel(0, 0, 0, new TestVoxel(id: 123, isSolid: true));
+        chunk.Set(0, 0, 0, new TestVoxel(id: 123, isSolid: true));
         var visibilityMap = new VoxelVisibilityMap(chunk);
 
         // Act
