@@ -29,12 +29,12 @@ public class VoxelVisibilityMap
             VoxelFace visibleFaces = VoxelFace.None;
 
             // Check adjacent voxels
-            if (IsAdjacentVoxelTransparent(x, y, z + 1)) visibleFaces |= VoxelFace.Front;
-            if (IsAdjacentVoxelTransparent(x, y, z - 1)) visibleFaces |= VoxelFace.Back;
-            if (IsAdjacentVoxelTransparent(x - 1, y, z)) visibleFaces |= VoxelFace.Left;
-            if (IsAdjacentVoxelTransparent(x + 1, y, z)) visibleFaces |= VoxelFace.Right;
-            if (IsAdjacentVoxelTransparent(x, y + 1, z)) visibleFaces |= VoxelFace.Top;
-            if (IsAdjacentVoxelTransparent(x, y - 1, z)) visibleFaces |= VoxelFace.Bottom;
+            if (IsAdjacentVoxelTransparent(x, y, z + 1)) visibleFaces |= VoxelFace.Zpos;
+            if (IsAdjacentVoxelTransparent(x, y, z - 1)) visibleFaces |= VoxelFace.Zneg;
+            if (IsAdjacentVoxelTransparent(x - 1, y, z)) visibleFaces |= VoxelFace.Xneg;
+            if (IsAdjacentVoxelTransparent(x + 1, y, z)) visibleFaces |= VoxelFace.Xpos;
+            if (IsAdjacentVoxelTransparent(x, y + 1, z)) visibleFaces |= VoxelFace.Ypos;
+            if (IsAdjacentVoxelTransparent(x, y - 1, z)) visibleFaces |= VoxelFace.Yneg;
 
             visibilityMap[x, y, z] = visibleFaces;
         });

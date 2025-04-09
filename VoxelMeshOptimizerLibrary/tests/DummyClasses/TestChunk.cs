@@ -64,11 +64,11 @@ public class TestChunk : Chunk<TestVoxel>
 
         // 4) Triple-nested loop in the order: major -> middle -> minor
         //    We find which axis is major, middle, minor, then nest them accordingly.
-        foreach (var majorVal in BuildRange(GetDimension(majorA), majorAsc))
+        foreach (var majorVal in BuildRange(GetDepth(majorA), majorAsc))
         {
-            foreach (var midVal in BuildRange(GetDimension(middleA), middleAsc))
+            foreach (var midVal in BuildRange(GetDepth(middleA), middleAsc))
             {
-                foreach (var minVal in BuildRange(GetDimension(minorA), minorAsc))
+                foreach (var minVal in BuildRange(GetDepth(minorA), minorAsc))
                 {
                     uint x = 0, y = 0, z = 0;
 
@@ -108,7 +108,7 @@ public class TestChunk : Chunk<TestVoxel>
     /// <summary>
     /// Simple helper to pick the chunk’s dimension (depth) by axis.
     /// </summary>
-    public uint GetDimension(Axis axis)
+    public uint GetDepth(Axis axis)
     {
         return axis switch
         {
@@ -120,9 +120,9 @@ public class TestChunk : Chunk<TestVoxel>
     }
 
     public bool IsOutOfBound(uint x, uint y, uint z){
-        return x < 0 || x >= GetDimension(Axis.X) 
-            || y < 0 || y >= GetDimension(Axis.Y)
-            || z < 0 || z >= GetDimension(Axis.Z);
+        return x < 0 || x >= GetDepth(Axis.X) 
+            || y < 0 || y >= GetDepth(Axis.Y)
+            || z < 0 || z >= GetDepth(Axis.Z);
     }
 
     public bool AreDifferentAxis(
@@ -141,8 +141,8 @@ public class TestChunk : Chunk<TestVoxel>
     {
         // "Plane dimensions" = minor dimension (x-axis of the plane),
         //                      middle dimension (y-axis of the plane).
-        var planeWidth  = GetDimension(middle);
-        var planeHeight = GetDimension(minor);
+        var planeWidth  = GetDepth(middle);
+        var planeHeight = GetDepth(minor);
 
         return (planeWidth, planeHeight);
     }

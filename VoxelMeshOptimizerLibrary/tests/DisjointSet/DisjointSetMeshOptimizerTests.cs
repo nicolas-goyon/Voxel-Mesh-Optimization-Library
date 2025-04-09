@@ -11,9 +11,10 @@ public class DisjointSetMeshOptimizerTests
     {
         // Arrange
         var optimizer = new DisjointSetMeshOptimizer();
+        var chunk = new TestChunk(2, 2, 2);
 
         // Act & Assert
-        // Assert.Throws<NotImplementedException>(() => optimizer.Optimize(chunk));
+        Assert.Throws<NotImplementedException>(() => optimizer.Optimize(chunk));
     }
 
 }

@@ -17,33 +17,19 @@ namespace VoxelMeshOptimizer.Core.OcclusionAlgorithms
 
         public VisibleFaces ComputeVisiblePlanes()
         {
-            // var result = new VisibleFaces();
+            var result = new VisibleFaces();
 
-            // // The six "human" axes we want to generate planes for:
-            // var axesWeCareAbout = new[]
-            // {
-            //     HumanAxis.FrontToBack,
-            //     HumanAxis.BackToFront,
-            //     HumanAxis.LeftToRight,
-            //     HumanAxis.RightToLeft,
-            //     HumanAxis.BottomToTop,
-            //     HumanAxis.TopToBottom
-            // };
+            result.PlanesByAxis[(Axis.X, AxisOrder.Ascending)]  = BuildPlanesForAxis(Axis.X, AxisOrder.Ascending);
+            result.PlanesByAxis[(Axis.X, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.X, AxisOrder.Descending);
 
-            // foreach (var axis in axesWeCareAbout)
-            // {
-            //     // Build planes for each axis, store them in the final data structure
-            //     var planes = BuildPlanesForAxis(
-            //         axis,
-            //         out var majorUsed,
-            //         out var middleUsed,
-            //         out var minorUsed
-            //     );
-            //     result.PlanesByAxis[axis] = planes;
-            // }
+            result.PlanesByAxis[(Axis.Y, AxisOrder.Ascending)]  = BuildPlanesForAxis(Axis.Y, AxisOrder.Ascending);
+            result.PlanesByAxis[(Axis.Y, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.Y, AxisOrder.Descending);
 
-            // return result;
-            throw new NotImplementedException();
+            result.PlanesByAxis[(Axis.Z, AxisOrder.Ascending)]  = BuildPlanesForAxis(Axis.Z, AxisOrder.Ascending);
+            result.PlanesByAxis[(Axis.Z, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.Z, AxisOrder.Descending);
+
+
+            return result;
         }
 
         /// <summary>
@@ -51,81 +37,65 @@ namespace VoxelMeshOptimizer.Core.OcclusionAlgorithms
         /// (i.e. the axis that determines sliceIndex).
         /// Also returns which major/middle/minor axes were used (for debug).
         /// </summary>
-        // private List<VisiblePlane> BuildPlanesForAxis(
-        //     HumanAxis sliceAxis,
-        //     out HumanAxis majorUsed,
-        //     out HumanAxis middleUsed,
-        //     out HumanAxis minorUsed)
-        // {
-        //     // 1) Map sliceAxis to the bitmask face (Front, Back, etc.)
-        //     var faceFlag = HumanAxisExtensions.ToVoxelFace(sliceAxis);
+        private List<VisiblePlane> BuildPlanesForAxis(Axis sliceAxis, AxisOrder axisOrder)
+        {
+            // 1) Map sliceAxis to the bitmask face (Front, Back, etc.)
+            var faceFlag = AxisExtensions.ToVoxelFace(sliceAxis, axisOrder);
 
-        //     (majorUsed, middleUsed, minorUsed) = HumanAxisExtensions.GetAxes(sliceAxis);
-        //     (uint planeWidth, uint planeHeight) = chunk.GetPlaneDimensions(majorUsed, middleUsed, minorUsed);
+            var (majorA, majorAO, middleA, middleAO, minorA, minorAO) = AxisExtensions.DefineIterationOrder(sliceAxis, axisOrder);
 
-        //     // 3) We create a dictionary of planes, keyed by "sliceIndex."
-        //     //    E.g., if slicing on Z, "sliceIndex" is z in [0..Depth-1].
-        //     var planesBySlice = new Dictionary<uint, VisiblePlane>();
-        //     uint sliceCount = chunk.GetDepth(sliceAxis);
+            (uint planeWidth, uint planeHeight) = chunk.GetPlaneDimensions(majorA, middleA, minorA);
 
-        //     chunk.ForEachCoordinate(
-        //         major:  majorUsed,
-        //         middle: middleUsed,
-        //         minor:  minorUsed,
-        //         (uint x, uint y, uint z) =>
-        //         {
-        //             var faces = visibilityMap.GetVisibleFaces(x, y, z);
-        //             if (!faces.HasFlag(faceFlag)) return;
+            // 3) We create a dictionary of planes, keyed by "sliceIndex."
+            //    E.g., if slicing on Z, "sliceIndex" is z in [0..Depth-1].
+            var planesBySlice = new Dictionary<uint, VisiblePlane>();
+            uint sliceCount = chunk.GetDepth(sliceAxis);
 
-        //             // We need the "slice index" for x or y or z, 
-        //             // depending on which axis is minor. 
-        //             uint sliceIndex = ExtractCoord(sliceAxis, x, y, z);
+            chunk.ForEachCoordinate(
+                major:  majorA, majorAsc: majorAO,
+                middle: middleA, middleAsc: middleAO,
+                minor:  minorA, minorAsc: minorAO,
+                (uint x, uint y, uint z) =>
+                {
+                    var faces = visibilityMap.GetVisibleFaces(x, y, z);
+                    if (!faces.HasFlag(faceFlag)) return;
 
-        //             // Then fill in the plane's 2D array, 
-        //             // figuring out which (planeX, planeY) coords to use
-        //             // depending on the other two axes.
-        //             var plane = planesBySlice[sliceIndex];
+                    // We need the "slice index" for x or y or z, 
+                    // depending on which axis is minor. 
+                    uint sliceIndex = AxisExtensions.GetDepthFromAxis(sliceAxis, axisOrder, x, y, z, chunk);
 
-        //             // Calculate planeX, planeY based on the other two axes (major, middle).
-        //             var (planeX, planeY) = HumanAxisExtension.ComputePlaneCoordinates(sliceAxis, x, y, z);
+                    // Then fill in the plane's 2D array, 
+                    // figuring out which (planeX, planeY) coords to use
+                    // depending on the other two axes.
+                    var plane = planesBySlice[sliceIndex];
 
-        //             plane.Voxels[planeX, planeY] = chunk.Get(x, y, z);
-        //         }
-        //     );
+                    // Calculate planeX, planeY based on the other two axes (major, middle).
+                    var (planeX, planeY) = AxisExtensions.GetSlicePlanePosition(
+                        majorA, majorAO, 
+                        middleA, middleAO, 
+                        minorA, minorAO, 
+                        x, y, z, chunk);
 
-        //     // 7) Filter out planes that remain empty
-        //     var result = new List<VisiblePlane>();
-        //     foreach (var kvp in planesBySlice)
-        //     {
-        //         if (!kvp.Value.IsPlaneEmpty)
-        //         {
-        //             result.Add(kvp.Value);
-        //         }
-        //     }
+                    plane.Voxels[planeX, planeY] = chunk.Get(x, y, z);
+                }
+            );
 
-        //     return result;
-        // }
+            // 7) Filter out planes that remain empty
+            var result = new List<VisiblePlane>();
+            foreach (var kvp in planesBySlice)
+            {
+                if (!kvp.Value.IsPlaneEmpty)
+                {
+                    result.Add(kvp.Value);
+                }
+            }
+
+            return result;
+        }
 
 
 
 
-        // /// <summary>
-        // /// Extracts the coordinate that belongs to the 'sliceAxis'.
-        // /// E.g. if sliceAxis=FrontToBack => we want z
-        // /// </summary>
-        // private uint ExtractCoord(HumanAxis sliceAxis, uint x, uint y, uint z)
-        // {
-        //     return sliceAxis switch
-        //     {
-        //         HumanAxis.FrontToBack  => z,
-        //         HumanAxis.BackToFront  => z,
-        //         HumanAxis.LeftToRight  => x,
-        //         HumanAxis.RightToLeft  => x,
-        //         HumanAxis.BottomToTop  => y,
-        //         HumanAxis.TopToBottom  => y,
-        //         _ => 0
-        //     };
-        // }
 
     }
 }

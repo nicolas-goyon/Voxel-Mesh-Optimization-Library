@@ -37,36 +37,36 @@ public class VoxelVisibilityMapTests
         // Corner voxel at (0,0,0) => it's on the "left, bottom, back" corner 
         // so it should be visible on Left, Bottom, Back faces
         var faces000 = visibilityMap.GetVisibleFaces(0,0,0);
-        Assert.True(faces000.HasFlag(VoxelFace.Left));
-        Assert.True(faces000.HasFlag(VoxelFace.Bottom));
-        Assert.True(faces000.HasFlag(VoxelFace.Back));
-        Assert.False(faces000.HasFlag(VoxelFace.Right));
-        Assert.False(faces000.HasFlag(VoxelFace.Top));
-        Assert.False(faces000.HasFlag(VoxelFace.Front));
+        Assert.True(faces000.HasFlag(VoxelFace.Xneg));
+        Assert.True(faces000.HasFlag(VoxelFace.Yneg));
+        Assert.True(faces000.HasFlag(VoxelFace.Zneg));
+        Assert.False(faces000.HasFlag(VoxelFace.Xpos));
+        Assert.False(faces000.HasFlag(VoxelFace.Ypos));
+        Assert.False(faces000.HasFlag(VoxelFace.Zpos));
 
         // Corner voxel at (1,1,1) => "right, top, front" corner
         var faces111 = visibilityMap.GetVisibleFaces(1,1,1);
-        Assert.True(faces111.HasFlag(VoxelFace.Right));
-        Assert.True(faces111.HasFlag(VoxelFace.Top));
-        Assert.True(faces111.HasFlag(VoxelFace.Front));
-        Assert.False(faces111.HasFlag(VoxelFace.Left));
-        Assert.False(faces111.HasFlag(VoxelFace.Bottom));
-        Assert.False(faces111.HasFlag(VoxelFace.Back));
+        Assert.True(faces111.HasFlag(VoxelFace.Xpos));
+        Assert.True(faces111.HasFlag(VoxelFace.Ypos));
+        Assert.True(faces111.HasFlag(VoxelFace.Zpos));
+        Assert.False(faces111.HasFlag(VoxelFace.Xneg));
+        Assert.False(faces111.HasFlag(VoxelFace.Yneg));
+        Assert.False(faces111.HasFlag(VoxelFace.Zneg));
 
         // The voxel at (0,0,1), for example, is on the front but also left/bottom edges:
         // left, bottom, front
         var faces001 = visibilityMap.GetVisibleFaces(0,0,1);
-        Assert.True(faces001.HasFlag(VoxelFace.Left));
-        Assert.True(faces001.HasFlag(VoxelFace.Bottom));
-        Assert.True(faces001.HasFlag(VoxelFace.Front));
-        Assert.False(faces001.HasFlag(VoxelFace.Back));
-        Assert.False(faces001.HasFlag(VoxelFace.Right));
-        Assert.False(faces001.HasFlag(VoxelFace.Top));
+        Assert.True(faces001.HasFlag(VoxelFace.Xneg));
+        Assert.True(faces001.HasFlag(VoxelFace.Yneg));
+        Assert.True(faces001.HasFlag(VoxelFace.Zpos));
+        Assert.False(faces001.HasFlag(VoxelFace.Zneg));
+        Assert.False(faces001.HasFlag(VoxelFace.Xpos));
+        Assert.False(faces001.HasFlag(VoxelFace.Ypos));
 
         // The "inner face" between (0,0,0) and (1,0,0) is not visible, so:
         var faces100 = visibilityMap.GetVisibleFaces(1,0,0);
         // It should NOT have Left face visible (because there's a solid voxel at (0,0,0)).
-        Assert.False(faces100.HasFlag(VoxelFace.Left));
+        Assert.False(faces100.HasFlag(VoxelFace.Xneg));
     }
 
 
@@ -84,12 +84,12 @@ public class VoxelVisibilityMapTests
         var faces = visibilityMap.GetVisibleFaces(0, 0, 0);
 
         // If there's only one voxel in the entire chunk, it's exposed on all sides
-        Assert.True(faces.HasFlag(VoxelFace.Front));
-        Assert.True(faces.HasFlag(VoxelFace.Back));
-        Assert.True(faces.HasFlag(VoxelFace.Left));
-        Assert.True(faces.HasFlag(VoxelFace.Right));
-        Assert.True(faces.HasFlag(VoxelFace.Top));
-        Assert.True(faces.HasFlag(VoxelFace.Bottom));
+        Assert.True(faces.HasFlag(VoxelFace.Zpos));
+        Assert.True(faces.HasFlag(VoxelFace.Zneg));
+        Assert.True(faces.HasFlag(VoxelFace.Xneg));
+        Assert.True(faces.HasFlag(VoxelFace.Xpos));
+        Assert.True(faces.HasFlag(VoxelFace.Ypos));
+        Assert.True(faces.HasFlag(VoxelFace.Yneg));
     }
 
     [Fact]
@@ -135,8 +135,8 @@ public class VoxelVisibilityMapTests
         // Because all adjacent positions are "air", it should have all 6 faces visible.
         var faces = visibilityMap.GetVisibleFaces(0,0,0);
         Assert.Equal(
-            VoxelFace.Front | VoxelFace.Back | VoxelFace.Left |
-            VoxelFace.Right | VoxelFace.Top   | VoxelFace.Bottom, 
+            VoxelFace.Zpos | VoxelFace.Zneg | VoxelFace.Xneg |
+            VoxelFace.Xpos | VoxelFace.Ypos   | VoxelFace.Yneg, 
             faces
         );
 

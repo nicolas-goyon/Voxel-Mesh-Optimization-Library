@@ -12,6 +12,11 @@ public interface Chunk<out T> where T : Voxel
     /// Iterates over every position in this chunk in the order of three distinct axes.
     /// For example, (TopToBottom, LeftToRight, FrontToBack) or any other combination,
     /// as long as no two parameters share the same underlying axis.
+    /// 
+    /// Terminology:
+    /// - MajorAxis: First axis iterated in the nested loops, also known as the "slice" axis (outermost loop).
+    /// - MiddleAxis: Second axis iterated (middle loop).
+    /// - MinorAxis: Third axis iterated (innermost loop).
     ///
     /// The callback receives a <see cref="VoxelPosition"/> that encapsulates:
     /// - The absolute (X, Y, Z) coordinate.
@@ -48,7 +53,7 @@ public interface Chunk<out T> where T : Voxel
     /// <summary>
     /// Simple helper to pick the chunk’s dimension (depth) by axis.
     /// </summary>
-    public uint GetDimension(Axis axis);
+    public uint GetDepth(Axis axis);
 
     public bool IsOutOfBound(uint x, uint y, uint z);
 
