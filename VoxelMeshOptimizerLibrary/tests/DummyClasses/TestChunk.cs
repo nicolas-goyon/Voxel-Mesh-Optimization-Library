@@ -11,6 +11,7 @@ public class TestChunk : Chunk<TestVoxel>
 
     public TestChunk(uint xDepth, uint yDepth, uint zDepth)
     {
+        if (xDepth <= 0 || yDepth <= 0 || zDepth <= 0) throw new ArgumentOutOfRangeException();
         XDepth = xDepth;
         YDepth = yDepth;
         ZDepth = zDepth;

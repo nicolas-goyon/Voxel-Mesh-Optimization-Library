@@ -6,6 +6,10 @@ namespace VoxelMeshOptimizer.Tests.Core;
 public class ChunkInterfaceTests
 {
 
+    [Fact]
+    public void ChunkCreation_Error_WhenThedimentionsAre0(){
+        Assert.Throws<ArgumentOutOfRangeException>(() => new TestChunk(0,0,0));
+    }
     
     [Fact]
     public void ChunkDimensionsAndPlaneDimensions(){

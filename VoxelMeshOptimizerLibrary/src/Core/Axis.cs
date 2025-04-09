@@ -54,6 +54,8 @@ public static class AxisExtensions {
         uint z, 
         Chunk<Voxel> chunk)
     {
+        if (chunk.IsOutOfBound(x,y,z)) throw new ArgumentOutOfRangeException();
+
         // Select the relevant coordinate based on the axis.
         uint coordinate = axis switch
         {

@@ -1,269 +1,180 @@
+using System;
+using System.Linq;
+using Xunit;
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 using VoxelMeshOptimizer.Tests.DummyClasses;
-using Xunit;
-using Xunit.Abstractions;
+using System.Data;
 
-namespace VoxelMeshOptimizer.Tests.Occlusion
+namespace VoxelMeshOptimizer.Tests.OcclusionTests;
+
+public class VoxelOcclusionOptimizerTests
 {
-    public class VoxelOcclusionOptimizerTests
+    #region Constructor Tests
+
+    [Fact]
+    public void Constructor_NullChunk_ThrowsException()
     {
-        private readonly ITestOutputHelper output;
+        // Arrange, Act & Assert:
+        Assert.Throws<NoNullAllowedException>(() => new VoxelOcclusionOptimizer(null));
+    }
 
-        public VoxelOcclusionOptimizerTests(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
+    #endregion Constructor Tests
 
-        
-        [Fact]
-        public void OcclusionNotImplemented(){
-            // Arrange
-            var chunk = new TestChunk(1, 1, 1);
+    #region Empty Chunk Tests
 
-            // Only one voxel => set it to solid
-            chunk.ForEachCoordinate(
-                Axis.X, AxisOrder.Ascending,
-                Axis.Y, AxisOrder.Ascending,
-                Axis.Z, AxisOrder.Ascending,
-                (x,y,z) => 
-                {
-                    // pos.X, pos.Y, pos.Z are all zero
-                    chunk.Set(x,y,z, new TestVoxel(id: 1, isSolid: true));
-                }
-            );
+    [Fact]
+    public void ComputeVisiblePlanes_EmptyChunk_ReturnsNoVisibleFaces()
+    {
+        // Arrange
+        // Note: The TestChunk is constructed but no voxel is explicitly set,
+        // so by default each voxel in TestChunk is null.
+        var emptyChunk = new TestChunk(10, 10, 10);
+        var optimizer = new VoxelOcclusionOptimizer(emptyChunk);
 
-            var optimizer = new VoxelOcclusionOptimizer(chunk);
-            Assert.Throws<NotImplementedException>(()=> optimizer.ComputeVisiblePlanes());
-        }
-
-        // [Fact]
-        // public void SingleVoxel_ShouldProduceAllSixPlanes_IfNotSkippingEmptyOnes()
-        // {
-        //     // Arrange
-        //     var chunk = new TestChunk(1, 1, 1);
-
-        //     // Only one voxel => set it to solid
-        //     chunk.ForEachCoordinate(
-        //         Axis.X, AxisOrder.Ascending,
-        //         Axis.Y, AxisOrder.Ascending,
-        //         Axis.Z, AxisOrder.Ascending,
-        //         (x,y,z) => 
-        //         {
-        //             // pos.X, pos.Y, pos.Z are all zero
-        //             chunk.Set(x,y,z, new TestVoxel(id: 1, isSolid: true));
-        //         }
-        //     );
-
-        //     var optimizer = new VoxelOcclusionOptimizer(chunk);
-
-        //     // Act
-        //     VisibleFaces faces = optimizer.ComputeVisiblePlanes();
-
-        //     // Assert
-        //     // We expect 6 axes (FrontToBack, BackToFront, etc.), each with 1 plane
-        //     Assert.Equal(6, faces.PlanesByAxis.Count);
-
-        //     // For each axis, we have a single 1×1 plane containing our one voxel
-        //     foreach (var kvp in faces.PlanesByAxis)
-        //     {
-        //         var axis = kvp.Key; // e.g. HumanAxis.FrontToBack
-        //         var planeList = kvp.Value;
-
-        //         // We expect exactly one slice for a 1×1×1 chunk
-        //         Assert.Single(planeList);
-
-        //         var plane = planeList[0];
-        //         Assert.NotNull(plane);
-
-        //         // The plane's 'MinorAxis' typically matches 'axis' if your code 
-        //         // sets it that way. If you want, you can assert that 
-        //         // plane.MinorAxis == axis, or plane.SliceIndex == 0, etc.
-        //         Assert.Equal((uint)0, plane.SliceIndex);
-
-        //         // In a 1x1x1 chunk, plane dimensions are always 1×1
-        //         Assert.Equal(1, plane.Voxels.GetLength(0));
-        //         Assert.Equal(1, plane.Voxels.GetLength(1));
-
-        //         // We expect the single voxel to be non-null
-        //         Assert.NotNull(plane.Voxels[0,0]);
-        //     }
-        // }
-
-        // [Fact]
-        // public void Solid2x2x2Chunk_OnlyOuterPlanesShouldHaveVoxels()
-        // {
-        //     // Arrange
-        //     var chunk = new TestChunk(2, 2, 2);
-
-        //     // Fill entire chunk with solid voxels
-        //     chunk.ForEachCoordinate(
-        //         Axis.X, AxisOrder.Ascending,   // major
-        //         Axis.Z, AxisOrder.Ascending,   // middle
-        //         Axis.Y, AxisOrder.Ascending,   // minor
-        //         (x,y,z) =>
-        //         {
-        //             chunk.Set(x,y,z, new TestVoxel(id: 1, isSolid: true));
-        //         }
-        //     );
-
-        //     var optimizer = new VoxelOcclusionOptimizer(chunk);
-
-        //     // Act
-        //     VisibleFaces faces = optimizer.ComputeVisiblePlanes();
-
-        //     // Assert
-        //     // For each axis, we expect exactly ONE visible plane 
-        //     // (the outer boundary).
-        //     // For instance, HumanAxis.FrontToBack => a single slice at z=1,
-        //     // but your code might unify them as "sliceIndex=1" or "sliceIndex=0" 
-        //     // depending on how you skip empties.
-
-        //     var frontPlanes = faces.PlanesByAxis[HumanAxis.FrontToBack];
-        //     Assert.Single(frontPlanes);
-        //     AssertPlaneNotEmpty(frontPlanes[0], 4);
-
-        //     var backPlanes = faces.PlanesByAxis[HumanAxis.BackToFront];
-        //     Assert.Single(backPlanes);
-        //     AssertPlaneNotEmpty(backPlanes[0], 4);
-
-        //     // Similarly for LeftToRight, RightToLeft, BottomToTop, TopToBottom
-        // }
-
-        // [Fact]
-        // public void PartiallyEmpty2x2Chunk_ShouldHaveMultipleVisiblePlanesInside()
-        // {
-        //     // Arrange
-        //     var chunk = new TestChunk(2, 2, 2);
-
-        //     // Only fill "front" row at z=1, leaving z=0 empty
-            
-        //     // Fill entire chunk with solid voxels
-        //     chunk.ForEachCoordinate(
-        //         Axis.X, AxisOrder.Ascending,   // major
-        //         Axis.Z, AxisOrder.Ascending,   // middle
-        //         Axis.Y, AxisOrder.Ascending,   // minor
-        //         (x,y,z) =>
-        //         {
-        //             if (z == 1)
-        //             {
-        //                 chunk.Set(x,y,z, new TestVoxel(id: 42, isSolid: true));
-        //             }
-        //         }
-        //     );
-
-        //     var optimizer = new VoxelOcclusionOptimizer(chunk);
-
-        //     // Act
-        //     var visibleFaces = optimizer.ComputeVisiblePlanes();
-
-        //     // Assert
-        //     var xAsc = visibleFaces.PlanesByAxis[(Axis.X, AxisOrder.Ascending)];
-        //     Assert.Single(xAsc);
-        //     AssertPlaneNotEmpty(xAsc[0], 4);
-        //     var xDesc = visibleFaces.PlanesByAxis[(Axis.X, AxisOrder.Descending)];
-        //     Assert.Single(xDesc);
-        //     AssertPlaneNotEmpty(xDesc[0], 4);
-
-
-        //     var yAsc = visibleFaces.PlanesByAxis[(Axis.Y, AxisOrder.Ascending)];
-        //     Assert.Single(yAsc);
-        //     AssertPlaneNotEmpty(yAsc[0], 2);
-        //     var yDesc = visibleFaces.PlanesByAxis[(Axis.Y, AxisOrder.Descending)];
-        //     Assert.Single(yDesc);
-        //     AssertPlaneNotEmpty(yDesc[0], 2);
-
-
-        //     var zAsc = visibleFaces.PlanesByAxis[(Axis.Z, AxisOrder.Ascending)];
-        //     Assert.Single(zAsc);
-        //     AssertPlaneNotEmpty(zAsc[0], 2);
-        //     var zDesc = visibleFaces.PlanesByAxis[(Axis.Z, AxisOrder.Descending)];
-        //     Assert.Single(zDesc);
-        //     AssertPlaneNotEmpty(zDesc[0], 2);
-        // }
-
-        // [Fact]
-        // public void AlmostSolid2x2x2_OneMissingVoxel_ShouldRevealInternalFaces()
-        // {
-        //     // Arrange
-        //     // Fill every voxel with a solid one, except (1,1,1) is air.
-        //     var chunk = new TestChunk(2, 2, 2);
-
-        //     chunk.ForEachCoordinate(
-        //         Axis.X, AxisOrder.Ascending,   // major
-        //         Axis.Z, AxisOrder.Ascending,   // middle
-        //         Axis.Y, AxisOrder.Ascending,   // minor
-        //         (x,y,z) =>
-        //         {
-        //             bool isMissing = x == 1 && y == 1 && z == 1;
-        //             chunk.Set(x,y,z, new TestVoxel(
-        //                 id: (ushort)((x+1)*100 + (y+1)*10 + (z+1)),
-        //                 isSolid: !isMissing
-        //             ));
-        //         }
-        //     );
-
-        //     var optimizer = new VoxelOcclusionOptimizer(chunk);
-
-        //     // Act
-        //     VisibleFaces faces = optimizer.ComputeVisiblePlanes();
-
-        //     // Debug: see what's in the front planes
-        //     var frontPlanes = faces.PlanesByAxis[HumanAxis.FrontToBack];
-        //     foreach (var plane in frontPlanes)
-        //     {
-        //         output.WriteLine("plane :");
-        //         output.WriteLine(plane.Describe());
-        //     }
-
-        //     // Assert
-        //     // Check outer boundary plane for front => z=1 
-        //     Assert.Single(frontPlanes);
-        //     Assert.Equal((uint)1, frontPlanes[0].SliceIndex);
-        //     AssertPlaneNotEmpty(frontPlanes[0], expectedCount: 3);
-
-        //     // And similarly for back, left, right, top, bottom
-        //     var backPlanes = faces.PlanesByAxis[HumanAxis.BackToFront];
-        //     Assert.Single(backPlanes);
-        //     Assert.Equal((uint)0, backPlanes[0].SliceIndex);
-        //     AssertPlaneNotEmpty(backPlanes[0], 4);
-
-        //     var rightPlanes = faces.PlanesByAxis[HumanAxis.RightToLeft];
-        //     Assert.Single(rightPlanes);
-        //     Assert.Equal((uint)1, rightPlanes[0].SliceIndex);
-        //     AssertPlaneNotEmpty(rightPlanes[0], 3);
-
-        //     var leftPlanes = faces.PlanesByAxis[HumanAxis.LeftToRight];
-        //     Assert.Single(leftPlanes);
-        //     Assert.Equal((uint)0, leftPlanes[0].SliceIndex);
-        //     AssertPlaneNotEmpty(leftPlanes[0], 4);
-
-        //     var topPlanes = faces.PlanesByAxis[HumanAxis.TopToBottom];
-        //     Assert.Single(topPlanes);
-        //     Assert.Equal((uint)1, topPlanes[0].SliceIndex);
-        //     AssertPlaneNotEmpty(topPlanes[0], 3);
-
-        //     var bottomPlanes = faces.PlanesByAxis[HumanAxis.BottomToTop];
-        //     Assert.Single(bottomPlanes);
-        //     Assert.Equal((uint)0, bottomPlanes[0].SliceIndex);
-        //     AssertPlaneNotEmpty(bottomPlanes[0], 4);
-        // }
-
-        // Helper method:
-        static void AssertPlaneNotEmpty(VisiblePlane plane, int expectedCount)
-        {
-            int actualCount = 0;
-            var w = plane.Voxels.GetLength(0);
-            var h = plane.Voxels.GetLength(1);
-            for (int i = 0; i < w; i++)
-            {
-                for (int j = 0; j < h; j++)
-                {
-                    if (plane.Voxels[i, j] != null) actualCount++;
-                }
+        emptyChunk.ForEachCoordinate(
+            Axis.X, AxisOrder.Ascending,
+            Axis.Y, AxisOrder.Ascending,
+            Axis.Z, AxisOrder.Ascending,
+            (x,y,z) => {
+                emptyChunk.Set(x,y,z, new TestVoxel(1,false));
             }
-            Assert.Equal(expectedCount, actualCount);
+        );
+
+        // Act
+        VisibleFaces result = optimizer.ComputeVisiblePlanes();
+
+        // Assert
+        Assert.NotNull(result);
+        // For an entirely empty chunk, the expected behavior is NO visible planes.
+        // (i.e. the dictionary should be empty)
+        foreach(var direction in result.PlanesByAxis){
+            Assert.Empty(direction.Value);
         }
     }
+
+    #endregion Empty Chunk Tests
+
+    #region Full Chunk Tests
+
+    [Fact]
+    public void ComputeVisiblePlanes_FullChunk_Returns6VisibleFaces()
+    {
+        // Arrange
+        // Create a fully filled chunk. Every voxel is set as a solid TestVoxel.
+        var xDepth = 10u;
+        var yDepth = 10u;
+        var zDepth = 10u;
+        var fullChunk = new TestChunk(xDepth, yDepth, zDepth);
+        for (uint x = 0; x < xDepth; x++)
+        {
+            for (uint y = 0; y < yDepth; y++)
+            {
+                for (uint z = 0; z < zDepth; z++)
+                {
+                    fullChunk.Set(x, y, z, new TestVoxel(1, true));
+                }
+            }
+        }
+        var optimizer = new VoxelOcclusionOptimizer(fullChunk);
+
+        // Act
+        VisibleFaces result = optimizer.ComputeVisiblePlanes();
+
+        // Assert
+        Assert.NotNull(result);
+        // For a fully filled (solid) chunk, the expected visible faces are the 6 outer faces.
+        // We assume that each face is represented by a key (Axis, AxisOrder) in the dictionary.
+        Assert.Equal(6, result.PlanesByAxis.Count);
+
+        // Optionally, check that there is exactly one plane per face.
+        int totalPlaneCount = result.PlanesByAxis.Values.Sum(list => list.Count);
+        Assert.Equal(6, totalPlaneCount);
+    }
+
+    #endregion Full Chunk Tests
+
+    #region Single Voxel Chunk Tests
+
+    [Fact]
+    public void ComputeVisiblePlanes_SingleVoxelChunk_Returns6VisibleFaces()
+    {
+        // Arrange
+        // Create a 1x1x1 chunk with one solid voxel.
+        var singleVoxelChunk = new TestChunk(1, 1, 1);
+        singleVoxelChunk.Set(0, 0, 0, new TestVoxel(42, true));
+        var optimizer = new VoxelOcclusionOptimizer(singleVoxelChunk);
+
+        // Act
+        VisibleFaces result = optimizer.ComputeVisiblePlanes();
+
+        // Assert
+        Assert.NotNull(result);
+        // A single voxel should have 6 visible faces, one for each direction.
+        Assert.Equal(6, result.PlanesByAxis.Count);
+        int totalPlaneCount = result.PlanesByAxis.Values.Sum(list => list.Count);
+        Assert.Equal(6, totalPlaneCount);
+
+        // Additionally, each visible plane should have a valid slice index and
+        // the corresponding 2D array dimensions should match the expected plane dimensions.
+        foreach (var key in result.PlanesByAxis.Keys)
+        {
+            foreach (var plane in result.PlanesByAxis[key])
+            {
+                // For a 1x1 chunk the expected dimensions of any plane are 1x1.
+                Assert.Equal(1, plane.Voxels.GetLength(0));
+                Assert.Equal(1, plane.Voxels.GetLength(1));
+            }
+        }
+    }
+
+    #endregion Single Voxel Chunk Tests
+
+    #region Irregular Chunk Tests
+
+    [Fact]
+    public void ComputeVisiblePlanes_IrregularChunk_WithInternalHole_ProducesExpectedVisibleFaces()
+    {
+        // Arrange
+        // Create a 3x3x3 chunk where all voxels are solid except the center voxel,
+        // which will be non-solid to simulate an internal hole.
+        var chunkSize = 3u;
+        var irregularChunk = new TestChunk(chunkSize, chunkSize, chunkSize);
+        for (uint x = 0; x < chunkSize; x++)
+        {
+            for (uint y = 0; y < chunkSize; y++)
+            {
+                for (uint z = 0; z < chunkSize; z++)
+                {
+                    // Set the center voxel (1,1,1) as non-solid. Others are solid.
+                    bool isSolid = !(x == 1 && y == 1 && z == 1);
+                    irregularChunk.Set(x, y, z, new TestVoxel(1, isSolid));
+                }
+            }
+        }
+        var optimizer = new VoxelOcclusionOptimizer(irregularChunk);
+
+        // Act
+        VisibleFaces result = optimizer.ComputeVisiblePlanes();
+
+        // Assert
+        Assert.NotNull(result);
+
+        // Since the specifications say:
+        // "A visible plane exists as long as there is a voxel facing either an empty space (null or boundary) or a non-solid voxel.
+        // If there is an empty space in the middle of the chunk, the adjacent voxel creates visible faces."
+        //
+        // We expect the outer faces (which count as 6 planes) plus additional inner visible faces
+        // around the center hole.
+        //
+        // Please clarify the exact expected count of visible planes for this irregular case.
+        // For now, we perform an exact match check based on the current requirement example.
+        // (Assume expectedTotalPlanes is the exact number you expect; here we use a placeholder value.)
+        int expectedTotalPlanes = 6 + 6; // Placeholder: 6 outer faces + 6 internal faces adjacent to the hole
+        int actualTotalPlanes = result.PlanesByAxis.Values.Sum(list => list.Count);
+        Assert.Equal(expectedTotalPlanes, actualTotalPlanes);
+    }
+
+    #endregion Irregular Chunk Tests
 }

@@ -311,9 +311,11 @@ public class AxisExtensionsTests
         // Cast integer 100 (an undefined value) to Axis.
         Axis invalidAxis = (Axis)100;
 
+        Assert.False(chunk.IsOutOfBound(x,y,z));
+
         // Act & Assert:
         // Depending on implementation, this could throw an exception.
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        Assert.Throws<ArgumentException>(() =>
             AxisExtensions.GetDepthFromAxis(invalidAxis, AxisOrder.Ascending, x, y, z, chunk));
     }
 
