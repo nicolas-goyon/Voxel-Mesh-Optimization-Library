@@ -4,9 +4,9 @@ public interface Chunk<out T> where T : Voxel
     /// <summary>
     /// The chunk dimensions in voxels.
     /// </summary>
-    uint XDepth  { get; }
-    uint YDepth { get; }
-    uint ZDepth  { get; }
+    public uint XDepth  { get; }
+    public uint YDepth { get; }
+    public uint ZDepth  { get; }
 
     /// <summary>
     /// Iterates over every position in this chunk in the order of three distinct axes.

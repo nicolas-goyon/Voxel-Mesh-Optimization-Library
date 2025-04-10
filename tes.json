@@ -1,0 +1,92 @@
+[
+    {"kind": "interface", "name": "MeshOptimizer", "bases": [], "namespace": "VoxelMeshOptimizer.Core", "methods": ["Optimize"
+        ]
+    },
+    {"kind": "interface", "name": "Voxel", "bases": [], "namespace": "VoxelMeshOptimizer.Core", "methods": []
+    },
+    {"kind": "enum", "name": "VoxelFace", "bases": [], "namespace": "VoxelMeshOptimizer.Core", "members": ["None", "Zpos", "Zneg", "Xneg", "Xpos", "Ypos"
+        ]
+    },
+    {"kind": "enum", "name": "Axis", "bases": [], "namespace": "VoxelMeshOptimizer.Core", "members": ["X", "Y", "public"
+        ]
+    },
+    {"kind": "enum", "name": "AxisOrder", "bases": [], "namespace": "VoxelMeshOptimizer.Core", "members": ["Ascending", "static"
+        ]
+    },
+    {"kind": "class", "name": "AxisExtensions", "bases": [], "namespace": "VoxelMeshOptimizer.Core", "methods": ["ToVoxelFace", "GetDepthFromAxis"
+        ]
+    },
+    {"kind": "interface", "name": "Chunk", "bases": [], "namespace": "VoxelMeshOptimizer.Core", "methods": ["ForEachCoordinate", "Get", "GetDepth", "IsOutOfBound", "AreDifferentAxis"
+        ]
+    },
+    {"kind": "interface", "name": "Mesh", "bases": [], "namespace": "VoxelMeshOptimizer.Core", "methods": []
+    },
+    {"kind": "class", "name": "VoxelOcclusionOptimizer", "bases": ["Occluder"
+        ], "namespace": "VoxelMeshOptimizer.Core.OcclusionAlgorithms", "methods": ["ComputeVisiblePlanes"
+        ]
+    },
+    {"kind": "interface", "name": "Occluder", "bases": [], "namespace": "VoxelMeshOptimizer.Core.OcclusionAlgorithms", "methods": ["ComputeVisiblePlanes"
+        ]
+    },
+    {"kind": "class", "name": "VisibleFaces", "bases": [], "namespace": "VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common", "methods": []
+    },
+    {"kind": "enum", "name": "Direction", "bases": [], "namespace": "VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common", "members": ["Front", "Back", "Left", "Right", "Top"
+        ]
+    },
+    {"kind": "class", "name": "VisiblePlane", "bases": [], "namespace": "VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common", "methods": ["ToString", "Describe"
+        ]
+    },
+    {"kind": "class", "name": "DisjointSet2DOptimizer", "bases": [], "namespace": "VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet", "methods": ["Optimize"
+        ]
+    },
+    {"kind": "class", "name": "DisjointSetMeshOptimizer", "bases": ["MeshOptimizer"
+        ], "namespace": "VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet", "methods": ["Optimize"
+        ]
+    },
+    {"kind": "class", "name": "VoxelVisibilityMap", "bases": [], "namespace": "VoxelMeshOptimizer.Core", "methods": ["GetVisibleFaces"
+        ]
+    },
+    {"kind": "class", "name": "TestChunk", "bases": ["Chunk"
+        ], "namespace": "VoxelMeshOptimizer.Tests.DummyClasses", "methods": ["Get", "Set", "ForEachCoordinate", "GetDepth", "IsOutOfBound", "AreDifferentAxis"
+        ]
+    },
+    {"kind": "class", "name": "TestVoxel", "bases": ["Voxel"
+        ], "namespace": "VoxelMeshOptimizer.Tests.DummyClasses", "methods": []
+    },
+    {"kind": "class", "name": "DisjointSetTests", "bases": [], "namespace": "VoxelMeshOptimizer.Tests.DisjointSetTesting", "methods": ["InitialCount_ShouldBeEqualToNumberOfElements", "Union_ShouldReduceSetCount", "Find_ShouldReturnSameRoot_ForConnectedElements", "Find_ShouldReturnDifferentRoots_ForDisconnectedElements", "IsRoot_ShouldBeTrue_ForInitialSingleElements", "Union_WithSameSet_ShouldNotChangeCount", "Constructor_ShouldThrowException_ForNegativeElements", "Find_ShouldThrowException_ForInvalidIndex", "Union_ShouldThrowException_ForInvalidIndices", "ZeroElements_ShouldHaveZeroCount", "Operations_ShouldThrowException_OnZeroSizedSet", "MultipleUnions_ShouldCreateSingleSet", "IsRoot_ShouldBeFalse_ForNonRootElements"
+        ]
+    },
+    {"kind": "class", "name": "DisjointSet2DOptimizerTests", "bases": [], "namespace": "VoxelMeshOptimizer.Tests.DisjointSetTesting", "methods": ["Optimize_ShouldMergeIntoOneRectangle_WhenAllPixelsHaveSameValue", "Optimize_ShouldNotMerge_WhenPixelsHaveDifferentValues", "Optimize_ShouldCreateMultipleRectangles_ForMultipleGroups", "Optimize_ShouldHandleSinglePixelGroups", "Optimize_ShouldNotMergeIntoNonRectangleShapes", "Constructor_NullPixels_ThrowsArgumentNullException", "Constructor_EmptyPixels_ThrowsArgumentException", "Optimize_SinglePixel_NoUnionPerformed", "Optimize_TwoDifferentPixels_TwoSetsCreated", "Optimize_TwoSamePixels_OneSetCreated", "Optimize_RectangleOfSameColor_CreatesSingleSet", "Optimize_MixedColors_CreatesCorrectSets"
+        ]
+    },
+    {"kind": "class", "name": "DisjointSetMeshOptimizerTests", "bases": [], "namespace": "VoxelMeshOptimizer.Tests.DisjointSetTesting", "methods": ["Optimize_ShouldThrow_NotImplementedException"
+        ]
+    },
+    {"kind": "class", "name": "VoxelVisibilityMapTests", "bases": [], "namespace": "VoxelMeshOptimizer.Tests.Occlusion", "methods": ["SolidChunk_AllOuterFacesShouldBeVisible_InnerFacesNotVisible", "SingleVoxel_AllSixFacesShouldBeVisible", "EmptyChunk_NoVoxelsNoVisibleFaces", "MixedSolidAndNull_CheckTransitions", "CheckErrorHandling_OutOfRangeShouldReturnNone"
+        ]
+    },
+    {"kind": "class", "name": "VoxelOcclusionOptimizerTests", "bases": [], "namespace": "VoxelMeshOptimizer.Tests.OcclusionTests", "methods": ["Constructor_NullChunk_ThrowsException", "ComputeVisiblePlanes_EmptyChunk_ReturnsNoVisibleFaces", "ComputeVisiblePlanes_FullChunk_Returns6VisibleFaces", "ComputeVisiblePlanes_SingleVoxelChunk_Returns6VisibleFaces", "ComputeVisiblePlanes_IrregularChunk_WithInternalHole_ProducesExpectedVisibleFaces"
+        ]
+    },
+    {"kind": "class", "name": "VisiblePlaneTests", "bases": [], "namespace": "VoxelMeshOptimizer.Tests.OcclusionAlgorithms.Common", "methods": ["Constructor_ShouldInitializePropertiesCorrectly", "IsPlaneEmpty_ShouldReturnTrue_WhenNoVoxelsAreSet", "IsPlaneEmpty_ShouldReturnFalse_WhenAtLeastOneVoxelIsSet", "ToString_ShouldIncludeAxisOrderSigns", "Describe_ShouldIncludeAxisOrderSignsAndVoxelData", "Constructor_ShouldHandleZeroSizedPlane", "Voxels_SetVoxel_ShouldBeAccessibleCorrectly"
+        ]
+    },
+    {"kind": "class", "name": "ChunkInterfaceTests", "bases": [], "namespace": "VoxelMeshOptimizer.Tests.Core", "methods": ["ChunkCreation_Error_WhenThedimentionsAre0", "ChunkDimensionsAndPlaneDimensions", "AreDifferentAxis", "GetDimension_ForEachCoordinate_CorrectOrder", "GetDimension_ForEachCoordinate_Throws_WhenAxisEquals", "SetGet_ThrowsError_WhenOutOfBound"
+        ]
+    },
+    {"kind": "class", "name": "AxisExtensionsTests", "bases": [], "namespace": "VoxelMeshOptimizer.Tests", "methods": ["GetDepthFromAxis_Ascending_ReturnsCoordinateValue_ForAxisX", "GetDepthFromAxis_Descending_ReturnsFlippedValue_ForAxisX", "GetDepthFromAxis_OnNearFace_ReturnsZeroDepth", "GetDepthFromAxis_OnFarFace_ReturnsMaxDepth_ForDescendingOrder", "GetDepthFromAxis_OutOfBoundCoordinate_ThrowsArgumentOutOfRangeException", "DefineIterationOrder_ForMajorAxisX_ReturnsExpectedMapping", "DefineIterationOrder_ForMajorAxisY_ReturnsExpectedMapping", "DefineIterationOrder_ForMajorAxisZ_ReturnsExpectedMapping", "DefineIterationOrder_InvalidNonDistinctAxes_ThrowsException", "GetSlicePlanePosition_Ascending_ReturnsSameAbsoluteCoordinates", "GetSlicePlanePosition_Descending_ReturnsFlippedCoordinatesForPlaneAxes", "GetSlicePlanePosition_MixedOrders_SliceOrderDoesNotInfluenceOutput", "GetSlicePlanePosition_NonDistinctAxes_ThrowsArgumentException", "GetDepthFromAxis_InvalidEnumValue_CastInteger_ThrowsExceptionOrHandlesGracefully"
+        ]
+    },
+    {"kind": "class", "name": "ExampleVoxel", "bases": ["Voxel"
+        ], "namespace": "ConsoleAppExample", "methods": []
+    },
+    {"kind": "class", "name": "Program", "bases": [], "namespace": "ConsoleAppExample", "methods": []
+    },
+    {"kind": "class", "name": "ExampleMesh", "bases": ["Mesh"
+        ], "namespace": "ConsoleAppExample", "methods": []
+    },
+    {"kind": "class", "name": "ExampleChunk", "bases": ["Chunk"
+        ], "namespace": "ConsoleAppExample", "methods": ["GetVoxels", "Get", "Set", "ForEachCoordinate", "GetDepth", "IsOutOfBound", "AreDifferentAxis"
+        ]
+    }
+]

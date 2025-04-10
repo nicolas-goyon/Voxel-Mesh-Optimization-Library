@@ -100,8 +100,7 @@ public static class AxisExtensions {
     /// A tuple containing the axes and their orders in the following order: 
     /// (majorAxis, majorOrder, middleAxis, middleOrder, minorAxis, minorOrder).
     /// </returns>
-    public static (Axis major, AxisOrder majorOrder, Axis middle, AxisOrder middleOrder, Axis minor, AxisOrder minorOrder)
-        DefineIterationOrder(Axis majorAxis, AxisOrder majorOrder)
+    public static (Axis major, AxisOrder majorOrder, Axis middle, AxisOrder middleOrder, Axis minor, AxisOrder minorOrder) DefineIterationOrder(Axis majorAxis, AxisOrder majorOrder)
     {
         Axis middle, minor;
 

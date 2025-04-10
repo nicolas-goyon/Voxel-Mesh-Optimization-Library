@@ -107,35 +107,54 @@ Get tree: `tree -I "bin|TestResults|obj"`
 Current file hierarchy : 
 ```
 .
-├── Readme.md
-├── VoxelMeshOptimizerLibrary.sln
-├── examples
-│   └── ConsoleAppExample
-│       ├── ConsoleAppExample.csproj
-│       ├── ExampleChunk.cs
-│       ├── ExampleMesh.cs
-│       ├── ExampleVoxel.cs
-│       └── Program.cs
-├── src
-│   └── VoxelMeshOptimizer.Core
-│       ├── Chunk.cs
-│       ├── Mesh.cs
-│       ├── MeshOptimizer.cs
-│       ├── OptimizationAlgorithms
-│       │   └── DisjointSet
-│       │       ├── DisjointSet.cs
-│       │       ├── DisjointSet2DOptimizer.cs
-│       │       └── DisjointSetMeshOptimizer.cs
-│       ├── Testing
-│       │   └── VoxelVisibilityMap.cs
-│       ├── Voxel.cs
-│       └── VoxelMeshOptimizer.Core.csproj
-└── tests
-    └── VoxelMeshOptimizer.Tests
+├── README.md
+└── VoxelMeshOptimizerLibrary
+    ├── VoxelMeshOptimizerLibrary.sln
+    ├── examples
+    │   └── ConsoleAppExample
+    │       ├── ConsoleAppExample.csproj
+    │       ├── ExampleChunk.cs
+    │       ├── ExampleMesh.cs
+    │       ├── ExampleVoxel.cs
+    │       └── Program.cs
+    ├── src
+    │   └── Core
+    │       ├── Axis.cs
+    │       ├── Chunk.cs
+    │       ├── Mesh.cs
+    │       ├── MeshOptimizer.cs
+    │       ├── OcclusionAglorithms
+    │       │   ├── Common
+    │       │   │   ├── Direction.cs
+    │       │   │   ├── VisibleFaces.cs
+    │       │   │   └── VisiblePlane.cs
+    │       │   ├── Occluder.cs
+    │       │   └── VoxelOcclusionOptimizer.cs
+    │       ├── OptimizationAlgorithms
+    │       │   └── DisjointSet
+    │       │       ├── DisjointSet.cs
+    │       │       ├── DisjointSet2DOptimizer.cs
+    │       │       └── DisjointSetMeshOptimizer.cs
+    │       ├── Testing
+    │       │   └── VoxelVisibilityMap.cs
+    │       ├── Voxel.cs
+    │       └── VoxelMeshOptimizer.Core.csproj
+    └── tests
+        ├── Core
+        │   ├── AxisExtensionsTests.cs
+        │   └── ChunkInterfaceTests.cs
         ├── DisjointSet
         │   ├── DisjointSet2DOptimizerTests.cs
         │   ├── DisjointSetMeshOptimizerTests.cs
         │   └── DisjointSetTests.cs
+        ├── DummyClasses
+        │   ├── TestChunk.cs
+        │   └── TestVoxel.cs
+        ├── Occlusion
+        │   ├── Common
+        │   │   └── VisiblePlaneTests.cs
+        │   ├── VoxelOcclusionOptimizerTests.cs
+        │   └── VoxelVisibilityMapTests.cs
         └── VoxelMeshOptimizer.Tests.csproj
 ```
 

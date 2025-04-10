@@ -1,6 +1,8 @@
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Tests.DummyClasses;
 
+namespace VoxelMeshOptimizer.Tests.DummyClasses;
+
 public class TestChunk : Chunk<TestVoxel>
 {
     private readonly TestVoxel[,,] data;

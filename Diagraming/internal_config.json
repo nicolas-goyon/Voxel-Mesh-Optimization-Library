@@ -1,0 +1,10 @@
+{
+    "input_filetype_mapping": {
+      "Csharp": "parsing/csharp_parsing.py"
+    },
+    "output_diagram_mapping": {
+      "MermaidClassDiagram": "diagram/mermaid_display.py",
+      "PlantUML": "diagram/plantuml_display.py"
+    }
+  }
+  

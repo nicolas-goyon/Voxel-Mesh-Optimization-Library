@@ -1,4 +1,6 @@
 using VoxelMeshOptimizer.Core;
+
+
 namespace VoxelMeshOptimizer.Tests.DummyClasses;
 
 

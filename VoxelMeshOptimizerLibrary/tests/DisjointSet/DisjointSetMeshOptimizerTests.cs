@@ -1,5 +1,6 @@
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
+using VoxelMeshOptimizer.Tests.DummyClasses;
 using Xunit;
 
 namespace VoxelMeshOptimizer.Tests.DisjointSetTesting;

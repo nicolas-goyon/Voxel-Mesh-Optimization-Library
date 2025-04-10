@@ -3,8 +3,7 @@ using Xunit;
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Tests.DummyClasses;
 
-// Namespace must use a semicolon as per the instructions.
-namespace VoxelMeshOptimizer.Tests;
+namespace VoxelMeshOptimizer.Tests.Core;
 
 #region AxisExtensionsTests
 public class AxisExtensionsTests
