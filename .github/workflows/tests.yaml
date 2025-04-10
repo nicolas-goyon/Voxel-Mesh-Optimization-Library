@@ -22,13 +22,9 @@ jobs:
         run: dotnet restore
         working-directory: ./VoxelMeshOptimizerLibrary
 
-      - name: Build
-        run: dotnet build --configuration Release --no-restore
-        working-directory: ./VoxelMeshOptimizerLibrary
-
       - name: Run tests with coverage
         run: |
-          dotnet test tests/VoxelMeshOptimizer.Tests/VoxelMeshOptimizer.Tests.csproj \
+          dotnet test tests/VoxelMeshOptimizer.Tests.csproj \
             --configuration Release \
             --collect:"XPlat Code Coverage" \
             --logger trx \
