@@ -3,6 +3,7 @@
 ## Project Context
 This project aims to create a modular, technology-agnostic C# library for voxel-based mesh optimization. The library is designed to efficiently merge individual voxel meshes into optimized meshes suitable for real-time game applications. It is being initially developed as a standalone console application, with future potential for integration into various projects, including those developed with Unity.
 
+
 ## Project Objective
 The primary objective is to merge voxel meshes into larger, optimized meshes by:
 
