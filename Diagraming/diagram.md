@@ -103,9 +103,16 @@ ExampleChunk --|> Chunk
 AxisExtensions ..> Axis
 AxisExtensions ..> VoxelFace
 Chunk ..> Axis
+DisjointSetMeshOptimizer ..> Chunk
+DisjointSetMeshOptimizer ..> Voxel
 ExampleChunk ..> ExampleVoxel
+MeshOptimizer ..> Chunk
 MeshOptimizer ..> Mesh
+MeshOptimizer ..> Voxel
 Occluder ..> VisibleFaces
+VisibleFaces ..> Axis
+VisibleFaces ..> AxisOrder
+VisibleFaces ..> VisiblePlane
 VisiblePlane ..> Axis
 VisiblePlane ..> AxisOrder
 VoxelVisibilityMap ..> VoxelFace

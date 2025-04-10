@@ -1,21 +1,7 @@
-
-def should_exclude_package(package_name: str, excluded_packages: set) -> bool:
-    """
-    Checks if the provided package_name should be excluded.
-    
-    :param package_name: The full package name to check.
-    :param excluded_packages: A set of package names to exclude.
-    :return: True if the package_name matches or is a subpackage of any
-             package in excluded_packages, otherwise False.
-    """
-    for excluded in excluded_packages:
-        # Check if package is exactly the same as the excluded package
-        # or if it is a subpackage (starts with the excluded package name and then a dot)
-        if package_name == excluded or package_name.startswith(f"{excluded}."):
-            return True
-    return False
-
 # plantuml_display.py
+
+from .display_utils import extract_base_types, should_exclude_package
+
 
 class PlantUMLDiagram:
     def __init__(self, project, output_config):
@@ -114,44 +100,47 @@ class PlantUMLDiagram:
 
             # Process property dependencies.
             for prop in ptype.properties:
-                ref_type = prop.property_type.strip()
-                if ref_type in type_lookup and ref_type != current_name:
-                    # If this class inherits an interface already using this type,
-                    # and the config to hide interface properties is enabled, skip.
-                    if (
-                        ptype.kind == "class" and 
-                        self.hide_properties and 
-                        ref_type in inherited_dependency_types
-                    ):
-                        continue
-                    dependency_links.add(f"{current_name} ..> {ref_type}")
+                base_types = extract_base_types(prop.property_type)
+                for base in base_types:
+                    if base in type_lookup and base != current_name:
+                        # If this class inherits an interface already using this type,
+                        # and the config to hide interface properties is enabled, skip.
+                        if (
+                            ptype.kind == "class" and 
+                            self.hide_properties and 
+                            base in inherited_dependency_types
+                        ):
+                            continue
+                        dependency_links.add(f"{current_name} ..> {base}")
 
             # Process method dependencies.
             for method in ptype.methods:
                 # Check each parameter.
                 for param in method.parameters:
-                    ref_type = param.param_type.strip()
-                    if ref_type in type_lookup and ref_type != current_name:
-                        # Skip if the parent interface already defines the dependency
-                        # and the flag to hide methods is enabled.
-                        if (
-                            ptype.kind == "class" and 
-                            self.hide_methods and 
-                            ref_type in inherited_dependency_types
-                        ):
-                            continue
-                        dependency_links.add(f"{current_name} ..> {ref_type}")
+                    base_types = extract_base_types(param.param_type)
+                    for base in base_types:
+                        if base in type_lookup and base != current_name:
+                            # Skip if the parent interface already defines the dependency
+                            # and the flag to hide methods is enabled.
+                            if (
+                                ptype.kind == "class" and 
+                                self.hide_methods and 
+                                base in inherited_dependency_types
+                            ):
+                                continue
+                            dependency_links.add(f"{current_name} ..> {base}")
                 # Check method return type.
                 if method.return_type:
-                    ref_type = method.return_type.strip()
-                    if ref_type in type_lookup and ref_type != current_name:
-                        if (
-                            ptype.kind == "class" and 
-                            self.hide_methods and 
-                            ref_type in inherited_dependency_types
-                        ):
-                            continue
-                        dependency_links.add(f"{current_name} ..> {ref_type}")
+                    base_types = extract_base_types(method.return_type)
+                    for base in base_types:
+                        if base in type_lookup and base != current_name:
+                            if (
+                                ptype.kind == "class" and 
+                                self.hide_methods and 
+                                base in inherited_dependency_types
+                            ):
+                                continue
+                            dependency_links.add(f"{current_name} ..> {base}")
 
         # Return the dependency links as a sorted list for consistency.
         return sorted(dependency_links)
