@@ -1,28 +1,15 @@
 {
   "exclude_files": [
-    "/VoxelMeshOptimizerLibrary/tests/DisjointSet/DisjointSetMeshOptimizerTests.cs",
-    "/VoxelMeshOptimizerLibrary/tests/DisjointSet/DisjointSet2DOptimizerTests.cs",
-    "/VoxelMeshOptimizerLibrary/tests/DisjointSet/DisjointSetTests.cs",
-    "/VoxelMeshOptimizerLibrary/tests/Core/AxisExtensionsTests.cs",
-    "/VoxelMeshOptimizerLibrary/tests/Core/ChunkInterfaceTests.cs",
-    "/VoxelMeshOptimizerLibrary/tests/Occlusion/Common/VisiblePlaneTests.cs",
-    "/VoxelMeshOptimizerLibrary/tests/Occlusion/VoxelVisibilityMapTests.cs",
-    "/VoxelMeshOptimizerLibrary/tests/Occlusion/VoxelOcclusionOptimizerTests.cs"
   ],
   "input_filetype": "Csharp",
   "output": {
     "mode": "file",
     "file": "diagram.md",
-    "diagram": "PlantUML",
+    "diagram": "MermaidClassDiagram",
     "hide_implemented_interface_methods": true,
     "hide_implemented_interface_properties": true,
     "exclude_namespaces": [
-      "VoxelMeshOptimizer.Tests.DisjointSetTesting",
-      "VoxelMeshOptimizer.Tests.Core",
-      "VoxelMeshOptimizer.Tests.OcclusionAlgorithms",
-      "VoxelMeshOptimizer.Tests.OcclusionAlgorithms.Common",
-      "VoxelMeshOptimizer.Tests.Occlusion",
-      "VoxelMeshOptimizer.Tests.OcclusionTests"
-    ]
+    ],
+    "show_dependencies": true
   }
 }

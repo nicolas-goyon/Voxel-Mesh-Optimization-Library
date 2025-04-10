@@ -1,6 +1,5 @@
 # diagram/mermaid_display.py
 
-
 # Constants specific to the Mermaid diagram.
 SHOW_RETURN_TYPE_DOT = False  # Set to False to disable the display of the return type.
 
@@ -14,12 +13,14 @@ class MermaidDiagram:
             - "exclude_namespaces": list of namespace full names to exclude.
             - "hide_implemented_interface_methods": bool (optional)
             - "hide_implemented_interface_properties": bool (optional)
+            - "show_dependencies": bool (optional) - Enable or disable dependency links.
         """
         self.project = project
         self.output_config = output_config or {}
         self.exclude_namespaces = set(self.output_config.get("exclude_namespaces", []))
         self.hide_methods = self.output_config.get("hide_implemented_interface_methods", True)
         self.hide_properties = self.output_config.get("hide_implemented_interface_properties", True)
+        self.show_dependencies = self.output_config.get("show_dependencies", False)
 
     def generate(self):
         """
@@ -73,7 +74,76 @@ class MermaidDiagram:
             for base in ptype.bases:
                 diagram_lines.append(f"  {ptype.name} --|> {base}")
 
+        # New: Render dependency links if enabled in the configuration.
+        if self.show_dependencies:
+            dependency_links = self.build_dependency_links(all_types, interface_methods_dict, interface_properties_dict)
+            # Append a blank line for clarity.
+            diagram_lines.append("")
+            for dep_line in dependency_links:
+                diagram_lines.append(f"  {dep_line}")
+
         return "\n".join(diagram_lines)
+
+    def build_dependency_links(self, all_types, interface_methods, interface_properties):
+        """
+        Build dependency links between types.
+        A dependency is added if a type (class/interface) uses another type
+        in its properties, method parameters, or method return types.
+        For classes, if the dependency is already defined by one of its parent interfaces
+        (and the corresponding hide flag is set), then the dependency arrow will be omitted.
+        
+        Returns a sorted list of dependency link strings in Mermaid syntax (e.g. "A ..> B").
+        """
+        # Create a lookup of types by name.
+        type_lookup = {ptype.name: ptype for ptype in all_types}
+        dependency_links = set()  # Use a set to avoid duplicates.
+
+        for ptype in all_types:
+            current_name = ptype.name
+
+            # For classes, collect dependency types from parent interfaces.
+            inherited_dependency_types = set()
+            if ptype.kind == "class":
+                for base_name in ptype.bases:
+                    if base_name in type_lookup:
+                        parent = type_lookup[base_name]
+                        if parent.kind == "interface":
+                            # Collect dependency types from parent's properties.
+                            for prop in parent.properties:
+                                inherited_dependency_types.add(prop.property_type.strip())
+                            # Collect dependency types from parent's methods.
+                            for method in parent.methods:
+                                for param in method.parameters:
+                                    inherited_dependency_types.add(param.param_type.strip())
+                                if method.return_type:
+                                    inherited_dependency_types.add(method.return_type.strip())
+
+            # Process property dependencies.
+            for prop in ptype.properties:
+                ref_type = prop.property_type.strip()
+                if ref_type in type_lookup and ref_type != current_name:
+                    if (ptype.kind == "class" and self.hide_properties and ref_type in inherited_dependency_types):
+                        continue
+                    dependency_links.add(f"{current_name} ..> {ref_type}")
+
+            # Process method dependencies.
+            for method in ptype.methods:
+                # Process each parameter.
+                for param in method.parameters:
+                    ref_type = param.param_type.strip()
+                    if ref_type in type_lookup and ref_type != current_name:
+                        if (ptype.kind == "class" and self.hide_methods and ref_type in inherited_dependency_types):
+                            continue
+                        dependency_links.add(f"{current_name} ..> {ref_type}")
+                # Process method return type.
+                if method.return_type:
+                    ref_type = method.return_type.strip()
+                    if ref_type in type_lookup and ref_type != current_name:
+                        if (ptype.kind == "class" and self.hide_methods and ref_type in inherited_dependency_types):
+                            continue
+                        dependency_links.add(f"{current_name} ..> {ref_type}")
+
+        return sorted(dependency_links)
 
     def build_interface_methods_dict(self):
         """

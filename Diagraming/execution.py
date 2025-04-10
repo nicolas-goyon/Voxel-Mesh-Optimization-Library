@@ -6,15 +6,15 @@ def load_config(config_path):
     """Load a JSON external config file with default values."""
     default_config = {
         "exclude_files": [],
-        "exclude_namespaces": [],  # Legacy: now moved inside output; kept here for backward compatibility if needed.
         "input_filetype": "Csharp",
         "output": {
-            "mode": "console",         # "console" or "file"
+            "mode": "console",         
             "file": "diagram.md",
             "diagram": "MermaidClassDiagram",
             "hide_implemented_interface_methods": True,
             "hide_implemented_interface_properties": True,
-            "exclude_namespaces": []     # Now moved here under output.
+            "exclude_namespaces": [],
+            "show_dependencies" : False 
         }
     }
     try:
