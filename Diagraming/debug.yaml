@@ -1,0 +1,1502 @@
+Project:
+  Global Types:
+    None
+  Namespaces:
+    Namespace:
+      Name        : VoxelMeshOptimizer
+      Full Name   : VoxelMeshOptimizer
+      Types       :
+        None
+      Sub-namespaces:
+        Namespace:
+          Name        : Core
+          Full Name   : VoxelMeshOptimizer.Core
+          Types       :
+            ParsedType:
+              Kind       : interface
+              Name       : MeshOptimizer
+              Generics   : None
+              Namespace  : VoxelMeshOptimizer.Core
+              Bases      : []
+              Annotations: []
+              Members    : []
+              Properties :
+                None
+              Methods    :
+                Method:
+                  Name       : Optimize
+                  Static     : No
+                  Return Type: Mesh
+                  Annotations: []
+                  Parameters :
+                    Parameter:
+                      Type       : Chunk<Voxel>
+                      Name       : chunk
+                      Annotations: []
+            ParsedType:
+              Kind       : interface
+              Name       : Voxel
+              Generics   : None
+              Namespace  : VoxelMeshOptimizer.Core
+              Bases      : []
+              Annotations: []
+              Members    : []
+              Properties :
+                Property:
+                  Name       : ID
+                  Type       : ushort
+                  Static     : No
+                  Body       : { get;}
+                  Annotations: []
+                Property:
+                  Name       : IsSolid
+                  Type       : bool
+                  Static     : No
+                  Body       : {get;}
+                  Annotations: []
+              Methods    :
+                None
+            ParsedType:
+              Kind       : enum
+              Name       : VoxelFace
+              Generics   : None
+              Namespace  : VoxelMeshOptimizer.Core
+              Bases      : []
+              Annotations: []
+              Members    : ['None', 'Zpos', 'Zneg', 'Xneg', 'Xpos', 'Ypos', 'Yneg']
+              Properties :
+                None
+              Methods    :
+                None
+            ParsedType:
+              Kind       : enum
+              Name       : Axis
+              Generics   : None
+              Namespace  : VoxelMeshOptimizer.Core
+              Bases      : []
+              Annotations: []
+              Members    : ['X', 'Y', 'Z']
+              Properties :
+                None
+              Methods    :
+                None
+            ParsedType:
+              Kind       : enum
+              Name       : AxisOrder
+              Generics   : None
+              Namespace  : VoxelMeshOptimizer.Core
+              Bases      : []
+              Annotations: []
+              Members    : ['Ascending', 'Descending']
+              Properties :
+                None
+              Methods    :
+                None
+            ParsedType:
+              Kind       : class
+              Name       : AxisExtensions
+              Generics   : None
+              Namespace  : VoxelMeshOptimizer.Core
+              Bases      : []
+              Annotations: []
+              Members    : []
+              Properties :
+                None
+              Methods    :
+                Method:
+                  Name       : ToVoxelFace
+                  Static     : Yes
+                  Return Type: VoxelFace
+                  Annotations: []
+                  Parameters :
+                    Parameter:
+                      Type       : Axis
+                      Name       : axis
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : AxisOrder axisOrder
+                      Annotations: []
+                Method:
+                  Name       : GetDepthFromAxis
+                  Static     : Yes
+                  Return Type: uint
+                  Annotations: []
+                  Parameters :
+                    Parameter:
+                      Type       : Axis
+                      Name       : axis
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : AxisOrder axisOrder
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : uint x
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : uint y
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : uint z
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : Chunk<Voxel> chunk
+                      Annotations: []
+            ParsedType:
+              Kind       : interface
+              Name       : Chunk
+              Generics   : out T
+              Namespace  : VoxelMeshOptimizer.Core
+              Bases      : []
+              Annotations: []
+              Members    : []
+              Properties :
+                Property:
+                  Name       : XDepth
+                  Type       : uint
+                  Static     : No
+                  Body       : { get; }
+                  Annotations: []
+                Property:
+                  Name       : YDepth
+                  Type       : uint
+                  Static     : No
+                  Body       : { get; }
+                  Annotations: []
+                Property:
+                  Name       : ZDepth
+                  Type       : uint
+                  Static     : No
+                  Body       : { get; }
+                  Annotations: []
+              Methods    :
+                Method:
+                  Name       : ForEachCoordinate
+                  Static     : No
+                  Return Type: void
+                  Annotations: []
+                  Parameters :
+                    Parameter:
+                      Type       : Axis
+                      Name       : major
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : AxisOrder majorAsc
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : Axis middle
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : AxisOrder middleAsc
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : Axis minor
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : AxisOrder minorAsc
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : Action<uint 
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : uint 
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : uint > action
+                      Annotations: []
+                Method:
+                  Name       : Get
+                  Static     : No
+                  Return Type: T
+                  Annotations: []
+                  Parameters :
+                    Parameter:
+                      Type       : uint
+                      Name       : x
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : uint y
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : uint z
+                      Annotations: []
+                Method:
+                  Name       : GetDepth
+                  Static     : No
+                  Return Type: uint
+                  Annotations: []
+                  Parameters :
+                    Parameter:
+                      Type       : Axis
+                      Name       : axis
+                      Annotations: []
+                Method:
+                  Name       : IsOutOfBound
+                  Static     : No
+                  Return Type: bool
+                  Annotations: []
+                  Parameters :
+                    Parameter:
+                      Type       : uint
+                      Name       : x
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : uint y
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : uint z
+                      Annotations: []
+                Method:
+                  Name       : AreDifferentAxis
+                  Static     : No
+                  Return Type: bool
+                  Annotations: []
+                  Parameters :
+                    Parameter:
+                      Type       : Axis
+                      Name       : major
+                      Annotations: []
+                    Parameter:
+                      Type       : Axis
+                      Name       : middle
+                      Annotations: []
+                    Parameter:
+                      Type       : Axis
+                      Name       : minor
+                      Annotations: []
+            ParsedType:
+              Kind       : interface
+              Name       : Mesh
+              Generics   : None
+              Namespace  : VoxelMeshOptimizer.Core
+              Bases      : []
+              Annotations: []
+              Members    : []
+              Properties :
+                None
+              Methods    :
+                None
+            ParsedType:
+              Kind       : class
+              Name       : VoxelVisibilityMap
+              Generics   : None
+              Namespace  : VoxelMeshOptimizer.Core
+              Bases      : []
+              Annotations: []
+              Members    : []
+              Properties :
+                None
+              Methods    :
+                Method:
+                  Name       : GetVisibleFaces
+                  Static     : No
+                  Return Type: VoxelFace
+                  Annotations: []
+                  Parameters :
+                    Parameter:
+                      Type       : uint
+                      Name       : x
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : uint y
+                      Annotations: []
+                    Parameter:
+                      Type       : 
+                      Name       : uint z
+                      Annotations: []
+          Sub-namespaces:
+            Namespace:
+              Name        : OcclusionAlgorithms
+              Full Name   : VoxelMeshOptimizer.Core.OcclusionAlgorithms
+              Types       :
+                ParsedType:
+                  Kind       : class
+                  Name       : VoxelOcclusionOptimizer
+                  Generics   : None
+                  Namespace  : VoxelMeshOptimizer.Core.OcclusionAlgorithms
+                  Bases      : ['Occluder']
+                  Annotations: []
+                  Members    : []
+                  Properties :
+                    None
+                  Methods    :
+                    Method:
+                      Name       : ComputeVisiblePlanes
+                      Static     : No
+                      Return Type: VisibleFaces
+                      Annotations: []
+                      Parameters :
+                        None
+                ParsedType:
+                  Kind       : interface
+                  Name       : Occluder
+                  Generics   : None
+                  Namespace  : VoxelMeshOptimizer.Core.OcclusionAlgorithms
+                  Bases      : []
+                  Annotations: []
+                  Members    : []
+                  Properties :
+                    None
+                  Methods    :
+                    Method:
+                      Name       : ComputeVisiblePlanes
+                      Static     : No
+                      Return Type: VisibleFaces
+                      Annotations: []
+                      Parameters :
+                        None
+              Sub-namespaces:
+                Namespace:
+                  Name        : Common
+                  Full Name   : VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common
+                  Types       :
+                    ParsedType:
+                      Kind       : class
+                      Name       : VisibleFaces
+                      Generics   : None
+                      Namespace  : VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common
+                      Bases      : []
+                      Annotations: []
+                      Members    : []
+                      Properties :
+                        Property:
+                          Name       : PlanesByAxis
+                          Type       : Dictionary<(Axis, AxisOrder), List<VisiblePlane>>
+                          Static     : No
+                          Body       : { get; }
+                          Annotations: []
+                      Methods    :
+                        None
+                    ParsedType:
+                      Kind       : class
+                      Name       : VisiblePlane
+                      Generics   : None
+                      Namespace  : VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common
+                      Bases      : []
+                      Annotations: []
+                      Members    : []
+                      Properties :
+                        Property:
+                          Name       : MajorAxis
+                          Type       : Axis
+                          Static     : No
+                          Body       : { get; }
+                          Annotations: []
+                        Property:
+                          Name       : MajorAxisOrder
+                          Type       : AxisOrder
+                          Static     : No
+                          Body       : {get;}
+                          Annotations: []
+                        Property:
+                          Name       : MiddleAxis
+                          Type       : Axis
+                          Static     : No
+                          Body       : { get; }
+                          Annotations: []
+                        Property:
+                          Name       : MiddleAxisOrder
+                          Type       : AxisOrder
+                          Static     : No
+                          Body       : {get;}
+                          Annotations: []
+                        Property:
+                          Name       : MinorAxis
+                          Type       : Axis
+                          Static     : No
+                          Body       : { get; }
+                          Annotations: []
+                        Property:
+                          Name       : MinorAxisOrder
+                          Type       : AxisOrder
+                          Static     : No
+                          Body       : {get;}
+                          Annotations: []
+                        Property:
+                          Name       : SliceIndex
+                          Type       : uint
+                          Static     : No
+                          Body       : { get; }
+                          Annotations: []
+                        Property:
+                          Name       : IsPlaneEmpty
+                          Type       : bool
+                          Static     : No
+                          Body       : {
+        get
+        {
+            int w = Voxels.GetLength(0);
+            int h = Voxels.GetLength(1);
+            for (int x = 0; x < w; x++)
+            {
+                for (int y = 0; y < h; y++)
+                {
+                    if (Voxels[x, y] != null && Voxels[x, y]!.IsSolid) return false;
+                }
+            }
+            return true;
+        }
+    }
+                          Annotations: []
+                      Methods    :
+                        Method:
+                          Name       : Describe
+                          Static     : No
+                          Return Type: string
+                          Annotations: []
+                          Parameters :
+                            None
+                  Sub-namespaces:
+                    None
+            Namespace:
+              Name        : OptimizationAlgorithms
+              Full Name   : VoxelMeshOptimizer.Core.OptimizationAlgorithms
+              Types       :
+                None
+              Sub-namespaces:
+                Namespace:
+                  Name        : DisjointSet
+                  Full Name   : VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet
+                  Types       :
+                    ParsedType:
+                      Kind       : class
+                      Name       : DisjointSet2DOptimizer
+                      Generics   : None
+                      Namespace  : VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet
+                      Bases      : []
+                      Annotations: []
+                      Members    : []
+                      Properties :
+                        None
+                      Methods    :
+                        Method:
+                          Name       : Optimize
+                          Static     : No
+                          Return Type: void
+                          Annotations: []
+                          Parameters :
+                            None
+                    ParsedType:
+                      Kind       : class
+                      Name       : DisjointSetMeshOptimizer
+                      Generics   : None
+                      Namespace  : VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet
+                      Bases      : ['MeshOptimizer']
+                      Annotations: []
+                      Members    : []
+                      Properties :
+                        None
+                      Methods    :
+                        Method:
+                          Name       : Optimize
+                          Static     : No
+                          Return Type: Mesh
+                          Annotations: []
+                          Parameters :
+                            Parameter:
+                              Type       : Chunk<Voxel>
+                              Name       : chunk
+                              Annotations: []
+                  Sub-namespaces:
+                    None
+        Namespace:
+          Name        : Tests
+          Full Name   : VoxelMeshOptimizer.Tests
+          Types       :
+            None
+          Sub-namespaces:
+            Namespace:
+              Name        : DummyClasses
+              Full Name   : VoxelMeshOptimizer.Tests.DummyClasses
+              Types       :
+                ParsedType:
+                  Kind       : class
+                  Name       : TestChunk
+                  Generics   : None
+                  Namespace  : VoxelMeshOptimizer.Tests.DummyClasses
+                  Bases      : ['Chunk']
+                  Annotations: []
+                  Members    : []
+                  Properties :
+                    Property:
+                      Name       : XDepth
+                      Type       : uint
+                      Static     : No
+                      Body       : { get; }
+                      Annotations: []
+                    Property:
+                      Name       : YDepth
+                      Type       : uint
+                      Static     : No
+                      Body       : { get; }
+                      Annotations: []
+                    Property:
+                      Name       : ZDepth
+                      Type       : uint
+                      Static     : No
+                      Body       : { get; }
+                      Annotations: []
+                  Methods    :
+                    Method:
+                      Name       : Get
+                      Static     : No
+                      Return Type: TestVoxel
+                      Annotations: []
+                      Parameters :
+                        Parameter:
+                          Type       : uint
+                          Name       : x
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : uint y
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : uint z
+                          Annotations: []
+                    Method:
+                      Name       : Set
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        Parameter:
+                          Type       : uint
+                          Name       : x
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : uint y
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : uint z
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : TestVoxel voxel
+                          Annotations: []
+                    Method:
+                      Name       : ForEachCoordinate
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        Parameter:
+                          Type       : Axis
+                          Name       : majorA
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : AxisOrder majorAsc
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : Axis middleA
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : AxisOrder middleAsc
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : Axis minorA
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : AxisOrder minorAsc
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : Action<uint
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : uint
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : uint> action
+                          Annotations: []
+                    Method:
+                      Name       : GetDepth
+                      Static     : No
+                      Return Type: uint
+                      Annotations: []
+                      Parameters :
+                        Parameter:
+                          Type       : Axis
+                          Name       : axis
+                          Annotations: []
+                    Method:
+                      Name       : IsOutOfBound
+                      Static     : No
+                      Return Type: bool
+                      Annotations: []
+                      Parameters :
+                        Parameter:
+                          Type       : uint
+                          Name       : x
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : uint y
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : uint z
+                          Annotations: []
+                    Method:
+                      Name       : AreDifferentAxis
+                      Static     : No
+                      Return Type: bool
+                      Annotations: []
+                      Parameters :
+                        Parameter:
+                          Type       : Axis
+                          Name       : major
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : Axis middle
+                          Annotations: []
+                        Parameter:
+                          Type       : 
+                          Name       : Axis minor
+                          Annotations: []
+                ParsedType:
+                  Kind       : class
+                  Name       : TestVoxel
+                  Generics   : None
+                  Namespace  : VoxelMeshOptimizer.Tests.DummyClasses
+                  Bases      : ['Voxel']
+                  Annotations: []
+                  Members    : []
+                  Properties :
+                    Property:
+                      Name       : ID
+                      Type       : ushort
+                      Static     : No
+                      Body       : { get; }
+                      Annotations: []
+                    Property:
+                      Name       : IsSolid
+                      Type       : bool
+                      Static     : No
+                      Body       : { get; }
+                      Annotations: []
+                  Methods    :
+                    None
+              Sub-namespaces:
+                None
+            Namespace:
+              Name        : DisjointSetTesting
+              Full Name   : VoxelMeshOptimizer.Tests.DisjointSetTesting
+              Types       :
+                ParsedType:
+                  Kind       : class
+                  Name       : DisjointSetTests
+                  Generics   : None
+                  Namespace  : VoxelMeshOptimizer.Tests.DisjointSetTesting
+                  Bases      : []
+                  Annotations: []
+                  Members    : []
+                  Properties :
+                    None
+                  Methods    :
+                    Method:
+                      Name       : InitialCount_ShouldBeEqualToNumberOfElements
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Union_ShouldReduceSetCount
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Find_ShouldReturnSameRoot_ForConnectedElements
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Find_ShouldReturnDifferentRoots_ForDisconnectedElements
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : IsRoot_ShouldBeTrue_ForInitialSingleElements
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Union_WithSameSet_ShouldNotChangeCount
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Constructor_ShouldThrowException_ForNegativeElements
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Find_ShouldThrowException_ForInvalidIndex
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Union_ShouldThrowException_ForInvalidIndices
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : ZeroElements_ShouldHaveZeroCount
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Operations_ShouldThrowException_OnZeroSizedSet
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : MultipleUnions_ShouldCreateSingleSet
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : IsRoot_ShouldBeFalse_ForNonRootElements
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                ParsedType:
+                  Kind       : class
+                  Name       : DisjointSet2DOptimizerTests
+                  Generics   : None
+                  Namespace  : VoxelMeshOptimizer.Tests.DisjointSetTesting
+                  Bases      : []
+                  Annotations: []
+                  Members    : []
+                  Properties :
+                    None
+                  Methods    :
+                    Method:
+                      Name       : Optimize_ShouldMergeIntoOneRectangle_WhenAllPixelsHaveSameValue
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Optimize_ShouldNotMerge_WhenPixelsHaveDifferentValues
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Optimize_ShouldCreateMultipleRectangles_ForMultipleGroups
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Optimize_ShouldHandleSinglePixelGroups
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Optimize_ShouldNotMergeIntoNonRectangleShapes
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Constructor_NullPixels_ThrowsArgumentNullException
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Constructor_EmptyPixels_ThrowsArgumentException
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Optimize_SinglePixel_NoUnionPerformed
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Optimize_TwoDifferentPixels_TwoSetsCreated
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Optimize_TwoSamePixels_OneSetCreated
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Optimize_RectangleOfSameColor_CreatesSingleSet
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : Optimize_MixedColors_CreatesCorrectSets
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                ParsedType:
+                  Kind       : class
+                  Name       : DisjointSetMeshOptimizerTests
+                  Generics   : None
+                  Namespace  : VoxelMeshOptimizer.Tests.DisjointSetTesting
+                  Bases      : []
+                  Annotations: []
+                  Members    : []
+                  Properties :
+                    None
+                  Methods    :
+                    Method:
+                      Name       : Optimize_ShouldThrow_NotImplementedException
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+              Sub-namespaces:
+                None
+            Namespace:
+              Name        : Occlusion
+              Full Name   : VoxelMeshOptimizer.Tests.Occlusion
+              Types       :
+                ParsedType:
+                  Kind       : class
+                  Name       : VoxelVisibilityMapTests
+                  Generics   : None
+                  Namespace  : VoxelMeshOptimizer.Tests.Occlusion
+                  Bases      : []
+                  Annotations: []
+                  Members    : []
+                  Properties :
+                    None
+                  Methods    :
+                    Method:
+                      Name       : SolidChunk_AllOuterFacesShouldBeVisible_InnerFacesNotVisible
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : SingleVoxel_AllSixFacesShouldBeVisible
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : EmptyChunk_NoVoxelsNoVisibleFaces
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : MixedSolidAndNull_CheckTransitions
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : CheckErrorHandling_OutOfRangeShouldReturnNone
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+              Sub-namespaces:
+                None
+            Namespace:
+              Name        : OcclusionTests
+              Full Name   : VoxelMeshOptimizer.Tests.OcclusionTests
+              Types       :
+                ParsedType:
+                  Kind       : class
+                  Name       : VoxelOcclusionOptimizerTests
+                  Generics   : None
+                  Namespace  : VoxelMeshOptimizer.Tests.OcclusionTests
+                  Bases      : []
+                  Annotations: []
+                  Members    : []
+                  Properties :
+                    None
+                  Methods    :
+                    Method:
+                      Name       : Constructor_NullChunk_ThrowsException
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : ComputeVisiblePlanes_EmptyChunk_ReturnsNoVisibleFaces
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : ComputeVisiblePlanes_FullChunk_Returns6VisibleFaces
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : ComputeVisiblePlanes_SingleVoxelChunk_Returns6VisibleFaces
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : ComputeVisiblePlanes_IrregularChunk_WithInternalHole_ProducesExpectedVisibleFaces
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+              Sub-namespaces:
+                None
+            Namespace:
+              Name        : OcclusionAlgorithms
+              Full Name   : VoxelMeshOptimizer.Tests.OcclusionAlgorithms
+              Types       :
+                None
+              Sub-namespaces:
+                Namespace:
+                  Name        : Common
+                  Full Name   : VoxelMeshOptimizer.Tests.OcclusionAlgorithms.Common
+                  Types       :
+                    ParsedType:
+                      Kind       : class
+                      Name       : VisiblePlaneTests
+                      Generics   : None
+                      Namespace  : VoxelMeshOptimizer.Tests.OcclusionAlgorithms.Common
+                      Bases      : []
+                      Annotations: []
+                      Members    : []
+                      Properties :
+                        None
+                      Methods    :
+                        Method:
+                          Name       : Constructor_ShouldInitializePropertiesCorrectly
+                          Static     : No
+                          Return Type: void
+                          Annotations: []
+                          Parameters :
+                            None
+                        Method:
+                          Name       : IsPlaneEmpty_ShouldReturnTrue_WhenNoVoxelsAreSet
+                          Static     : No
+                          Return Type: void
+                          Annotations: []
+                          Parameters :
+                            None
+                        Method:
+                          Name       : IsPlaneEmpty_ShouldReturnFalse_WhenAtLeastOneVoxelIsSet
+                          Static     : No
+                          Return Type: void
+                          Annotations: []
+                          Parameters :
+                            None
+                        Method:
+                          Name       : ToString_ShouldIncludeAxisOrderSigns
+                          Static     : No
+                          Return Type: void
+                          Annotations: []
+                          Parameters :
+                            None
+                        Method:
+                          Name       : Describe_ShouldIncludeAxisOrderSignsAndVoxelData
+                          Static     : No
+                          Return Type: void
+                          Annotations: []
+                          Parameters :
+                            None
+                        Method:
+                          Name       : Constructor_ShouldHandleZeroSizedPlane
+                          Static     : No
+                          Return Type: void
+                          Annotations: []
+                          Parameters :
+                            None
+                        Method:
+                          Name       : Voxels_SetVoxel_ShouldBeAccessibleCorrectly
+                          Static     : No
+                          Return Type: void
+                          Annotations: []
+                          Parameters :
+                            None
+                  Sub-namespaces:
+                    None
+            Namespace:
+              Name        : Core
+              Full Name   : VoxelMeshOptimizer.Tests.Core
+              Types       :
+                ParsedType:
+                  Kind       : class
+                  Name       : ChunkInterfaceTests
+                  Generics   : None
+                  Namespace  : VoxelMeshOptimizer.Tests.Core
+                  Bases      : []
+                  Annotations: []
+                  Members    : []
+                  Properties :
+                    None
+                  Methods    :
+                    Method:
+                      Name       : ChunkCreation_Error_WhenThedimentionsAre0
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : ChunkDimensionsAndPlaneDimensions
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : AreDifferentAxis
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : GetDimension_ForEachCoordinate_CorrectOrder
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : GetDimension_ForEachCoordinate_Throws_WhenAxisEquals
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : SetGet_ThrowsError_WhenOutOfBound
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                ParsedType:
+                  Kind       : class
+                  Name       : AxisExtensionsTests
+                  Generics   : None
+                  Namespace  : VoxelMeshOptimizer.Tests.Core
+                  Bases      : []
+                  Annotations: []
+                  Members    : []
+                  Properties :
+                    None
+                  Methods    :
+                    Method:
+                      Name       : GetDepthFromAxis_Ascending_ReturnsCoordinateValue_ForAxisX
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : GetDepthFromAxis_Descending_ReturnsFlippedValue_ForAxisX
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : GetDepthFromAxis_OnNearFace_ReturnsZeroDepth
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : GetDepthFromAxis_OnFarFace_ReturnsMaxDepth_ForDescendingOrder
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : GetDepthFromAxis_OutOfBoundCoordinate_ThrowsArgumentOutOfRangeException
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : DefineIterationOrder_ForMajorAxisX_ReturnsExpectedMapping
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : DefineIterationOrder_ForMajorAxisY_ReturnsExpectedMapping
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : DefineIterationOrder_ForMajorAxisZ_ReturnsExpectedMapping
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : DefineIterationOrder_InvalidNonDistinctAxes_ThrowsException
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : GetSlicePlanePosition_Ascending_ReturnsSameAbsoluteCoordinates
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : GetSlicePlanePosition_Descending_ReturnsFlippedCoordinatesForPlaneAxes
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : GetSlicePlanePosition_MixedOrders_SliceOrderDoesNotInfluenceOutput
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : GetSlicePlanePosition_NonDistinctAxes_ThrowsArgumentException
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+                    Method:
+                      Name       : GetDepthFromAxis_InvalidEnumValue_CastInteger_ThrowsExceptionOrHandlesGracefully
+                      Static     : No
+                      Return Type: void
+                      Annotations: []
+                      Parameters :
+                        None
+              Sub-namespaces:
+                None
+    Namespace:
+      Name        : ConsoleAppExample
+      Full Name   : ConsoleAppExample
+      Types       :
+        ParsedType:
+          Kind       : class
+          Name       : ExampleVoxel
+          Generics   : None
+          Namespace  : ConsoleAppExample
+          Bases      : ['Voxel']
+          Annotations: []
+          Members    : []
+          Properties :
+            Property:
+              Name       : ID
+              Type       : ushort
+              Static     : No
+              Body       : { get; }
+              Annotations: []
+            Property:
+              Name       : IsSolid
+              Type       : bool
+              Static     : No
+              Body       : ID != 0
+              Annotations: []
+          Methods    :
+            None
+        ParsedType:
+          Kind       : class
+          Name       : Program
+          Generics   : None
+          Namespace  : ConsoleAppExample
+          Bases      : []
+          Annotations: []
+          Members    : []
+          Properties :
+            None
+          Methods    :
+            None
+        ParsedType:
+          Kind       : class
+          Name       : ExampleMesh
+          Generics   : None
+          Namespace  : ConsoleAppExample
+          Bases      : ['Mesh']
+          Annotations: []
+          Members    : []
+          Properties :
+            Property:
+              Name       : Vertices
+              Type       : IReadOnlyList<(float x, float y, float z)>
+              Static     : No
+              Body       : { get; init; }
+              Annotations: []
+            Property:
+              Name       : Triangles
+              Type       : IReadOnlyList<int>
+              Static     : No
+              Body       : { get; init; }
+              Annotations: []
+          Methods    :
+            None
+        ParsedType:
+          Kind       : class
+          Name       : ExampleChunk
+          Generics   : None
+          Namespace  : ConsoleAppExample
+          Bases      : ['Chunk']
+          Annotations: []
+          Members    : []
+          Properties :
+            Property:
+              Name       : XDepth
+              Type       : uint
+              Static     : No
+              Body       : { get; }
+              Annotations: []
+            Property:
+              Name       : YDepth
+              Type       : uint
+              Static     : No
+              Body       : { get; }
+              Annotations: []
+            Property:
+              Name       : ZDepth
+              Type       : uint
+              Static     : No
+              Body       : { get; }
+              Annotations: []
+          Methods    :
+            Method:
+              Name       : GetVoxels
+              Static     : No
+              Return Type: IEnumerable<ExampleVoxel>
+              Annotations: []
+              Parameters :
+                None
+            Method:
+              Name       : Get
+              Static     : No
+              Return Type: ExampleVoxel
+              Annotations: []
+              Parameters :
+                Parameter:
+                  Type       : uint
+                  Name       : x
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : uint y
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : uint z
+                  Annotations: []
+            Method:
+              Name       : Set
+              Static     : No
+              Return Type: void
+              Annotations: []
+              Parameters :
+                Parameter:
+                  Type       : uint
+                  Name       : x
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : uint y
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : uint z
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : ExampleVoxel voxel
+                  Annotations: []
+            Method:
+              Name       : ForEachCoordinate
+              Static     : No
+              Return Type: void
+              Annotations: []
+              Parameters :
+                Parameter:
+                  Type       : Axis
+                  Name       : majorA
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : AxisOrder majorAsc
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : Axis middleA
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : AxisOrder middleAsc
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : Axis minorA
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : AxisOrder minorAsc
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : Action<uint
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : uint
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : uint> action
+                  Annotations: []
+            Method:
+              Name       : GetDepth
+              Static     : No
+              Return Type: uint
+              Annotations: []
+              Parameters :
+                Parameter:
+                  Type       : Axis
+                  Name       : axis
+                  Annotations: []
+            Method:
+              Name       : IsOutOfBound
+              Static     : No
+              Return Type: bool
+              Annotations: []
+              Parameters :
+                Parameter:
+                  Type       : uint
+                  Name       : x
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : uint y
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : uint z
+                  Annotations: []
+            Method:
+              Name       : AreDifferentAxis
+              Static     : No
+              Return Type: bool
+              Annotations: []
+              Parameters :
+                Parameter:
+                  Type       : Axis
+                  Name       : major
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : Axis middle
+                  Annotations: []
+                Parameter:
+                  Type       : 
+                  Name       : Axis minor
+                  Annotations: []
+      Sub-namespaces:
+        None

@@ -1,22 +1,179 @@
-# RectangleMerging
+# Voxel Mesh Optimization Project Description
 
-The DisjointSets seems to be way too fast, i know the result isn't the one that has the less of rectangles, but the result is close enough for voxel verts reduction.
+## Project Context
+This project aims to create a modular, technology-agnostic C# library for voxel-based mesh optimization. The library is designed to efficiently merge individual voxel meshes into optimized meshes suitable for real-time game applications. It is being initially developed as a standalone console application, with future potential for integration into various projects, including those developed with Unity.
 
-# Explanations
 
-My problem 
-To give you some context, I'm currently working on optimizing the display in a voxel-based video game, which are essentially single-color cubes, the equivalent of a pixel in 3D.
+## Project Objective
+The primary objective is to merge voxel meshes into larger, optimized meshes by:
 
-At the moment, I'm able to generate cubes from their respective coordinates and colors. However, the process becomes considerably slow when I add a large number of cubes.
+- Mesh optimisation :
+  - Occluding hidden voxel faces.
+  - Minimizing the total count of triangles and vertices.
+  - Ensuring the mesh optimization algorithm is performant enough for real-time execution.
+- Project packaging : 
+  - Have some allow custom implementation of chunks, voxels and meshes interfaces for easier inclusion of the library into the project and also allow people that have specific concerns about performance.
+  - Have a clean project to allow easy maintain and understanding
+  - A CI/CD pipeline to package the project as a library (or things like that)
+  - A clear separation between the actual business logic of the library and the C# program/project used to develop the library. The idea would be to be able to "just" have the library without the useless code (tests, program.cs, etc...) 
+  - Interfaces should not start with a "I" (ie: Chunk instead of IChunk)
 
-To start, I'm looking to solve a more easily definable problem. I'm looking for an algorithm that, ideally, wouldn't necessarily provide an optimal solution, but could significantly reduce the number of rectangles used.
 
-Imagine an orthogonal grid of variable size composed of numbers. The goal is to create squares or rectangles covering the grid, provided that all the numbers inside a rectangle are identical. Ideally, it would be preferable to have a solution with the fewest possible rectangles, but I think such an algorithm would not be feasible for real-time rendering. The goal would rather be to find an algorithm that could reduce by an average factor of 4 the number of rectangles.
+## Current Implementation Overview
+The current implementation uses a Disjoint Set (Union-Find) approach to optimize the mesh by merging rectangles of voxels sharing the same color. It employs structured and modular classes and is tested within a console application environment.
 
-Here are some examples to illustrate the problem:
+### Mermaid Diagram of the Current Structure
+The diagram below illustrates the current class relationships and core functionality:
 
-1. Consider a chessboard grid. In this case, the solution is simple, because there are no two adjacent squares of the same color, so the grid can't be improved.
-2. Consider a unicolor grid. Here, the solution is also simple, because the result is a single square filling the entire grid.
-3. Consider a grid where each column alternates colors (column 1 in black, column 2 in white, column 3 in black, etc.). In this case, the ideal result would be vertical rectangles.
+```mermaid
+classDiagram
+    class Program {
+        +static int[,] pixelsData
+        +static void Main(string[] args)
+        +static bool checkAnswer(List~List~(int x, int y)~~ components)
+        +static bool isARectangle(List<(int x, int y)> component)
+        +static bool isSameColor(List<(int x, int y)> component)
+    }
+    class DisjointSetOptimizer {
+        -DisjointSet disjointSet
+        -int[,] pixels
+        -int rows
+        -int cols
+        +DisjointSetOptimizer(int[,] pixels)
+        +void Optimize()
+        +void CreateSets()
+        +void CreateOneSet(int x, int y)
+        +bool IsNotAlone(int x, int y)
+        +void DisplaySets()
+        +List~List~(int x, int y)~~ ToResult()
+    }
+    class DisjointSet {
+        -int[] parent
+        -int[] size
+        -int count
+        +DisjointSet(int n)
+        +int GetCount()
+        +bool IsRoot(int p)
+        +int Find(int p)
+        +void Union(int p, int q)
+    }
+    class MeshOptimisation {
+        -Grid grid
+        +MeshOptimisation(int[,] pixels)
+        +void Optimize()
+        +void Display()
+    }
+    class Grid {
+        -int width
+        -int height
+        -Rectangle[,] rectangleCollection
+        -Queue~int~ searchQueue
+        +Grid(int[,] baseGrid)
+        +bool SolveMax()
+        +string Display()
+    }
+    class TouchingSide { 
+        <<Enumeration>>
+        TOP
+        BOTTOM
+        LEFT
+        RIGHT
+    }
+    class Rectangle {
+        -int X
+        -int Y
+        -int value
+        -int Index
+        +Rectangle(int x, int y, int value, int index)
+        +bool Equals(Rectangle other)
+        +Rectangle Merge(Rectangle other, int newIndex)
+        +bool IsTouching(Rectangle other)
+        +bool IsGluableTo(Rectangle other)
+        +bool IsCompatibleTo(Rectangle other)
+        +int[,] FillIndex(int[,] grid)
+        +string ToString()
+        +int Offset()
+        +int Length()
+    }
+    Program --> DisjointSetOptimizer : Uses
+    Program --> MeshOptimisation : Uses
+    DisjointSetOptimizer --> DisjointSet : Contains
+    MeshOptimisation --> Grid : Contains
+    Grid --> Rectangle : Contains
+    Rectangle --> TouchingSide : Uses
+```
 
-I think there is an approximation method for this type of problem, where the approximation would allow to obtain a lower average number of rectangles without requiring an exorbitant computation time.
+Get tree: `tree -I "bin|TestResults|obj"`
+
+Current file hierarchy : 
+```
+.
+├── README.md
+└── VoxelMeshOptimizerLibrary
+    ├── VoxelMeshOptimizerLibrary.sln
+    ├── examples
+    │   └── ConsoleAppExample
+    │       ├── ConsoleAppExample.csproj
+    │       ├── ExampleChunk.cs
+    │       ├── ExampleMesh.cs
+    │       ├── ExampleVoxel.cs
+    │       └── Program.cs
+    ├── src
+    │   └── Core
+    │       ├── Axis.cs
+    │       ├── Chunk.cs
+    │       ├── Mesh.cs
+    │       ├── MeshOptimizer.cs
+    │       ├── OcclusionAglorithms
+    │       │   ├── Common
+    │       │   │   ├── Direction.cs
+    │       │   │   ├── VisibleFaces.cs
+    │       │   │   └── VisiblePlane.cs
+    │       │   ├── Occluder.cs
+    │       │   └── VoxelOcclusionOptimizer.cs
+    │       ├── OptimizationAlgorithms
+    │       │   └── DisjointSet
+    │       │       ├── DisjointSet.cs
+    │       │       ├── DisjointSet2DOptimizer.cs
+    │       │       └── DisjointSetMeshOptimizer.cs
+    │       ├── Testing
+    │       │   └── VoxelVisibilityMap.cs
+    │       ├── Voxel.cs
+    │       └── VoxelMeshOptimizer.Core.csproj
+    └── tests
+        ├── Core
+        │   ├── AxisExtensionsTests.cs
+        │   └── ChunkInterfaceTests.cs
+        ├── DisjointSet
+        │   ├── DisjointSet2DOptimizerTests.cs
+        │   ├── DisjointSetMeshOptimizerTests.cs
+        │   └── DisjointSetTests.cs
+        ├── DummyClasses
+        │   ├── TestChunk.cs
+        │   └── TestVoxel.cs
+        ├── Occlusion
+        │   ├── Common
+        │   │   └── VisiblePlaneTests.cs
+        │   ├── VoxelOcclusionOptimizerTests.cs
+        │   └── VoxelVisibilityMapTests.cs
+        └── VoxelMeshOptimizer.Tests.csproj
+```
+
+
+## Getting started
+
+start :
+```sh
+cd VoxelMeshOptimizerLibrary
+dotnet restore
+cd example/ConsoleAppExample/
+dotnet run
+```
+
+
+tests :
+```sh
+cd VoxelMeshOptimizerLibrary
+dotnet restore
+dotnet test
+```
