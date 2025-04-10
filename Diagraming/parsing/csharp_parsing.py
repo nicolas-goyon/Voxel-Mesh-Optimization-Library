@@ -42,7 +42,7 @@ INTERFACE_METHOD_PATTERN = (
     r'^\s*'  # anchor at the start of a line and skip leading whitespace
     r'(?P<accessibility>(?:public|private|protected|internal)\s+)?'  # Optional accessibility
     r'(?P<modifier>(?:static\s+)?)'                                   # Optional static modifier
-    r'\s*(?P<return_type>[\w<>\[\],]+?)\s+'                            # Return type (now without \s in the char class)
+    r'\s*(?P<return_type>[\w<>\[\],]+?)\s+'                            # Return type 
     r'(?P<name>\w+)\s*'                                                # Method name
     r'\('
         r'(?P<params>(?:[^()]+|(?R))*)'
@@ -56,11 +56,12 @@ INTERFACE_METHOD_PATTERN = (
 # or '=>' for an expression-bodied property.
 PROPERTY_PATTERN = (
     r'^\s*public\s+'
-    r'(?P<modifier>(?:static\s+)?)\s*'
-    r'(?P<type>[\w<>\[\],]+?)\s+'
+    r'(?P<modifier>(?:\b(?:static|readonly)\b\s+)*)'
+    r'(?P<type>[\w<>\[\]\(\),\s]+?)\s+'
     r'(?P<name>\w+)\s*'
     r'(?P<delim>\{|=>)'
 )
+
 
 # Other
 ENUM_MEMBER_PATTERN = r'\b(\w+)\b(?:\s*=\s*[^,\n]+)?\s*(?:,|$)'

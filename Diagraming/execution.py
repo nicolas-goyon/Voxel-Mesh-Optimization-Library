@@ -92,7 +92,7 @@ def main():
     # Use the parser module to parse the folder.
     classes = parser_module.parse_project(folder_path, exclude_files=config.get("exclude_files"))
     
-    
+    # print(classes.describe())
     # Dynamically instantiate the diagram generator using a factory function.
     try:
         # We assume that each diagram module exposes a function 'create_generator'

@@ -5,6 +5,7 @@ package "ConsoleAppExample" {
   class Program {
   }
   class ExampleMesh {
+    + Vertices: IReadOnlyList<(float x, float y, float z)>
     + Triangles: IReadOnlyList<int>
   }
   class ExampleChunk {
@@ -67,6 +68,7 @@ package "VoxelMeshOptimizer" {
       }
       package "VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common" {
         class VisibleFaces {
+          + PlanesByAxis: Dictionary<(Axis, AxisOrder), List<VisiblePlane>>
         }
         class VisiblePlane {
           + MajorAxis: Axis
@@ -99,8 +101,6 @@ package "VoxelMeshOptimizer" {
       }
       class TestVoxel {
       }
-    }
-    package "VoxelMeshOptimizer.Tests.OcclusionAlgorithms" {
     }
   }
 }

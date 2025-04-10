@@ -1,5 +1,14 @@
 {
-  "exclude_files": [],
+  "exclude_files": [
+    "/VoxelMeshOptimizerLibrary/tests/DisjointSet/DisjointSetMeshOptimizerTests.cs",
+    "/VoxelMeshOptimizerLibrary/tests/DisjointSet/DisjointSet2DOptimizerTests.cs",
+    "/VoxelMeshOptimizerLibrary/tests/DisjointSet/DisjointSetTests.cs",
+    "/VoxelMeshOptimizerLibrary/tests/Core/AxisExtensionsTests.cs",
+    "/VoxelMeshOptimizerLibrary/tests/Core/ChunkInterfaceTests.cs",
+    "/VoxelMeshOptimizerLibrary/tests/Occlusion/Common/VisiblePlaneTests.cs",
+    "/VoxelMeshOptimizerLibrary/tests/Occlusion/VoxelVisibilityMapTests.cs",
+    "/VoxelMeshOptimizerLibrary/tests/Occlusion/VoxelOcclusionOptimizerTests.cs"
+  ],
   "input_filetype": "Csharp",
   "output": {
     "mode": "file",
