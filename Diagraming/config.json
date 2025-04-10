@@ -5,10 +5,11 @@
   "output": {
     "mode": "file",
     "file": "diagram.md",
-    "diagram": "MermaidClassDiagram",
+    "diagram": "PlantUML",
     "hide_implemented_interface_methods": true,
     "hide_implemented_interface_properties": true,
     "exclude_namespaces": [
+      "VoxelMeshOptimizer.Tests"
     ],
     "show_dependencies": true
   }

@@ -1,5 +1,23 @@
 # diagram/mermaid_display.py
 
+
+
+def should_exclude_package(package_name: str, excluded_packages: set) -> bool:
+    """
+    Checks if the provided package_name should be excluded.
+    
+    :param package_name: The full package name to check.
+    :param excluded_packages: A set of package names to exclude.
+    :return: True if the package_name matches or is a subpackage of any
+             package in excluded_packages, otherwise False.
+    """
+    for excluded in excluded_packages:
+        # Check if package is exactly the same as the excluded package
+        # or if it is a subpackage (starts with the excluded package name and then a dot)
+        if package_name == excluded or package_name.startswith(f"{excluded}."):
+            return True
+    return False
+
 # Constants specific to the Mermaid diagram.
 SHOW_RETURN_TYPE_DOT = False  # Set to False to disable the display of the return type.
 
@@ -71,6 +89,8 @@ class MermaidDiagram:
 
         # Render inheritance relationships.
         for ptype in all_types:
+            if should_exclude_package(ptype.namespace, self.exclude_namespaces):
+                continue
             for base in ptype.bases:
                 diagram_lines.append(f"  {ptype.name} --|> {base}")
 

@@ -1,3 +1,20 @@
+
+def should_exclude_package(package_name: str, excluded_packages: set) -> bool:
+    """
+    Checks if the provided package_name should be excluded.
+    
+    :param package_name: The full package name to check.
+    :param excluded_packages: A set of package names to exclude.
+    :return: True if the package_name matches or is a subpackage of any
+             package in excluded_packages, otherwise False.
+    """
+    for excluded in excluded_packages:
+        # Check if package is exactly the same as the excluded package
+        # or if it is a subpackage (starts with the excluded package name and then a dot)
+        if package_name == excluded or package_name.startswith(f"{excluded}."):
+            return True
+    return False
+
 # plantuml_display.py
 
 class PlantUMLDiagram:
@@ -45,12 +62,16 @@ class PlantUMLDiagram:
         # Render inheritance relationships.
         all_types = list(self.project.global_types)
         for ns_obj in self.project.namespaces.values():
+            if ns_obj.full_name in self.exclude_namespaces:
+                continue  # Skip entire namespaces
             all_types.extend(self.get_all_types(ns_obj))
         for ptype in all_types:
+            if should_exclude_package(ptype.namespace, self.exclude_namespaces):
+                continue
             for base in ptype.bases:
                 diagram_lines.append(f"{ptype.name} --|> {base}")
 
-        # New: Render dependency links if enabled.
+        # Render dependency links if enabled.
         if self.show_dependencies:
             dependency_links = self.build_dependency_links(all_types)
             diagram_lines.extend(dependency_links)
@@ -72,7 +93,8 @@ class PlantUMLDiagram:
 
         for ptype in all_types:
             current_name = ptype.name
-
+            if should_exclude_package(ptype.namespace, self.exclude_namespaces):
+                continue
             # For classes, collect dependency types inherited from parent interfaces.
             inherited_dependency_types = set()
             if ptype.kind == "class":
@@ -288,6 +310,7 @@ class PlantUMLDiagram:
         for sub in ns_obj.sub_namespaces.values():
             types.extend(self.get_all_types(sub))
         return types
+
 
 def create_generator(project, output_config):
     return PlantUMLDiagram(project, output_config)
