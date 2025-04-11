@@ -1,179 +1,160 @@
-# Voxel Mesh Optimization Project Description
+# Voxel Mesh Optimization Library
 
-## Project Context
-This project aims to create a modular, technology-agnostic C# library for voxel-based mesh optimization. The library is designed to efficiently merge individual voxel meshes into optimized meshes suitable for real-time game applications. It is being initially developed as a standalone console application, with future potential for integration into various projects, including those developed with Unity.
+## Overview
 
+The **Voxel Mesh Optimization Library** is a C# library designed to optimize voxel-based meshes for real-time rendering—ideal for game developers and any user interested in leveraging efficient 3D mesh generation techniques. The library transforms a collection of individual colored voxels into a single optimized mesh, reducing redundant faces and merging triangles with identical colors to improve display performance.
 
-## Project Objective
-The primary objective is to merge voxel meshes into larger, optimized meshes by:
+### Key Definitions
 
-- Mesh optimisation :
-  - Occluding hidden voxel faces.
-  - Minimizing the total count of triangles and vertices.
-  - Ensuring the mesh optimization algorithm is performant enough for real-time execution.
-- Project packaging : 
-  - Have some allow custom implementation of chunks, voxels and meshes interfaces for easier inclusion of the library into the project and also allow people that have specific concerns about performance.
-  - Have a clean project to allow easy maintain and understanding
-  - A CI/CD pipeline to package the project as a library (or things like that)
-  - A clear separation between the actual business logic of the library and the C# program/project used to develop the library. The idea would be to be able to "just" have the library without the useless code (tests, program.cs, etc...) 
-  - Interfaces should not start with a "I" (ie: Chunk instead of IChunk)
+- **Voxel:**  
+  A voxel is a colored point—in our context, treated as a colored cube. Each voxel does not support textures or multiple colors.
 
+- **Chunk:**  
+  A chunk is a rectangular, 3D grid of voxels (organized along the X, Y, and Z axes). In this project, a chunk may contain full, empty, or semi-transparent voxels.
 
-## Current Implementation Overview
-The current implementation uses a Disjoint Set (Union-Find) approach to optimize the mesh by merging rectangles of voxels sharing the same color. It employs structured and modular classes and is tested within a console application environment.
+- **Mesh:**  
+  A mesh is a 3D object used in video games made up of triangles. Instead of having one mesh per voxel, this library builds a single mesh for an entire chunk by eliminating occluded faces and merging triangles that share the same color.
 
-### Mermaid Diagram of the Current Structure
-The diagram below illustrates the current class relationships and core functionality:
+## Problem & Purpose
 
-```mermaid
-classDiagram
-    class Program {
-        +static int[,] pixelsData
-        +static void Main(string[] args)
-        +static bool checkAnswer(List~List~(int x, int y)~~ components)
-        +static bool isARectangle(List<(int x, int y)> component)
-        +static bool isSameColor(List<(int x, int y)> component)
-    }
-    class DisjointSetOptimizer {
-        -DisjointSet disjointSet
-        -int[,] pixels
-        -int rows
-        -int cols
-        +DisjointSetOptimizer(int[,] pixels)
-        +void Optimize()
-        +void CreateSets()
-        +void CreateOneSet(int x, int y)
-        +bool IsNotAlone(int x, int y)
-        +void DisplaySets()
-        +List~List~(int x, int y)~~ ToResult()
-    }
-    class DisjointSet {
-        -int[] parent
-        -int[] size
-        -int count
-        +DisjointSet(int n)
-        +int GetCount()
-        +bool IsRoot(int p)
-        +int Find(int p)
-        +void Union(int p, int q)
-    }
-    class MeshOptimisation {
-        -Grid grid
-        +MeshOptimisation(int[,] pixels)
-        +void Optimize()
-        +void Display()
-    }
-    class Grid {
-        -int width
-        -int height
-        -Rectangle[,] rectangleCollection
-        -Queue~int~ searchQueue
-        +Grid(int[,] baseGrid)
-        +bool SolveMax()
-        +string Display()
-    }
-    class TouchingSide { 
-        <<Enumeration>>
-        TOP
-        BOTTOM
-        LEFT
-        RIGHT
-    }
-    class Rectangle {
-        -int X
-        -int Y
-        -int value
-        -int Index
-        +Rectangle(int x, int y, int value, int index)
-        +bool Equals(Rectangle other)
-        +Rectangle Merge(Rectangle other, int newIndex)
-        +bool IsTouching(Rectangle other)
-        +bool IsGluableTo(Rectangle other)
-        +bool IsCompatibleTo(Rectangle other)
-        +int[,] FillIndex(int[,] grid)
-        +string ToString()
-        +int Offset()
-        +int Length()
-    }
-    Program --> DisjointSetOptimizer : Uses
-    Program --> MeshOptimisation : Uses
-    DisjointSetOptimizer --> DisjointSet : Contains
-    MeshOptimisation --> Grid : Contains
-    Grid --> Rectangle : Contains
-    Rectangle --> TouchingSide : Uses
+The main goal of this project is to improve rendering performance by reducing the number of triangles that need to be processed by creating one optimized mesh per chunk. Two main techniques are applied:
+
+- **Occlusion Logic:**  
+  Determines which voxel faces are visible based on their spatial neighbors.
+- **Disjoint Set Algorithm (2D Optimization):**  
+  Merges adjacent, similar faces into larger contiguous faces, decreasing the overall triangle count.
+
+Multiple techniques can be used to optimize voxel meshes. In our current implementation, a simple occlusion algorithm is paired with a disjoint set algorithm to merge faces efficiently.
+
+## Current Status
+
+- **Completed:**
+  - Occlusion logic for extracting visible voxel faces (fully implemented and tested).
+  - A 2D disjoint set algorithm that optimizes face merging.
+  - Fundamental representations for voxels, chunks, and meshes.
+  - A Console Application Example demonstrating basic library usage.
+  
+- **Pending:**
+  - The final end-to-end integration method that will:
+    - Use occlusion logic to extract all visible faces.
+    - Optimize these faces using the 2D disjoint set algorithm.
+    - Generate a complete, optimized mesh from the processed data.
+  - Enhancements to the instantiation process (e.g., adding a factory pattern) for better maintainability and performance tuning.
+
+*Note:* The project is currently about 90% complete. The final method is still under development before the next major version (v1) is released.
+
+## Intended Audience
+
+This library is aimed at game developers and software engineers who need an efficient, flexible solution for voxel mesh optimization. It is tech-agnostic—meaning it can be integrated into various platforms and engines (a Unity example is planned for the future).
+
+## Core Features
+
+- **Optimized Mesh Creation:**  
+  Converts an entire chunk of voxels into one mesh by removing occluded faces and merging similar ones.
+- **Modular Architecture:**  
+  Interfaces hide implementation details, allowing the library to evolve without breaking existing usage.
+- **Tech-Agnostic Design:**  
+  While currently demonstrated with a console app example, the library is designed for easy integration into different environments.
+- **Extensible and Evolutive:**  
+  Future enhancements could include advanced optimization techniques such as contiguous memory arrays, vectorized operations, and support for parallelism.
+
+## Prerequisites
+
+- **.NET Version:**  
+  This project currently runs on .NET 9.
+- **Dependencies:**  
+  There are no additional prerequisites beyond the standard .NET installation.
+
+## Installation & Setup
+
+### Cloning the Repository
+
+Clone the repository using SSH:
+
+```bash
+git clone git@github.com:nicolas-goyon/RectangleMerging.git
 ```
 
-Get tree: `tree -I "bin|TestResults|obj"`
+### Building the Project
 
-Current file hierarchy : 
-```
-.
-├── README.md
-└── VoxelMeshOptimizerLibrary
-    ├── VoxelMeshOptimizerLibrary.sln
-    ├── examples
-    │   └── ConsoleAppExample
-    │       ├── ConsoleAppExample.csproj
-    │       ├── ExampleChunk.cs
-    │       ├── ExampleMesh.cs
-    │       ├── ExampleVoxel.cs
-    │       └── Program.cs
-    ├── src
-    │   └── Core
-    │       ├── Axis.cs
-    │       ├── Chunk.cs
-    │       ├── Mesh.cs
-    │       ├── MeshOptimizer.cs
-    │       ├── OcclusionAglorithms
-    │       │   ├── Common
-    │       │   │   ├── Direction.cs
-    │       │   │   ├── VisibleFaces.cs
-    │       │   │   └── VisiblePlane.cs
-    │       │   ├── Occluder.cs
-    │       │   └── VoxelOcclusionOptimizer.cs
-    │       ├── OptimizationAlgorithms
-    │       │   └── DisjointSet
-    │       │       ├── DisjointSet.cs
-    │       │       ├── DisjointSet2DOptimizer.cs
-    │       │       └── DisjointSetMeshOptimizer.cs
-    │       ├── Testing
-    │       │   └── VoxelVisibilityMap.cs
-    │       ├── Voxel.cs
-    │       └── VoxelMeshOptimizer.Core.csproj
-    └── tests
-        ├── Core
-        │   ├── AxisExtensionsTests.cs
-        │   └── ChunkInterfaceTests.cs
-        ├── DisjointSet
-        │   ├── DisjointSet2DOptimizerTests.cs
-        │   ├── DisjointSetMeshOptimizerTests.cs
-        │   └── DisjointSetTests.cs
-        ├── DummyClasses
-        │   ├── TestChunk.cs
-        │   └── TestVoxel.cs
-        ├── Occlusion
-        │   ├── Common
-        │   │   └── VisiblePlaneTests.cs
-        │   ├── VoxelOcclusionOptimizerTests.cs
-        │   └── VoxelVisibilityMapTests.cs
-        └── VoxelMeshOptimizer.Tests.csproj
-```
+1. Navigate to the project root:
 
+   ```bash
+   cd VoxelMeshOptimizerLibrary
+   dotnet restore
+   ```
 
-## Getting started
+2. Run the Console Application Example:
 
-start :
-```sh
-cd VoxelMeshOptimizerLibrary
-dotnet restore
-cd example/ConsoleAppExample/
-dotnet run
-```
+   ```bash
+   cd examples/ConsoleAppExample
+   dotnet run
+   ```
 
+3. Run Tests:
 
-tests :
-```sh
-cd VoxelMeshOptimizerLibrary
-dotnet restore
-dotnet test
-```
+   ```bash
+   cd VoxelMeshOptimizerLibrary
+   dotnet restore
+   dotnet test
+   ```
+
+*No additional environment variables or configuration files are required.*
+
+## Usage
+
+The library’s usage is demonstrated in the `ConsoleAppExample`. The typical workflow for using the library in your project is as follows:
+
+1. **Implement the Interfaces:**  
+   Create your own implementations for voxel, chunk, and mesh by following the provided interfaces.
+   
+2. **Instantiate the Optimizer:**  
+   Create an instance of the optimizer (or later, use the factory pattern to hide the class instantiation).
+   
+3. **Run the Optimization:**  
+   Call the optimization method to process a chunk, which:
+   - Extracts visible faces using occlusion logic.
+   - Optimizes the faces using the 2D disjoint set algorithm.
+   - Generates an optimized mesh based on the processed data.
+
+*Example usage is provided in the ConsoleAppExample project.*
+
+## Development & Contributing
+
+For detailed guidelines on setting up a development environment, contributing code, or reporting issues, please refer to:
+
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- [CHANGELOG.md](CHANGELOG.md)
+
+*Note:*  
+The current instantiation of the optimizer uses direct `new` calls. As the project evolves, consider adopting a factory pattern to increase maintainability and decouple direct dependencies.
+
+## Roadmap & Future Enhancements
+
+- **V1 Release:**  
+  The v1 release will feature an end-to-end fully integrated optimization method that brings together occlusion logic and disjoint set optimization to create a complete mesh.
+  
+- **Performance Improvements:**  
+  Future versions (v2 and beyond) will focus on deeper optimizations, including:
+  - Enhanced internal algorithms.
+  - Contiguous memory arrays.
+  - Vectorized operations and SIMD instructions.
+  - Integration of BLAS libraries and caching optimizations.
+  - Parallelization where possible.
+
+## Related Projects & Resources
+
+- **Elysian Outpost:**  
+  This project is part of a larger ecosystem, including the [Elysian Outpost](https://github.com/nicolas-goyon/Elysian-Outpost)—a Stonehearth-like game remake.
+
+- **Class Code to Diagram Parser:**  
+  For automatic generation of class diagrams from your C# project, check out [ClassCodeToDiagramParser](https://github.com/nicolas-goyon/ClassCodeToDiagramParser).
+
+## Support
+
+If you have questions, need help, or wish to contribute further improvements, please open an issue in the repository or reach out directly. Contributions and feedback are greatly appreciated!
+
+## License
+
+This project is licensed under the MIT License—see the [LICENSE](LICENSE) file for details.
