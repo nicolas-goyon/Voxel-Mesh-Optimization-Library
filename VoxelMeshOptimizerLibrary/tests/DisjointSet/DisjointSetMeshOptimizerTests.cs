@@ -17,6 +17,8 @@ public class DisjointSetMeshOptimizerTests
         public List<MeshQuad> Quads { get; } = new();
     }
 
+    
+
     [Fact]
     public void Optimize_ShouldThrow_WhenMeshIsNotEmpty()
     {

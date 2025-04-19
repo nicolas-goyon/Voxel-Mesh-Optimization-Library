@@ -124,27 +124,6 @@ public class DisjointSetVisiblePlaneOptimizer
 
     private int ToIndex(int x, int y) => y * width + x;
 
-    public List<List<(int x, int y)>> ToResult()
-    {
-        var groups = new Dictionary<int, List<(int x, int y)>>();
-
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                if (voxels[x, y] == null) continue;
-
-                int root = disjointSet.Find(ToIndex(x, y));
-                if (!groups.ContainsKey(root))
-                {
-                    groups[root] = [];
-                }
-                groups[root].Add((x, y));
-            }
-        }
-
-        return groups.Values.ToList();
-    }
 
     public List<MeshQuad> ToMeshQuads()
     {
