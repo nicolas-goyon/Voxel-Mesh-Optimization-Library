@@ -43,7 +43,7 @@ public class VisiblePlane
     /// The exact dimensions depend on the axes forming the plane. For instance:
     /// - If MinorAxis is Z, the plane dimensions are Voxels[x, y].
     /// </summary>
-    public Voxel?[,] Voxels { get; }
+    public Voxel?[,] Voxels { get; set; } // FIXME : The set is not good, and the current access and modification of voxels is not protected through methods nor clarified.
 
     /// <summary>
     /// Initializes a new instance of the VisiblePlane class.
@@ -146,5 +146,30 @@ public class VisiblePlane
 
         return sb.ToString();
     }
+
+
+    
+    /// <summary>
+    /// Converts the VisiblePlane's voxel array to a 2D int array,
+    /// mapping each non-null voxel to its ID and null voxels to -1.
+    /// </summary>
+    /// <returns>A 2D integer array with voxel IDs or -1 for empty spaces.</returns>
+    public int[,] ConvertToPixelArray()
+    {
+        int width = Voxels.GetLength(0);
+        int height = Voxels.GetLength(1);
+        int[,] pixelArray = new int[width, height];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                var voxel = Voxels[x, y];
+                pixelArray[x, y] = (voxel != null) ? voxel.ID : -1; // TODO : Get a look at this later on, we may need to throw errors.
+            }
+        }
+        return pixelArray;
+    }
+
 
 }

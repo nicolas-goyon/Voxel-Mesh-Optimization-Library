@@ -43,7 +43,7 @@ public class VoxelOcclusionOptimizerTests
         );
 
         // Act
-        VisibleFaces result = optimizer.ComputeVisiblePlanes();
+        VisibleFaces result = optimizer.ComputeVisibleFaces();
 
         // Assert
         Assert.NotNull(result);
@@ -80,7 +80,7 @@ public class VoxelOcclusionOptimizerTests
         var optimizer = new VoxelOcclusionOptimizer(fullChunk);
 
         // Act
-        VisibleFaces result = optimizer.ComputeVisiblePlanes();
+        VisibleFaces result = optimizer.ComputeVisibleFaces();
 
         // Assert
         Assert.NotNull(result);
@@ -107,7 +107,7 @@ public class VoxelOcclusionOptimizerTests
         var optimizer = new VoxelOcclusionOptimizer(singleVoxelChunk);
 
         // Act
-        VisibleFaces result = optimizer.ComputeVisiblePlanes();
+        VisibleFaces result = optimizer.ComputeVisibleFaces();
 
         // Assert
         Assert.NotNull(result);
@@ -156,7 +156,7 @@ public class VoxelOcclusionOptimizerTests
         var optimizer = new VoxelOcclusionOptimizer(irregularChunk);
 
         // Act
-        VisibleFaces result = optimizer.ComputeVisiblePlanes();
+        VisibleFaces result = optimizer.ComputeVisibleFaces();
 
         // Assert
         Assert.NotNull(result);

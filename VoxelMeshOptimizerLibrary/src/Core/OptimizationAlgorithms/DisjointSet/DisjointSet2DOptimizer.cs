@@ -1,174 +1,210 @@
+using System.Numerics;
 using CommunityToolkit.Diagnostics;
+using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 
 namespace VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
 
 /// <summary>
-/// Optimizes a 2D array of pixels by merging contiguous regions of the same color
-/// using a disjoint set (union-find) data structure.
+/// Optimizes a 2D VisiblePlane by merging contiguous regions of solid voxels with the same ID.
 /// </summary>
-public class DisjointSet2DOptimizer {
-
+public class DisjointSetVisiblePlaneOptimizer
+{
     private readonly DisjointSet disjointSet;
-    private readonly int[,] pixels;
-    private readonly int rows;
-    private readonly int cols;
+    private readonly VisiblePlane plane;
+    private readonly Voxel?[,] voxels;
+    private readonly int width;
+    private readonly int height;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DisjointSet2DOptimizer"/> class.
-    /// </summary>
-    /// <param name="pixels">A 2D array representing pixel colors.</param>
-    /// <exception cref="ArgumentNullException">Thrown when the pixels array is null.</exception>
-    /// <exception cref="ArgumentException">Thrown when the pixels array is empty.</exception>
-    public DisjointSet2DOptimizer(int[,] pixels) {
-        Guard.IsNotNull(pixels, nameof(pixels));
-        Guard.IsGreaterThan(pixels.GetLength(0), 0, nameof(pixels));
-        Guard.IsGreaterThan(pixels.GetLength(1), 0, nameof(pixels));
+    public DisjointSetVisiblePlaneOptimizer(VisiblePlane plane)
+    {
+        Guard.IsNotNull(plane, nameof(plane));
+        Guard.IsNotNull(plane.Voxels, nameof(plane.Voxels));
+        this.plane = plane;
+        voxels = plane.Voxels;
+        width = voxels.GetLength(0);
+        height = voxels.GetLength(1);
 
-        this.pixels = pixels;
-        rows = pixels.GetLength(0);
-        cols = pixels.GetLength(1);
-        disjointSet = new DisjointSet(rows * cols);
+        Guard.IsGreaterThan(width, 0, nameof(width));
+        Guard.IsGreaterThan(height, 0, nameof(height));
+
+        disjointSet = new DisjointSet(width * height);
     }
 
-    /// <summary>
-    /// Executes the optimization process by identifying and merging contiguous
-    /// regions of the same color in the pixel array.
-    /// </summary>
-    public void Optimize() {
+    public void Optimize()
+    {
         CreateSets();
     }
 
-
-    /// <summary>
-    /// Creates disjoint sets for all pixels, merging contiguous regions of the same color.
-    /// </summary>
-    private void CreateSets() {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                // Skip pixels that are already part of a set
-                if (IsNotAlone(i, j)) { 
+    private void CreateSets()
+    {
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (voxels[x, y] == null || IsNotAlone(x, y))
                     continue;
-                }
-                CreateOneSet(i, j);
+
+                CreateOneSet(x, y);
             }
         }
     }
 
-    /// <summary>
-    /// Creates a set for a contiguous region of pixels starting from the specified coordinates.
-    /// </summary>
-    /// <param name="x">The row index of the starting pixel.</param>
-    /// <param name="y">The column index of the starting pixel.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when the coordinates (x, y) are out of the pixel array bounds.
-    /// </exception>
-    private void CreateOneSet(int x, int y) {
-        Guard.IsInRange(x, 0, rows, nameof(x));
-        Guard.IsInRange(y, 0, cols, nameof(y));
+    private void CreateOneSet(int x, int y)
+    {
+        Guard.IsInRange(x, 0, width, nameof(x));
+        Guard.IsInRange(y, 0, height, nameof(y));
+
+        var rootVoxel = voxels[x, y];
+        if (rootVoxel == null) return;
 
         int currentWidth = 1;
         int currentHeight = 1;
 
-        // Expand the rectangle to the right
-        int nextY = y + currentWidth;
-        while (nextY < cols && pixels[x, y] == pixels[x, nextY] && !IsNotAlone(x, nextY))
+        // Expand to the right
+        while (x + currentWidth < width &&
+               voxels[x + currentWidth, y]?.ID == rootVoxel.ID &&
+               !IsNotAlone(x + currentWidth, y))
         {
             currentWidth++;
-            nextY = y + currentWidth;
         }
 
-        // Expand the rectangle downward
-        int nextX = x + currentHeight;
-        while (nextX < rows)
+        // Expand downward
+        while (y + currentHeight < height)
         {
-            bool sameColor = true;
-            for (int i = y; i < y + currentWidth; i++)
+            bool canExpand = true;
+            for (int dx = 0; dx < currentWidth; dx++)
             {
-                if (pixels[x, y] != pixels[nextX, i] || IsNotAlone(nextX, i))
+                var v = voxels[x + dx, y + currentHeight];
+                if (v?.ID != rootVoxel.ID || IsNotAlone(x + dx, y + currentHeight))
                 {
-                    sameColor = false;
+                    canExpand = false;
                     break;
                 }
             }
-
-            if (!sameColor)
-            {
-                break;
-            }
-
+            if (!canExpand) break;
             currentHeight++;
-            nextX = x + currentHeight;
         }
 
-
-        // Merge the identified region into a single set
-        for (int i = x; i < x + currentHeight; i++) {
-            for (int j = y; j < y + currentWidth; j++) {
-                disjointSet.Union(x * cols + y, i * cols + j);
+        // Union the whole block
+        int rootIndex = ToIndex(x, y);
+        for (int dy = 0; dy < currentHeight; dy++)
+        {
+            for (int dx = 0; dx < currentWidth; dx++)
+            {
+                disjointSet.Union(rootIndex, ToIndex(x + dx, y + dy));
             }
         }
-
     }
 
-    /// <summary>
-    /// Determines whether the pixel at the specified coordinates is part of an existing set.
-    /// </summary>
-    /// <param name="x">The row index of the pixel.</param>
-    /// <param name="y">The column index of the pixel.</param>
-    /// <returns>
-    /// <c>true</c> if the pixel is part of an existing set; otherwise, <c>false</c>.
-    /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when the coordinates (x, y) are out of the pixel array bounds.
-    /// </exception>
-    private bool IsNotAlone(int x, int y) {
-        Guard.IsInRange(x, 0, rows, nameof(x));
-        Guard.IsInRange(y, 0, cols, nameof(y));
-        
-        int root = disjointSet.Find(x * cols + y);
+    private bool IsNotAlone(int x, int y)
+    {
+        Guard.IsInRange(x, 0, width, nameof(x));
+        Guard.IsInRange(y, 0, height, nameof(y));
 
-        if (root != x * cols + y) {
-            return true;
-        }
+        var voxel = voxels[x, y];
+        if (voxel == null) return true;
 
-        // Check adjacent pixels
-        return (x - 1 >= 0     && disjointSet.Find((x - 1) * cols + y) == root) ||
-            (x + 1 < rows   && disjointSet.Find((x + 1) * cols + y) == root) ||
-            (y - 1 >= 0     && disjointSet.Find(x * cols + y - 1)   == root) ||
-            (y + 1 < cols   && disjointSet.Find(x * cols + y + 1)   == root);
-        
+        int root = disjointSet.Find(ToIndex(x, y));
+        if (root != ToIndex(x, y)) return true;
+
+        return (x > 0     && AreSame(x, y, x - 1, y)) ||
+               (x < width - 1 && AreSame(x, y, x + 1, y)) ||
+               (y > 0     && AreSame(x, y, x, y - 1)) ||
+               (y < height - 1 && AreSame(x, y, x, y + 1));
     }
 
+    private bool AreSame(int x1, int y1, int x2, int y2)
+    {
+        var v1 = voxels[x1, y1];
+        var v2 = voxels[x2, y2];
+        if (v1 == null || v2 == null) return false;
+        return v1.ID == v2.ID &&
+               disjointSet.Find(ToIndex(x2, y2)) == disjointSet.Find(ToIndex(x1, y1));
+    }
 
-    /// <summary>
-    /// Converts the disjoint sets into a list of pixel coordinate groups.
-    /// </summary>
-    /// <returns>
-    /// A list where each element is a list of tuples representing the coordinates
-    /// of pixels in the same set.
-    /// </returns>
-    public List<List<(int x, int y)>> ToResult() {
+    private int ToIndex(int x, int y) => y * width + x;
 
-        Dictionary<int, List<(int x, int y)>> sets = [];
+    public List<List<(int x, int y)>> ToResult()
+    {
+        var groups = new Dictionary<int, List<(int x, int y)>>();
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                int root = disjointSet.Find(i * cols + j);
-                if (!sets.ContainsKey(root)) {
-                    sets[root] = [];
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (voxels[x, y] == null) continue;
+
+                int root = disjointSet.Find(ToIndex(x, y));
+                if (!groups.ContainsKey(root))
+                {
+                    groups[root] = [];
                 }
-                sets[root].Add((i, j));
+                groups[root].Add((x, y));
             }
         }
 
-        List<List<(int x, int y)>> result = [];
-        foreach (var set in sets) {
-            result.Add(set.Value);
-        }
-
-
-        return result;
+        return groups.Values.ToList();
     }
 
+    public List<MeshQuad> ToMeshQuads()
+    {
+        var groups = new Dictionary<int, List<(int x, int y)>>();
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                if (voxels[x, y] == null) continue;
+
+                int root = disjointSet.Find(ToIndex(x, y));
+                if (!groups.ContainsKey(root))
+                {
+                    groups[root] = [];
+                }
+                groups[root].Add((x, y));
+            }
+        }
+
+        var quads = new List<MeshQuad>();
+        foreach (var group in groups.Values)
+        {
+            var minX = group.Min(p => p.x);
+            var maxX = group.Max(p => p.x);
+            var minY = group.Min(p => p.y);
+            var maxY = group.Max(p => p.y);
+
+            int width = maxX - minX + 1;
+            int height = maxY - minY + 1;
+
+            var origin = new Vector3();
+            origin.SetAxis(plane.MajorAxis, plane.MajorAxisOrder == AxisOrder.Ascending ? minX : -minX);
+            origin.SetAxis(plane.MiddleAxis, plane.MiddleAxisOrder == AxisOrder.Ascending ? minY : -minY);
+            origin.SetAxis(plane.MinorAxis, plane.MinorAxisOrder == AxisOrder.Ascending ? (float)plane.SliceIndex : -(float)plane.SliceIndex);
+
+            var right = AxisExtensions.Direction(plane.MajorAxis, plane.MajorAxisOrder);
+            var up    = AxisExtensions.Direction(plane.MiddleAxis, plane.MiddleAxisOrder);
+            var normal = AxisExtensions.Direction(plane.MinorAxis, plane.MinorAxisOrder);
+
+            // Construct corners (clockwise)
+            var v0 = origin;
+            var v1 = origin + right * width;
+            var v2 = origin + right * width + up * height;
+            var v3 = origin + up * height;
+
+            int voxelId = voxels[minX, minY]!.ID;
+
+            quads.Add(new MeshQuad
+            {
+                Vertex0 = v0,
+                Vertex1 = v1,
+                Vertex2 = v2,
+                Vertex3 = v3,
+                Normal = normal,
+                VoxelID = voxelId
+            });
+        }
+
+        return quads;
+    }
 
 }

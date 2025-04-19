@@ -108,4 +108,72 @@ public class VisiblePlaneTests
         // Assert
         Assert.Same(voxel, plane.Voxels[0, 0]);
     }
+
+
+    [Fact]
+    public void ConvertToPixelArray_AllVoxelsNonNull_ReturnsCorrectIDs()
+    {
+        // Arrange: Create a 2x2 VisiblePlane with all voxels.
+        Voxel?[,] voxels = new Voxel?[2, 2]
+        {
+            { new TestVoxel(10, true), new TestVoxel(20, true) },
+            { new TestVoxel(30, true), new TestVoxel(40, true) }
+        };
+        
+        VisiblePlane plane = new VisiblePlane(
+            majorAxis: Axis.X, majorAxisOrder: AxisOrder.Ascending,
+            middleAxis: Axis.Y, middleAxisOrder: AxisOrder.Ascending,
+            minorAxis: Axis.Z, minorAxisOrder: AxisOrder.Ascending,
+            sliceIndex: 0,
+            width: 2,
+            height: 2)
+        {
+            Voxels = voxels
+        };
+
+        // Act
+        int[,] result = plane.ConvertToPixelArray();
+
+        // Assert: Verify that each element has the expected ID.
+        Assert.Equal(10, result[0, 0]);
+        Assert.Equal(20, result[0, 1]);
+        Assert.Equal(30, result[1, 0]);
+        Assert.Equal(40, result[1, 1]);
+    }
+
+    [Fact]
+    public void ConvertToPixelArray_WithNullVoxels_ReturnsMinusOneForNulls()
+    {
+        // Arrange: Create a 3x2 VisiblePlane with some null voxels.
+        Voxel?[,] voxels = new Voxel?[3, 2]
+        {
+            { new TestVoxel(5, true), null },
+            { null, new TestVoxel(15, true) },
+            { new TestVoxel(25, true), new TestVoxel(35, true) }
+        };
+
+        VisiblePlane plane = new VisiblePlane(
+            majorAxis: Axis.X, majorAxisOrder: AxisOrder.Ascending,
+            middleAxis: Axis.Y, middleAxisOrder: AxisOrder.Ascending,
+            minorAxis: Axis.Z, minorAxisOrder: AxisOrder.Ascending,
+            sliceIndex: 1,
+            width: 3,
+            height: 2)
+        {
+            Voxels = voxels
+        };
+
+        // Act
+        int[,] result = plane.ConvertToPixelArray();
+
+        // Assert: Verify the proper mapping of non-null and null voxels.
+        Assert.Equal(5, result[0, 0]);
+        Assert.Equal(-1, result[0, 1]);
+        Assert.Equal(-1, result[1, 0]);
+        Assert.Equal(15, result[1, 1]);
+        Assert.Equal(25, result[2, 0]);
+        Assert.Equal(35, result[2, 1]);
+    }
+
+
 }

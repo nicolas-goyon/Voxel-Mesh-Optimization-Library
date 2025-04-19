@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace VoxelMeshOptimizer.Core;
 
 /// <summary>
@@ -76,7 +78,27 @@ public static class AxisExtensions {
         return depth;
     }
 
+    public static void SetAxis(this ref Vector3 vector, Axis axis, float value)
+    {
+        switch (axis)
+        {
+            case Axis.X: vector.X = value; break;
+            case Axis.Y: vector.Y = value; break;
+            case Axis.Z: vector.Z = value; break;
+        }
+    }
 
+    public static Vector3 Direction(Axis axis, AxisOrder order)
+    {
+        float sign = order == AxisOrder.Ascending ? 1f : -1f;
+        return axis switch
+        {
+            Axis.X => new Vector3(sign, 0, 0),
+            Axis.Y => new Vector3(0, sign, 0),
+            Axis.Z => new Vector3(0, 0, sign),
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
     
 
     /// <summary>

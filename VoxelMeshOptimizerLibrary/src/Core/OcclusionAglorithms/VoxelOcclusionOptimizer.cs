@@ -37,7 +37,7 @@ public class VoxelOcclusionOptimizer : Occluder
     /// <returns>
     /// A <see cref="VisibleFaces"/> instance containing the visible planes grouped by axis and order.
     /// </returns>
-    public VisibleFaces ComputeVisiblePlanes()
+    public VisibleFaces ComputeVisibleFaces()
     {
         var result = new VisibleFaces();
 
