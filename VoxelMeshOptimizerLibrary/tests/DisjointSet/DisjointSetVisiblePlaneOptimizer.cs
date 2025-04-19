@@ -20,7 +20,7 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
         );
         for (int x = 0; x < w; x++)
             for (int y = 0; y < h; y++)
-                if (ids[x, y].HasValue)
+                if (ids[x, y] != null && ids[x, y].HasValue)
                     plane.Voxels[x, y] = new TestVoxel(ids[x, y].Value, true);
         return plane;
     }
