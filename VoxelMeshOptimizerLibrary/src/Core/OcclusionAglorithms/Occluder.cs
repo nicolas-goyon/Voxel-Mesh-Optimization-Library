@@ -10,5 +10,5 @@ public interface Occluder
     /// representing all visible faces in the chunk. Each plane references the voxels
     /// that have a face visible in that slice and direction.
     /// </summary>
-    public VisibleFaces ComputeVisiblePlanes();
+    public VisibleFaces ComputeVisibleFaces();
 }
