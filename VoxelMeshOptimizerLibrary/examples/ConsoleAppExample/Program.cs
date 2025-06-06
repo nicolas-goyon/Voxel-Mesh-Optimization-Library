@@ -13,7 +13,8 @@ class Program
             { {0,0,0} , {0,0,0}, {0,0,0}},
         };
         var exampleChunk = new ExampleChunk(voxels);
-        var optimizer = new DisjointSetMeshOptimizer();
+        var mesh = new ExampleMesh();
+        var optimizer = new DisjointSetMeshOptimizer(mesh);
         Mesh optimizedMesh = optimizer.Optimize(exampleChunk);
 
         Console.WriteLine("Mesh optimized successfully!");
