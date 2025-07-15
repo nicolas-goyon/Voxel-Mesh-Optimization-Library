@@ -1,123 +1,132 @@
 using System;
 using System.Numerics;
 
-namespace VoxelVisibility
+namespace VoxelVisibility;
+
+public static class VisibilityCalculatorSimd
 {
-    public static class VisibilityCalculatorSimd
+    /// <summary>
+    /// Convert a standard 3D voxel array into a vectorized representation along the X axis.
+    /// Padding is added so that the X dimension becomes a multiple of <see cref="Vector{Double}.Count"/>.
+    /// </summary>
+    public static Vector<double>[,,] Pack(double[,,] voxels)
     {
-        /// <summary>
-        /// Given a 3D array of values [x,y,z] and a threshold,
-        /// returns a 3D array of bool[6], indicating for each voxel which faces are visible.
-        /// This implementation processes X in SIMD lanes of Vector<double>.Count.
-        /// </summary>
-        public static bool[,,][] GetVisibleFaces(double[,,] voxels, double threshold = 0.5)
+        int sizeX = voxels.GetLength(0);
+        int sizeY = voxels.GetLength(1);
+        int sizeZ = voxels.GetLength(2);
+
+        int vecSize = Vector<double>.Count;
+        int sizeXVec = (sizeX + vecSize - 1) / vecSize;
+        var result = new Vector<double>[sizeXVec, sizeY, sizeZ];
+        double[] buffer = new double[vecSize];
+
+        for (int y = 0; y < sizeY; y++)
+        for (int z = 0; z < sizeZ; z++)
         {
-            int sizeX = voxels.GetLength(0);
-            int sizeY = voxels.GetLength(1);
-            int sizeZ = voxels.GetLength(2);
-
-            var visible = new bool[sizeX, sizeY, sizeZ][];            
-            int vecSize = Vector<double>.Count;
-            var threshVec = new Vector<double>(threshold);
-
-            // Allocate temporary buffers for neighbor loads
-            double[] currArr = new double[vecSize];
-            double[] leftArr = new double[vecSize];
-            double[] rightArr = new double[vecSize];
-            
-            for (int y = 0; y < sizeY; y++)
-            for (int z = 0; z < sizeZ; z++)
+            for (int vx = 0; vx < sizeXVec; vx++)
             {
-                // Precompute scalar neighbor rows for y±1, z±1
-                for (int x = 0; x < sizeX; x++)
-                    visible[x, y, z] = new bool[6];
-
-                for (int x = 0; x < sizeX; x += vecSize)
+                int baseX = vx * vecSize;
+                for (int lane = 0; lane < vecSize; lane++)
                 {
-                    int chunk = Math.Min(vecSize, sizeX - x);
+                    int xi = baseX + lane;
+                    buffer[lane] = xi < sizeX ? voxels[xi, y, z] : 0.0;
+                }
+                result[vx, y, z] = new Vector<double>(buffer);
+            }
+        }
 
-                    // Load current voxels into currArr
-                    for (int i = 0; i < chunk; i++)
-                        currArr[i] = voxels[x + i, y, z];
-                    // For out‐of‐bounds neighbors, fill with 0.0
-                    for (int i = chunk; i < vecSize; i++)
-                        currArr[i] = 0.0;
+        return result;
+    }
 
-                    // Load left neighbor
-                    for (int i = 0; i < chunk; i++)
-                    {
-                        int xi = x + i - 1;
-                        leftArr[i] = (xi >= 0) ? voxels[xi, y, z] : 0.0;
-                    }
-                    for (int i = chunk; i < vecSize; i++)
-                        leftArr[i] = 0.0;
+    /// <summary>
+    /// Given a vectorized voxel array and the original X dimension, compute the visible faces.
+    /// </summary>
+    public static bool[,,][] GetVisibleFaces(Vector<double>[,,] voxels, int sizeX, double threshold = 0.5)
+    {
+        int vecSize = Vector<double>.Count;
+        int sizeXVec = voxels.GetLength(0);
+        int sizeY = voxels.GetLength(1);
+        int sizeZ = voxels.GetLength(2);
 
-                    // Load right neighbor
-                    for (int i = 0; i < chunk; i++)
-                    {
-                        int xi = x + i + 1;
-                        rightArr[i] = (xi < sizeX) ? voxels[xi, y, z] : 0.0;
-                    }
-                    for (int i = chunk; i < vecSize; i++)
-                        rightArr[i] = 0.0;
+        var visible = new bool[sizeX, sizeY, sizeZ][];
+        var threshVec = new Vector<double>(threshold);
 
-                    // Create vectors
-                    var vCurr  = new Vector<double>(currArr);
-                    var vLeft  = new Vector<double>(leftArr);
-                    var vRight = new Vector<double>(rightArr);
+        double[] scratch = new double[vecSize];
 
-                    // Masks: inside = curr > threshold
-                    var mInside = Vector.GreaterThan(vCurr, threshVec);
+        for (int y = 0; y < sizeY; y++)
+        for (int z = 0; z < sizeZ; z++)
+        {
+            for (int vx = 0; vx < sizeXVec; vx++)
+            {
+                Vector<double> curr = voxels[vx, y, z];
+                Vector<double> prev = vx > 0 ? voxels[vx - 1, y, z] : Vector<double>.Zero;
+                Vector<double> next = vx < sizeXVec - 1 ? voxels[vx + 1, y, z] : Vector<double>.Zero;
 
-                    // Along X:
-                    var mLeftFace  = Vector.BitwiseAnd(mInside, Vector.LessThan(vLeft, threshVec));
-                    var mRightFace = Vector.BitwiseAnd(mInside, Vector.LessThan(vRight, threshVec));
+                // Shift to obtain neighbours in the X direction
+                Vector<double> leftVec = ShiftRightOne(curr, prev, scratch);
+                Vector<double> rightVec = ShiftLeftOne(curr, next, scratch);
 
-                    // Along Y and Z: scalar comparison per lane
-                    for (int i = 0; i < chunk; i++)
-                    {
-                        int xi = x + i;
-                        bool inside = currArr[i] > threshold;
+                var mInside = Vector.GreaterThan(curr, threshVec);
+                var mLeftFace = Vector.BitwiseAnd(mInside, Vector.LessThan(leftVec, threshVec));
+                var mRightFace = Vector.BitwiseAnd(mInside, Vector.LessThan(rightVec, threshVec));
 
-                        // Bottom (y-1) and Top (y+1)
-                        bool bottom = inside && GetValue(voxels, xi, y - 1, z, sizeX, sizeY, sizeZ) < threshold;
-                        bool top    = inside && GetValue(voxels, xi, y + 1, z, sizeX, sizeY, sizeZ) < threshold;
+                for (int lane = 0; lane < vecSize; lane++)
+                {
+                    int xi = vx * vecSize + lane;
+                    if (xi >= sizeX)
+                        break;
 
-                        // Back (z-1) and Front (z+1)
-                        bool back  = inside && GetValue(voxels, xi, y, z - 1, sizeX, sizeY, sizeZ) < threshold;
-                        bool front = inside && GetValue(voxels, xi, y, z + 1, sizeX, sizeY, sizeZ) < threshold;
+                    bool inside = mInside[lane] != 0.0;
+                    bool left = mLeftFace[lane] != 0.0;
+                    bool right = mRightFace[lane] != 0.0;
 
-                        // Pack vector lanes for left & right
-                        bool left  = mLeftFace[i] != 0.0;
-                        bool right = mRightFace[i] != 0.0;
+                    bool bottom = inside && GetValue(voxels, xi, y - 1, z, sizeX, sizeY, sizeZ) < threshold;
+                    bool top    = inside && GetValue(voxels, xi, y + 1, z, sizeX, sizeY, sizeZ) < threshold;
+                    bool back   = inside && GetValue(voxels, xi, y, z - 1, sizeX, sizeY, sizeZ) < threshold;
+                    bool front  = inside && GetValue(voxels, xi, y, z + 1, sizeX, sizeY, sizeZ) < threshold;
 
-                        var faces = new bool[6];
-                        faces[(int)Face.Left]   = left;
-                        faces[(int)Face.Right]  = right;
-                        faces[(int)Face.Bottom] = bottom;
-                        faces[(int)Face.Top]    = top;
-                        faces[(int)Face.Back]   = back;
-                        faces[(int)Face.Front]  = front;
+                    var faces = new bool[6];
+                    faces[(int)Face.Left] = left;
+                    faces[(int)Face.Right] = right;
+                    faces[(int)Face.Bottom] = bottom;
+                    faces[(int)Face.Top] = top;
+                    faces[(int)Face.Back] = back;
+                    faces[(int)Face.Front] = front;
 
-                        visible[xi, y, z] = faces;
-                    }
+                    visible[xi, y, z] = faces;
                 }
             }
-
-            return visible;
         }
 
-        /// <summary>
-        /// Safely get a voxel value, returning 0 if out of bounds.
-        /// </summary>
-        private static double GetValue(double[,,] voxels, int x, int y, int z, int sizeX, int sizeY, int sizeZ)
-        {
-            if (x < 0 || x >= sizeX ||
-                y < 0 || y >= sizeY ||
-                z < 0 || z >= sizeZ)
-                return 0.0; 
+        return visible;
+    }
 
-            return voxels[x, y, z];
-        }
+    private static Vector<double> ShiftLeftOne(Vector<double> current, Vector<double> next, double[] scratch)
+    {
+        current.CopyTo(scratch);
+        for (int i = 0; i < scratch.Length - 1; i++)
+            scratch[i] = scratch[i + 1];
+        scratch[scratch.Length - 1] = next[0];
+        return new Vector<double>(scratch);
+    }
+
+    private static Vector<double> ShiftRightOne(Vector<double> current, Vector<double> prev, double[] scratch)
+    {
+        current.CopyTo(scratch);
+        for (int i = scratch.Length - 1; i > 0; i--)
+            scratch[i] = scratch[i - 1];
+        scratch[0] = prev[scratch.Length - 1];
+        return new Vector<double>(scratch);
+    }
+
+    private static double GetValue(Vector<double>[,,] voxels, int x, int y, int z, int sizeX, int sizeY, int sizeZ)
+    {
+        if (x < 0 || x >= sizeX || y < 0 || y >= sizeY || z < 0 || z >= sizeZ)
+            return 0.0;
+
+        int vecSize = Vector<double>.Count;
+        int vx = x / vecSize;
+        int lane = x % vecSize;
+        return voxels[vx, y, z][lane];
     }
 }

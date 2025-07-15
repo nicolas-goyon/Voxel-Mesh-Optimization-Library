@@ -18,9 +18,9 @@ class Program
 
         // Console.WriteLine("Mesh optimized successfully!");
 
-        Console.WriteLine($"Results equal");
+        Console.WriteLine($"Program start");
         SimdExample.Run();
-        Console.WriteLine($"Results equal");
+        Console.WriteLine($"Program ends");
     }
 }
 
