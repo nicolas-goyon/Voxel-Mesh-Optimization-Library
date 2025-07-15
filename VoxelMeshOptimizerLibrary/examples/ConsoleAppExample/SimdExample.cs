@@ -11,7 +11,7 @@ public class SimdExample
     {
         // Dimensions
         const double threshold = 0.5;
-        const int sizeX = 400, sizeY = 400, sizeZ = 400;
+        const int sizeX = 200, sizeY = 200, sizeZ = 200;
 
         // Generate random voxels
         var rnd = new Random();
@@ -29,9 +29,9 @@ public class SimdExample
         Console.WriteLine($"Computed visible faces for {sizeX}×{sizeY}×{sizeZ} voxels in {sw.Elapsed.TotalMilliseconds:N2} ms.");
 
 
-        var packed = VisibilityCalculatorSimd.Pack(voxels);
+        var packed = VisibilityCalculatorSimd.Pack(voxels, threshold);
         sw = Stopwatch.StartNew();
-        var visible = VisibilityCalculatorSimd.GetVisibleFaces(packed, sizeX, threshold);
+        var visible = VisibilityCalculatorSimd.GetVisibleFaces(packed, sizeX, sizeY, sizeZ);
         sw.Stop();
         Console.WriteLine($"Computed visible faces for SIMD : {sizeX}×{sizeY}×{sizeZ} voxels in {sw.Elapsed.TotalMilliseconds:N2} ms.");
 

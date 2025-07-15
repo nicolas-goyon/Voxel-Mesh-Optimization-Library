@@ -6,127 +6,106 @@ namespace VoxelVisibility;
 public static class VisibilityCalculatorSimd
 {
     /// <summary>
-    /// Convert a standard 3D voxel array into a vectorized representation along the X axis.
-    /// Padding is added so that the X dimension becomes a multiple of <see cref="Vector{Double}.Count"/>.
+    /// Pack a 3D array of doubles into a 1D boolean array where each element
+    /// indicates whether the corresponding voxel value is above the given threshold.
+    /// The returned array is indexed using <c>x + y * sizeX + z * sizeX * sizeY</c>.
     /// </summary>
-    public static Vector<double>[,,] Pack(double[,,] voxels)
+    public static bool[] Pack(double[,,] voxels, double threshold = 0.5)
     {
         int sizeX = voxels.GetLength(0);
         int sizeY = voxels.GetLength(1);
         int sizeZ = voxels.GetLength(2);
+        long total = (long)sizeX * sizeY * sizeZ;
+        if (total > int.MaxValue)
+            throw new ArgumentException("Voxel grid too large", nameof(voxels));
 
-        int vecSize = Vector<double>.Count;
-        int sizeXVec = (sizeX + vecSize - 1) / vecSize;
-        var result = new Vector<double>[sizeXVec, sizeY, sizeZ];
-        double[] buffer = new double[vecSize];
-
-        for (int y = 0; y < sizeY; y++)
+        var result = new bool[total];
+        int idx = 0;
         for (int z = 0; z < sizeZ; z++)
-        {
-            for (int vx = 0; vx < sizeXVec; vx++)
-            {
-                int baseX = vx * vecSize;
-                for (int lane = 0; lane < vecSize; lane++)
-                {
-                    int xi = baseX + lane;
-                    buffer[lane] = xi < sizeX ? voxels[xi, y, z] : 0.0;
-                }
-                result[vx, y, z] = new Vector<double>(buffer);
-            }
-        }
-
+            for (int y = 0; y < sizeY; y++)
+                for (int x = 0; x < sizeX; x++)
+                    result[idx++] = voxels[x, y, z] > threshold;
         return result;
     }
 
     /// <summary>
-    /// Given a vectorized voxel array and the original X dimension, compute the visible faces.
+    /// Compute visible faces using a packed boolean voxel array. The X, Y and Z
+    /// dimensions must match those used to pack the array.
     /// </summary>
-    public static bool[,,][] GetVisibleFaces(Vector<double>[,,] voxels, int sizeX, double threshold = 0.5)
+    public static bool[,,][] GetVisibleFaces(bool[] voxels, int sizeX, int sizeY, int sizeZ)
     {
-        int vecSize = Vector<double>.Count;
-        int sizeXVec = voxels.GetLength(0);
-        int sizeY = voxels.GetLength(1);
-        int sizeZ = voxels.GetLength(2);
+        long total = (long)sizeX * sizeY * sizeZ;
+        if (voxels.Length < total)
+            throw new ArgumentException("Voxel array is smaller than expected", nameof(voxels));
 
         var visible = new bool[sizeX, sizeY, sizeZ][];
-        var threshVec = new Vector<double>(threshold);
+        int vecSize = Vector<byte>.Count;
+        byte[] currArr = new byte[vecSize];
+        byte[] leftArr = new byte[vecSize];
+        byte[] rightArr = new byte[vecSize];
 
-        double[] scratch = new double[vecSize];
-
-        for (int y = 0; y < sizeY; y++)
-        for (int z = 0; z < sizeZ; z++)
+        for (int index = 0; index < voxels.Length; index += vecSize)
         {
-            for (int vx = 0; vx < sizeXVec; vx++)
+            int chunk = Math.Min(vecSize, voxels.Length - index);
+            for (int i = 0; i < chunk; i++)
             {
-                Vector<double> curr = voxels[vx, y, z];
-                Vector<double> prev = vx > 0 ? voxels[vx - 1, y, z] : Vector<double>.Zero;
-                Vector<double> next = vx < sizeXVec - 1 ? voxels[vx + 1, y, z] : Vector<double>.Zero;
+                int idx = index + i;
+                int x = idx % sizeX;
+                int y = (idx / sizeX) % sizeY;
+                int z = idx / (sizeX * sizeY);
+                currArr[i] = voxels[idx] ? (byte)1 : (byte)0;
+                leftArr[i] = GetValue(voxels, x - 1, y, z, sizeX, sizeY, sizeZ) ? (byte)1 : (byte)0;
+                rightArr[i] = GetValue(voxels, x + 1, y, z, sizeX, sizeY, sizeZ) ? (byte)1 : (byte)0;
+            }
+            for (int i = chunk; i < vecSize; i++)
+            {
+                currArr[i] = 0;
+                leftArr[i] = 0;
+                rightArr[i] = 0;
+            }
 
-                // Shift to obtain neighbours in the X direction
-                Vector<double> leftVec = ShiftRightOne(curr, prev, scratch);
-                Vector<double> rightVec = ShiftLeftOne(curr, next, scratch);
+            var vCurr = new Vector<byte>(currArr);
+            var vLeft = new Vector<byte>(leftArr);
+            var vRight = new Vector<byte>(rightArr);
 
-                var mInside = Vector.GreaterThan(curr, threshVec);
-                var mLeftFace = Vector.BitwiseAnd(mInside, Vector.LessThan(leftVec, threshVec));
-                var mRightFace = Vector.BitwiseAnd(mInside, Vector.LessThan(rightVec, threshVec));
+            var mLeftFace = Vector.BitwiseAnd(vCurr, Vector.OnesComplement(vLeft));
+            var mRightFace = Vector.BitwiseAnd(vCurr, Vector.OnesComplement(vRight));
 
-                for (int lane = 0; lane < vecSize; lane++)
-                {
-                    int xi = vx * vecSize + lane;
-                    if (xi >= sizeX)
-                        break;
+            for (int i = 0; i < chunk; i++)
+            {
+                int idx = index + i;
+                int x = idx % sizeX;
+                int y = (idx / sizeX) % sizeY;
+                int z = idx / (sizeX * sizeY);
+                bool inside = currArr[i] != 0;
+                bool left = mLeftFace[i] != 0;
+                bool right = mRightFace[i] != 0;
 
-                    bool inside = mInside[lane] != 0.0;
-                    bool left = mLeftFace[lane] != 0.0;
-                    bool right = mRightFace[lane] != 0.0;
+                bool bottom = inside && !GetValue(voxels, x, y - 1, z, sizeX, sizeY, sizeZ);
+                bool top    = inside && !GetValue(voxels, x, y + 1, z, sizeX, sizeY, sizeZ);
+                bool back   = inside && !GetValue(voxels, x, y, z - 1, sizeX, sizeY, sizeZ);
+                bool front  = inside && !GetValue(voxels, x, y, z + 1, sizeX, sizeY, sizeZ);
 
-                    bool bottom = inside && GetValue(voxels, xi, y - 1, z, sizeX, sizeY, sizeZ) < threshold;
-                    bool top    = inside && GetValue(voxels, xi, y + 1, z, sizeX, sizeY, sizeZ) < threshold;
-                    bool back   = inside && GetValue(voxels, xi, y, z - 1, sizeX, sizeY, sizeZ) < threshold;
-                    bool front  = inside && GetValue(voxels, xi, y, z + 1, sizeX, sizeY, sizeZ) < threshold;
+                var faces = new bool[6];
+                faces[(int)Face.Left] = left;
+                faces[(int)Face.Right] = right;
+                faces[(int)Face.Bottom] = bottom;
+                faces[(int)Face.Top] = top;
+                faces[(int)Face.Back] = back;
+                faces[(int)Face.Front] = front;
 
-                    var faces = new bool[6];
-                    faces[(int)Face.Left] = left;
-                    faces[(int)Face.Right] = right;
-                    faces[(int)Face.Bottom] = bottom;
-                    faces[(int)Face.Top] = top;
-                    faces[(int)Face.Back] = back;
-                    faces[(int)Face.Front] = front;
-
-                    visible[xi, y, z] = faces;
-                }
+                visible[x, y, z] = faces;
             }
         }
 
         return visible;
     }
 
-    private static Vector<double> ShiftLeftOne(Vector<double> current, Vector<double> next, double[] scratch)
-    {
-        current.CopyTo(scratch);
-        for (int i = 0; i < scratch.Length - 1; i++)
-            scratch[i] = scratch[i + 1];
-        scratch[scratch.Length - 1] = next[0];
-        return new Vector<double>(scratch);
-    }
-
-    private static Vector<double> ShiftRightOne(Vector<double> current, Vector<double> prev, double[] scratch)
-    {
-        current.CopyTo(scratch);
-        for (int i = scratch.Length - 1; i > 0; i--)
-            scratch[i] = scratch[i - 1];
-        scratch[0] = prev[scratch.Length - 1];
-        return new Vector<double>(scratch);
-    }
-
-    private static double GetValue(Vector<double>[,,] voxels, int x, int y, int z, int sizeX, int sizeY, int sizeZ)
+    private static bool GetValue(bool[] voxels, int x, int y, int z, int sizeX, int sizeY, int sizeZ)
     {
         if (x < 0 || x >= sizeX || y < 0 || y >= sizeY || z < 0 || z >= sizeZ)
-            return 0.0;
-
-        int vecSize = Vector<double>.Count;
-        int vx = x / vecSize;
-        int lane = x % vecSize;
-        return voxels[vx, y, z][lane];
+            return false;
+        long index = (long)x + (long)y * sizeX + (long)z * sizeX * sizeY;
+        return voxels[index];
     }
 }
