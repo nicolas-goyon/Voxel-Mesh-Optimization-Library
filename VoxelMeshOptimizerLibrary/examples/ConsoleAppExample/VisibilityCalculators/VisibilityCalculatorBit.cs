@@ -19,7 +19,6 @@ public static class VisibilityCalculatorBit
 
         // Allocate output: at each [x,y,z] a bool[6]
         var visible = new bool[sizeX, sizeY, sizeZ][];
-        var bools = ToBools(voxels, threshold);
 
         // Bottom-Top
         for (int z = 0; z < sizeZ; z++)
@@ -28,7 +27,7 @@ public static class VisibilityCalculatorBit
                 var boolLine = new bool[sizeY];
                 for (int y = 0; y < sizeY; y++)
                 {
-                    boolLine[y] = bools[x, y, z];
+                    boolLine[y] = voxels[x, y, z] > threshold;
                 }
                 var line = BoolArrayToBigInteger(boolLine);
                 var allRightFaces = BigIntegerToBoolArray(ShiftLeftInvertAnd(line), totalBits: sizeY);
@@ -50,7 +49,7 @@ public static class VisibilityCalculatorBit
             var boolLine = new bool[sizeX];
             for (int x = 0; x < sizeX; x++)
             {
-                boolLine[x] = bools[x, y, z];
+                boolLine[x] = voxels[x, y, z] > threshold;
             }
             var line = BoolArrayToBigInteger(boolLine);
             // face[x] = line;
@@ -60,10 +59,7 @@ public static class VisibilityCalculatorBit
 
             for (int x = 0; x < sizeX; x++)
             {
-
-                // Left  (x-1)
                 visible[x, y, z][(int)Face.Xneg] = allLeftFaces[x];
-                // Right (x+1)
                 visible[x, y, z][(int)Face.Xpos] = allRightFaces[x];
             }
         }
@@ -75,7 +71,7 @@ public static class VisibilityCalculatorBit
             var boolLine = new bool[sizeZ];
             for (int z = 0; z < sizeZ; z++)
             {
-                boolLine[z] = bools[x, y, z];
+                boolLine[z] = voxels[x, y, z] > threshold;
             }
             var line = BoolArrayToBigInteger(boolLine);
             // face[x] = line;

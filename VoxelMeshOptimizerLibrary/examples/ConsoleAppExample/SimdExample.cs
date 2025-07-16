@@ -10,23 +10,15 @@ public class SimdExample
 {
     public static void Run()
     {
+        #region init
         // Dimensions
         const double threshold = 0.4;
-        // const int sizeX = 2, sizeY = 2, sizeZ = 2;
         const int sizeX = 200, sizeY = 200, sizeZ = 200;
 
         // Generate random voxels
         var rnd = new Random();
         var voxels = new double[sizeX, sizeY, sizeZ];
-        // voxels[0, 0, 0] = 0.9;
-        // voxels[0, 0, 1] = 0.1;
-        // voxels[0, 1, 0] = 0.1;
-        // voxels[0, 1, 1] = 0.9;
-        
-        // voxels[1, 0, 0] = 0.9;
-        // voxels[1, 0, 1] = 0.9;
-        // voxels[1, 1, 0] = 0.9;
-        // voxels[1, 1, 1] = 0.1;
+
         for (int x = 0; x < sizeX; x++)
             for (int y = 0; y < sizeY; y++)
                 for (int z = 0; z < sizeZ; z++)
@@ -49,8 +41,9 @@ public class SimdExample
         // }
 
         // Console.Write(sb.ToString());
+        #endregion
 
-        // // Time the visibility computation
+        #region Test each way
         var sw = Stopwatch.StartNew();
         var visibleFaces = VisibilityCalculator.GetVisibleFaces(voxels, threshold);
         sw.Stop();
@@ -58,20 +51,21 @@ public class SimdExample
         Console.WriteLine($"Computed visible faces for {sizeX}×{sizeY}×{sizeZ} voxels in {sw.Elapsed.TotalMilliseconds:N2} ms.");
 
 
-        // var packed = VisibilityCalculatorSimd.Pack(voxels, threshold);
-        // sw = Stopwatch.StartNew();
-        // var visibleFacesSimd = VisibilityCalculatorSimd.GetVisibleFaces(packed, sizeX, sizeY, sizeZ);
-        // sw.Stop();
-        // Console.WriteLine($"Computed visible faces for SIMD : {sizeX}×{sizeY}×{sizeZ} voxels in {sw.Elapsed.TotalMilliseconds:N2} ms.");
+        var packed = VisibilityCalculatorSimd.Pack(voxels, threshold);
+        sw = Stopwatch.StartNew();
+        var visibleFacesSimd = VisibilityCalculatorSimd.GetVisibleFaces(packed, sizeX, sizeY, sizeZ);
+        sw.Stop();
+        Console.WriteLine($"Computed visible faces for SIMD : {sizeX}×{sizeY}×{sizeZ} voxels in {sw.Elapsed.TotalMilliseconds:N2} ms.");
 
 
         sw = Stopwatch.StartNew();
         var visibleFacesBit = VisibilityCalculatorBit.GetVisibleFaces(voxels, threshold);
         sw.Stop();
         Console.WriteLine($"Computed visible faces for BitOps in {sw.Elapsed.TotalMilliseconds:N2} ms.");
+        #endregion
 
-
-        // // (Optional) Count total visible faces:
+        #region Checks for validity
+        // I base myself on the naive calculator is working fine
         long count = 0;
         bool areEquals = true;
         for (int x = 0; x < sizeX; x++)
@@ -106,6 +100,7 @@ public class SimdExample
 
         Console.WriteLine($"Total visible faces: {count}");
         Console.WriteLine($"Are equals : {areEquals}");
+        #endregion
     }
 
 
