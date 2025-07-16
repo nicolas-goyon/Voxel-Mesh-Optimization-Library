@@ -87,12 +87,12 @@ public static class VisibilityCalculatorSimd
                 bool front  = inside && !GetValue(voxels, x, y, z + 1, sizeX, sizeY, sizeZ);
 
                 var faces = new bool[6];
-                faces[(int)Face.Left] = left;
-                faces[(int)Face.Right] = right;
-                faces[(int)Face.Bottom] = bottom;
-                faces[(int)Face.Top] = top;
-                faces[(int)Face.Back] = back;
-                faces[(int)Face.Front] = front;
+                faces[(int)Face.Xneg] = left;
+                faces[(int)Face.Xpos] = right;
+                faces[(int)Face.Yneg] = bottom;
+                faces[(int)Face.Ypos] = top;
+                faces[(int)Face.Zneg] = back;
+                faces[(int)Face.Zpos] = front;
 
                 visible[x, y, z] = faces;
             }

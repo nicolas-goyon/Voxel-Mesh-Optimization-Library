@@ -19,21 +19,21 @@ public static class VisibilityCalculator
             for (int y = 0; y < sizeY; y++)
                 for (int z = 0; z < sizeZ; z++)
                 {
-                    bool inside = voxels[x, y, z] > threshold;
+                    bool isBlock = voxels[x, y, z] > threshold;
                     var faces = new bool[6];
 
                     // Left  (x-1)
-                    faces[(int)Face.Left] = inside && GetValue(voxels, x - 1, y, z, sizeX, sizeY, sizeZ) < threshold;
+                    faces[(int)Face.Xneg] = isBlock && GetValue(voxels, x - 1, y, z, sizeX, sizeY, sizeZ) < threshold;
                     // Right (x+1)
-                    faces[(int)Face.Right] = inside && GetValue(voxels, x + 1, y, z, sizeX, sizeY, sizeZ) < threshold;
+                    faces[(int)Face.Xpos] = isBlock && GetValue(voxels, x + 1, y, z, sizeX, sizeY, sizeZ) < threshold;
                     // Bottom (y-1)
-                    faces[(int)Face.Bottom] = inside && GetValue(voxels, x, y - 1, z, sizeX, sizeY, sizeZ) < threshold;
+                    faces[(int)Face.Yneg] = isBlock && GetValue(voxels, x, y - 1, z, sizeX, sizeY, sizeZ) < threshold;
                     // Top    (y+1)
-                    faces[(int)Face.Top] = inside && GetValue(voxels, x, y + 1, z, sizeX, sizeY, sizeZ) < threshold;
+                    faces[(int)Face.Ypos] = isBlock && GetValue(voxels, x, y + 1, z, sizeX, sizeY, sizeZ) < threshold;
                     // Back   (z-1)
-                    faces[(int)Face.Back] = inside && GetValue(voxels, x, y, z - 1, sizeX, sizeY, sizeZ) < threshold;
+                    faces[(int)Face.Zneg] = isBlock && GetValue(voxels, x, y, z - 1, sizeX, sizeY, sizeZ) < threshold;
                     // Front  (z+1)
-                    faces[(int)Face.Front] = inside && GetValue(voxels, x, y, z + 1, sizeX, sizeY, sizeZ) < threshold;
+                    faces[(int)Face.Zpos] = isBlock && GetValue(voxels, x, y, z + 1, sizeX, sizeY, sizeZ) < threshold;
 
                     visible[x, y, z] = faces;
                 }
