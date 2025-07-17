@@ -59,14 +59,8 @@ public class SimdExample
 
 
         sw = Stopwatch.StartNew();
-        var visibleFacesBit = VisibilityCalculatorBit.GetVisibleFaces(voxels, threshold);
-        sw.Stop();
-        Console.WriteLine($"Computed visible faces for BitOps in {sw.Elapsed.TotalMilliseconds:N2} ms.");
-
-        
-        sw = Stopwatch.StartNew();
-        var bools = VisibilityCalculatorBit.ToBools(voxels, threshold);
-        var visibleFacesBitOpti = VisibilityCalculatorBinaryOptimized.GetVisibleFaces(bools);
+        var bools = VisibilityCalculatorBinary.ToBools(voxels, threshold);
+        var visibleFacesBitOpti = VisibilityCalculatorBinary.GetVisibleFaces(bools);
         sw.Stop();
         Console.WriteLine($"Computed visible faces for Binary optimized in {sw.Elapsed.TotalMilliseconds:N2} ms.");
         #endregion

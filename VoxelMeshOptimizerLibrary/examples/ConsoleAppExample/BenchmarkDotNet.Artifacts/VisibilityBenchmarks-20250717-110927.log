@@ -1,0 +1,58 @@
+// Validating benchmarks:
+// ***** BenchmarkRunner: Start   *****
+// ***** Found 1 benchmark(s) in total *****
+// ***** Building 1 exe(s) in Parallel: Start   *****
+// start dotnet  restore /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/" /p:OutDir="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0/" /p:OutputPath="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0/" /p:PublishDir="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/publish/" in /workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1
+// command took 5.12 sec and exited with 0
+// start dotnet  build -c Release --no-restore /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/" /p:OutDir="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0/" /p:OutputPath="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0/" /p:PublishDir="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/publish/" --output "/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0/" in /workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1
+// command took 12.93 sec and exited with 0
+// ***** Done, took 00:00:18 (18.24 sec)   *****
+// Found 1 benchmarks:
+//   VisibilityBenchmarks.Naive: DefaultJob
+
+// **************************
+// Benchmark: VisibilityBenchmarks.Naive: DefaultJob
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet ConsoleAppExample-DefaultJob-1.dll --anonymousPipes 118 119 --benchmarkName VisibilityBenchmarks.Naive --job Default --benchmarkId 0 in /workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0
+// Failed to set up high priority (Permission denied). In order to run benchmarks with high priority, make sure you have the right permissions.
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.2
+// Runtime=.NET 8.0.16 (8.0.1625.21506), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: DefaultJob
+
+OverheadJitting  1: 1 op, 135384.00 ns, 135.3840 us/op
+WorkloadJitting  1: 1 op, 1656418163.00 ns, 1.6564 s/op
+
+OverheadJitting  2: 1 op, 1225.00 ns, 1.2250 us/op
+WorkloadJitting  2: 1 op, 1591678183.00 ns, 1.5917 s/op
+
+OverheadWarmup   1: 1 op, 1330.00 ns, 1.3300 us/op
+OverheadWarmup   2: 1 op, 1346.00 ns, 1.3460 us/op
+OverheadWarmup   3: 1 op, 1942.00 ns, 1.9420 us/op
+OverheadWarmup   4: 1 op, 1793.00 ns, 1.7930 us/op
+OverheadWarmup   5: 1 op, 1306.00 ns, 1.3060 us/op
+OverheadWarmup   6: 1 op, 1380.00 ns, 1.3800 us/op
+OverheadWarmup   7: 1 op, 1311.00 ns, 1.3110 us/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 1383481311.00 ns, 1.3835 s/op
+WorkloadActual   2: 1 op, 1284950970.00 ns, 1.2850 s/op
+WorkloadActual   3: 1 op, 1031542107.00 ns, 1.0315 s/op
+WorkloadActual   4: 1 op, 1199266741.00 ns, 1.1993 s/op
+WorkloadActual   5: 1 op, 1243510408.00 ns, 1.2435 s/op
+WorkloadActual   6: 1 op, 1179870446.00 ns, 1.1799 s/op
+WorkloadActual   7: 1 op, 1190132114.00 ns, 1.1901 s/op
+WorkloadActual   8: 1 op, 1198387048.00 ns, 1.1984 s/op
+WorkloadActual   9: 1 op, 1034065862.00 ns, 1.0341 s/op
+WorkloadActual  10: 1 op, 1171783051.00 ns, 1.1718 s/op
+WorkloadActual  11: 1 op, 1061711464.00 ns, 1.0617 s/op
+WorkloadActual  12: 1 op, 1155672522.00 ns, 1.1557 s/op
+WorkloadActual  13: 1 op, 1764379888.00 ns, 1.7644 s/op
+WorkloadActual  14: 1 op, 1250724959.00 ns, 1.2507 s/op
+WorkloadActual  15: 1 op, 1036106895.00 ns, 1.0361 s/op
+WorkloadActual  16: 1 op, 1215602254.00 ns, 1.2156 s/op
