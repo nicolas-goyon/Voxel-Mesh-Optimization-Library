@@ -6,7 +6,7 @@ using VoxelVisibility;
 public class VisibilityBenchmarks
 {
     private const double threshold = 0.4;
-    private const int sizeX = 200, sizeY = 200, sizeZ = 200;
+    private const int sizeX = 254, sizeY = 254, sizeZ = 254;
     private double[,,] voxels = null!;
     private bool[] packed = null!;
 
@@ -30,6 +30,15 @@ public class VisibilityBenchmarks
 
     [Benchmark]
     public void BitOps() => VisibilityCalculatorBit.GetVisibleFaces(voxels, threshold);
+
+    
+    [Benchmark]
+    public void BitOpsOptimized()
+    {
+        var bools = VisibilityCalculatorBit.ToBools(voxels, threshold);
+        VisibilityCalculatorBinaryOptimized.GetVisibleFaces(bools);
+    }
+
 
     [Benchmark]
     public void Simd() => VisibilityCalculatorSimd.GetVisibleFaces(packed, sizeX, sizeY, sizeZ);

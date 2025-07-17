@@ -1,0 +1,425 @@
+// Validating benchmarks:
+// ***** BenchmarkRunner: Start   *****
+// ***** Found 4 benchmark(s) in total *****
+// ***** Building 1 exe(s) in Parallel: Start   *****
+// start dotnet  restore /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/" /p:OutDir="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0/" /p:OutputPath="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0/" /p:PublishDir="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/publish/" in /workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1
+// command took 1.91 sec and exited with 0
+// start dotnet  build -c Release --no-restore /p:UseSharedCompilation=false /p:BuildInParallel=false /m:1 /p:Deterministic=true /p:Optimize=true /p:ArtifactsPath="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/" /p:OutDir="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0/" /p:OutputPath="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0/" /p:PublishDir="/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/publish/" --output "/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0/" in /workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1
+// command took 9.73 sec and exited with 0
+// ***** Done, took 00:00:11 (11.8 sec)   *****
+// Found 4 benchmarks:
+//   VisibilityBenchmarks.Naive: DefaultJob
+//   VisibilityBenchmarks.BitOps: DefaultJob
+//   VisibilityBenchmarks.BitOpsOptimized: DefaultJob
+//   VisibilityBenchmarks.Simd: DefaultJob
+
+// **************************
+// Benchmark: VisibilityBenchmarks.Naive: DefaultJob
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet ConsoleAppExample-DefaultJob-1.dll --anonymousPipes 122 123 --benchmarkName VisibilityBenchmarks.Naive --job Default --benchmarkId 0 in /workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0
+// Failed to set up high priority (Permission denied). In order to run benchmarks with high priority, make sure you have the right permissions.
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.2
+// Runtime=.NET 8.0.16 (8.0.1625.21506), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: DefaultJob
+
+OverheadJitting  1: 1 op, 143689.00 ns, 143.6890 us/op
+WorkloadJitting  1: 1 op, 1519925350.00 ns, 1.5199 s/op
+
+OverheadJitting  2: 1 op, 541.00 ns, 541.0000 ns/op
+WorkloadJitting  2: 1 op, 1318314008.00 ns, 1.3183 s/op
+
+OverheadWarmup   1: 1 op, 800.00 ns, 800.0000 ns/op
+OverheadWarmup   2: 1 op, 458.00 ns, 458.0000 ns/op
+OverheadWarmup   3: 1 op, 414.00 ns, 414.0000 ns/op
+OverheadWarmup   4: 1 op, 376.00 ns, 376.0000 ns/op
+OverheadWarmup   5: 1 op, 318.00 ns, 318.0000 ns/op
+OverheadWarmup   6: 1 op, 371.00 ns, 371.0000 ns/op
+OverheadWarmup   7: 1 op, 269.00 ns, 269.0000 ns/op
+OverheadWarmup   8: 1 op, 302.00 ns, 302.0000 ns/op
+OverheadWarmup   9: 1 op, 314.00 ns, 314.0000 ns/op
+OverheadWarmup  10: 1 op, 347.00 ns, 347.0000 ns/op
+OverheadWarmup  11: 1 op, 335.00 ns, 335.0000 ns/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 1397498063.00 ns, 1.3975 s/op
+WorkloadActual   2: 1 op, 1468783653.00 ns, 1.4688 s/op
+WorkloadActual   3: 1 op, 1314761292.00 ns, 1.3148 s/op
+WorkloadActual   4: 1 op, 1363885286.00 ns, 1.3639 s/op
+WorkloadActual   5: 1 op, 1353380954.00 ns, 1.3534 s/op
+WorkloadActual   6: 1 op, 1295950499.00 ns, 1.2960 s/op
+WorkloadActual   7: 1 op, 1298919025.00 ns, 1.2989 s/op
+WorkloadActual   8: 1 op, 1306798009.00 ns, 1.3068 s/op
+WorkloadActual   9: 1 op, 1388934432.00 ns, 1.3889 s/op
+WorkloadActual  10: 1 op, 1332232847.00 ns, 1.3322 s/op
+WorkloadActual  11: 1 op, 1305656688.00 ns, 1.3057 s/op
+WorkloadActual  12: 1 op, 1287517730.00 ns, 1.2875 s/op
+WorkloadActual  13: 1 op, 1322929805.00 ns, 1.3229 s/op
+WorkloadActual  14: 1 op, 1334358752.00 ns, 1.3344 s/op
+WorkloadActual  15: 1 op, 1327164098.00 ns, 1.3272 s/op
+WorkloadActual  16: 1 op, 1347274433.00 ns, 1.3473 s/op
+WorkloadActual  17: 1 op, 1444802913.00 ns, 1.4448 s/op
+WorkloadActual  18: 1 op, 1348438872.00 ns, 1.3484 s/op
+WorkloadActual  19: 1 op, 1322193404.00 ns, 1.3222 s/op
+WorkloadActual  20: 1 op, 1324139763.00 ns, 1.3241 s/op
+WorkloadActual  21: 1 op, 1323258887.00 ns, 1.3233 s/op
+WorkloadActual  22: 1 op, 1325241354.00 ns, 1.3252 s/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 1397498063.00 ns, 1.3975 s/op
+WorkloadResult   2: 1 op, 1314761292.00 ns, 1.3148 s/op
+WorkloadResult   3: 1 op, 1363885286.00 ns, 1.3639 s/op
+WorkloadResult   4: 1 op, 1353380954.00 ns, 1.3534 s/op
+WorkloadResult   5: 1 op, 1295950499.00 ns, 1.2960 s/op
+WorkloadResult   6: 1 op, 1298919025.00 ns, 1.2989 s/op
+WorkloadResult   7: 1 op, 1306798009.00 ns, 1.3068 s/op
+WorkloadResult   8: 1 op, 1388934432.00 ns, 1.3889 s/op
+WorkloadResult   9: 1 op, 1332232847.00 ns, 1.3322 s/op
+WorkloadResult  10: 1 op, 1305656688.00 ns, 1.3057 s/op
+WorkloadResult  11: 1 op, 1287517730.00 ns, 1.2875 s/op
+WorkloadResult  12: 1 op, 1322929805.00 ns, 1.3229 s/op
+WorkloadResult  13: 1 op, 1334358752.00 ns, 1.3344 s/op
+WorkloadResult  14: 1 op, 1327164098.00 ns, 1.3272 s/op
+WorkloadResult  15: 1 op, 1347274433.00 ns, 1.3473 s/op
+WorkloadResult  16: 1 op, 1348438872.00 ns, 1.3484 s/op
+WorkloadResult  17: 1 op, 1322193404.00 ns, 1.3222 s/op
+WorkloadResult  18: 1 op, 1324139763.00 ns, 1.3241 s/op
+WorkloadResult  19: 1 op, 1323258887.00 ns, 1.3233 s/op
+WorkloadResult  20: 1 op, 1325241354.00 ns, 1.3252 s/op
+// GC:  23 22 3 655484664 1
+// Threading:  0 0 1
+
+// AfterAll
+// Benchmark Process 29862 has exited with code 0.
+
+Mean = 1.331 s, StdErr = 0.006 s (0.49%), N = 20, StdDev = 0.029 s
+Min = 1.288 s, Q1 = 1.313 s, Median = 1.325 s, Q3 = 1.348 s, Max = 1.397 s
+IQR = 0.035 s, LowerFence = 1.261 s, UpperFence = 1.400 s
+ConfidenceInterval = [1.306 s; 1.356 s] (CI 99.9%), Margin = 0.025 s (1.89% of Mean)
+Skewness = 0.72, Kurtosis = 2.82, MValue = 2
+
+// ** Remained 3 (75.0 %) benchmark(s) to run. Estimated finish 2025-07-17 8:04 (0h 1m from now) **
+// **************************
+// Benchmark: VisibilityBenchmarks.BitOps: DefaultJob
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet ConsoleAppExample-DefaultJob-1.dll --anonymousPipes 122 123 --benchmarkName VisibilityBenchmarks.BitOps --job Default --benchmarkId 1 in /workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0
+// Failed to set up high priority (Permission denied). In order to run benchmarks with high priority, make sure you have the right permissions.
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.2
+// Runtime=.NET 8.0.16 (8.0.1625.21506), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: DefaultJob
+
+OverheadJitting  1: 1 op, 143112.00 ns, 143.1120 us/op
+WorkloadJitting  1: 1 op, 15324942275.00 ns, 15.3249 s/op
+
+OverheadWarmup   1: 1 op, 348.00 ns, 348.0000 ns/op
+OverheadWarmup   2: 1 op, 327.00 ns, 327.0000 ns/op
+OverheadWarmup   3: 1 op, 407.00 ns, 407.0000 ns/op
+OverheadWarmup   4: 1 op, 309.00 ns, 309.0000 ns/op
+OverheadWarmup   5: 1 op, 381.00 ns, 381.0000 ns/op
+OverheadWarmup   6: 1 op, 437.00 ns, 437.0000 ns/op
+OverheadWarmup   7: 1 op, 303.00 ns, 303.0000 ns/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 15194138264.00 ns, 15.1941 s/op
+WorkloadActual   2: 1 op, 15137575300.00 ns, 15.1376 s/op
+WorkloadActual   3: 1 op, 15026182020.00 ns, 15.0262 s/op
+WorkloadActual   4: 1 op, 15191390370.00 ns, 15.1914 s/op
+WorkloadActual   5: 1 op, 15146517062.00 ns, 15.1465 s/op
+WorkloadActual   6: 1 op, 15276881811.00 ns, 15.2769 s/op
+WorkloadActual   7: 1 op, 15054748993.00 ns, 15.0547 s/op
+WorkloadActual   8: 1 op, 15361258020.00 ns, 15.3613 s/op
+WorkloadActual   9: 1 op, 15354950475.00 ns, 15.3550 s/op
+WorkloadActual  10: 1 op, 15321478391.00 ns, 15.3215 s/op
+WorkloadActual  11: 1 op, 15167508450.00 ns, 15.1675 s/op
+WorkloadActual  12: 1 op, 15722771570.00 ns, 15.7228 s/op
+WorkloadActual  13: 1 op, 15507844454.00 ns, 15.5078 s/op
+WorkloadActual  14: 1 op, 15158504991.00 ns, 15.1585 s/op
+WorkloadActual  15: 1 op, 15212794601.00 ns, 15.2128 s/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 15194138264.00 ns, 15.1941 s/op
+WorkloadResult   2: 1 op, 15137575300.00 ns, 15.1376 s/op
+WorkloadResult   3: 1 op, 15026182020.00 ns, 15.0262 s/op
+WorkloadResult   4: 1 op, 15191390370.00 ns, 15.1914 s/op
+WorkloadResult   5: 1 op, 15146517062.00 ns, 15.1465 s/op
+WorkloadResult   6: 1 op, 15276881811.00 ns, 15.2769 s/op
+WorkloadResult   7: 1 op, 15054748993.00 ns, 15.0547 s/op
+WorkloadResult   8: 1 op, 15361258020.00 ns, 15.3613 s/op
+WorkloadResult   9: 1 op, 15354950475.00 ns, 15.3550 s/op
+WorkloadResult  10: 1 op, 15321478391.00 ns, 15.3215 s/op
+WorkloadResult  11: 1 op, 15167508450.00 ns, 15.1675 s/op
+WorkloadResult  12: 1 op, 15507844454.00 ns, 15.5078 s/op
+WorkloadResult  13: 1 op, 15158504991.00 ns, 15.1585 s/op
+WorkloadResult  14: 1 op, 15212794601.00 ns, 15.2128 s/op
+// GC:  303 63 5 7628002056 1
+// Threading:  0 0 1
+
+// AfterAll
+// Benchmark Process 30249 has exited with code 0.
+
+Mean = 15.222 s, StdErr = 0.035 s (0.23%), N = 14, StdDev = 0.130 s
+Min = 15.026 s, Q1 = 15.150 s, Median = 15.193 s, Q3 = 15.310 s, Max = 15.508 s
+IQR = 0.161 s, LowerFence = 14.908 s, UpperFence = 15.552 s
+ConfidenceInterval = [15.076 s; 15.369 s] (CI 99.9%), Margin = 0.147 s (0.96% of Mean)
+Skewness = 0.51, Kurtosis = 2.46, MValue = 2
+
+// ** Remained 2 (50.0 %) benchmark(s) to run. Estimated finish 2025-07-17 8:12 (0h 4m from now) **
+// **************************
+// Benchmark: VisibilityBenchmarks.BitOpsOptimized: DefaultJob
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet ConsoleAppExample-DefaultJob-1.dll --anonymousPipes 122 123 --benchmarkName VisibilityBenchmarks.BitOpsOptimized --job Default --benchmarkId 2 in /workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0
+// Failed to set up high priority (Permission denied). In order to run benchmarks with high priority, make sure you have the right permissions.
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.2
+// Runtime=.NET 8.0.16 (8.0.1625.21506), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: DefaultJob
+
+OverheadJitting  1: 1 op, 139793.00 ns, 139.7930 us/op
+WorkloadJitting  1: 1 op, 3514550949.00 ns, 3.5146 s/op
+
+OverheadJitting  2: 1 op, 443.00 ns, 443.0000 ns/op
+WorkloadJitting  2: 1 op, 3592853852.00 ns, 3.5929 s/op
+
+OverheadWarmup   1: 1 op, 398.00 ns, 398.0000 ns/op
+OverheadWarmup   2: 1 op, 404.00 ns, 404.0000 ns/op
+OverheadWarmup   3: 1 op, 314.00 ns, 314.0000 ns/op
+OverheadWarmup   4: 1 op, 434.00 ns, 434.0000 ns/op
+OverheadWarmup   5: 1 op, 332.00 ns, 332.0000 ns/op
+OverheadWarmup   6: 1 op, 301.00 ns, 301.0000 ns/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 3512161630.00 ns, 3.5122 s/op
+WorkloadActual   2: 1 op, 3544760954.00 ns, 3.5448 s/op
+WorkloadActual   3: 1 op, 3602513175.00 ns, 3.6025 s/op
+WorkloadActual   4: 1 op, 3462640239.00 ns, 3.4626 s/op
+WorkloadActual   5: 1 op, 3516086195.00 ns, 3.5161 s/op
+WorkloadActual   6: 1 op, 3529839575.00 ns, 3.5298 s/op
+WorkloadActual   7: 1 op, 3611343350.00 ns, 3.6113 s/op
+WorkloadActual   8: 1 op, 3618448141.00 ns, 3.6184 s/op
+WorkloadActual   9: 1 op, 3655710283.00 ns, 3.6557 s/op
+WorkloadActual  10: 1 op, 3609874246.00 ns, 3.6099 s/op
+WorkloadActual  11: 1 op, 3519274824.00 ns, 3.5193 s/op
+WorkloadActual  12: 1 op, 3566138377.00 ns, 3.5661 s/op
+WorkloadActual  13: 1 op, 3455527201.00 ns, 3.4555 s/op
+WorkloadActual  14: 1 op, 3651694464.00 ns, 3.6517 s/op
+WorkloadActual  15: 1 op, 3577560452.00 ns, 3.5776 s/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 3512161630.00 ns, 3.5122 s/op
+WorkloadResult   2: 1 op, 3544760954.00 ns, 3.5448 s/op
+WorkloadResult   3: 1 op, 3602513175.00 ns, 3.6025 s/op
+WorkloadResult   4: 1 op, 3462640239.00 ns, 3.4626 s/op
+WorkloadResult   5: 1 op, 3516086195.00 ns, 3.5161 s/op
+WorkloadResult   6: 1 op, 3529839575.00 ns, 3.5298 s/op
+WorkloadResult   7: 1 op, 3611343350.00 ns, 3.6113 s/op
+WorkloadResult   8: 1 op, 3618448141.00 ns, 3.6184 s/op
+WorkloadResult   9: 1 op, 3655710283.00 ns, 3.6557 s/op
+WorkloadResult  10: 1 op, 3609874246.00 ns, 3.6099 s/op
+WorkloadResult  11: 1 op, 3519274824.00 ns, 3.5193 s/op
+WorkloadResult  12: 1 op, 3566138377.00 ns, 3.5661 s/op
+WorkloadResult  13: 1 op, 3455527201.00 ns, 3.4555 s/op
+WorkloadResult  14: 1 op, 3651694464.00 ns, 3.6517 s/op
+WorkloadResult  15: 1 op, 3577560452.00 ns, 3.5776 s/op
+// GC:  23 22 3 671874336 1
+// Threading:  0 0 1
+
+// AfterAll
+// Benchmark Process 32559 has exited with code 0.
+
+Mean = 3.562 s, StdErr = 0.016 s (0.46%), N = 15, StdDev = 0.063 s
+Min = 3.456 s, Q1 = 3.518 s, Median = 3.566 s, Q3 = 3.611 s, Max = 3.656 s
+IQR = 0.093 s, LowerFence = 3.378 s, UpperFence = 3.750 s
+ConfidenceInterval = [3.495 s; 3.630 s] (CI 99.9%), Margin = 0.067 s (1.89% of Mean)
+Skewness = -0.14, Kurtosis = 1.72, MValue = 2
+
+// ** Remained 1 (25.0 %) benchmark(s) to run. Estimated finish 2025-07-17 8:10 (0h 2m from now) **
+// **************************
+// Benchmark: VisibilityBenchmarks.Simd: DefaultJob
+// *** Execute ***
+// Launch: 1 / 1
+// Execute: dotnet ConsoleAppExample-DefaultJob-1.dll --anonymousPipes 122 123 --benchmarkName VisibilityBenchmarks.Simd --job Default --benchmarkId 3 in /workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/bin/Release/net8.0/ConsoleAppExample-DefaultJob-1/bin/Release/net8.0
+// Failed to set up high priority (Permission denied). In order to run benchmarks with high priority, make sure you have the right permissions.
+// BeforeAnythingElse
+
+// Benchmark Process Environment Information:
+// BenchmarkDotNet v0.15.2
+// Runtime=.NET 8.0.16 (8.0.1625.21506), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+// GC=Concurrent Workstation
+// HardwareIntrinsics=AVX-512F+CD+BW+DQ+VL+VBMI,AES,BMI1,BMI2,FMA,LZCNT,PCLMUL,POPCNT VectorSize=256
+// Job: DefaultJob
+
+OverheadJitting  1: 1 op, 143798.00 ns, 143.7980 us/op
+WorkloadJitting  1: 1 op, 3012123125.00 ns, 3.0121 s/op
+
+OverheadJitting  2: 1 op, 481.00 ns, 481.0000 ns/op
+WorkloadJitting  2: 1 op, 2972807148.00 ns, 2.9728 s/op
+
+OverheadWarmup   1: 1 op, 544.00 ns, 544.0000 ns/op
+OverheadWarmup   2: 1 op, 494.00 ns, 494.0000 ns/op
+OverheadWarmup   3: 1 op, 428.00 ns, 428.0000 ns/op
+OverheadWarmup   4: 1 op, 356.00 ns, 356.0000 ns/op
+OverheadWarmup   5: 1 op, 386.00 ns, 386.0000 ns/op
+OverheadWarmup   6: 1 op, 323.00 ns, 323.0000 ns/op
+OverheadWarmup   7: 1 op, 348.00 ns, 348.0000 ns/op
+OverheadWarmup   8: 1 op, 258.00 ns, 258.0000 ns/op
+
+// BeforeActualRun
+WorkloadActual   1: 1 op, 2973613134.00 ns, 2.9736 s/op
+WorkloadActual   2: 1 op, 2961437650.00 ns, 2.9614 s/op
+WorkloadActual   3: 1 op, 2844097530.00 ns, 2.8441 s/op
+WorkloadActual   4: 1 op, 2878566607.00 ns, 2.8786 s/op
+WorkloadActual   5: 1 op, 2938294088.00 ns, 2.9383 s/op
+WorkloadActual   6: 1 op, 2890179223.00 ns, 2.8902 s/op
+WorkloadActual   7: 1 op, 2914410466.00 ns, 2.9144 s/op
+WorkloadActual   8: 1 op, 2935956731.00 ns, 2.9360 s/op
+WorkloadActual   9: 1 op, 2877540232.00 ns, 2.8775 s/op
+WorkloadActual  10: 1 op, 2859134419.00 ns, 2.8591 s/op
+WorkloadActual  11: 1 op, 2952531895.00 ns, 2.9525 s/op
+WorkloadActual  12: 1 op, 2924211975.00 ns, 2.9242 s/op
+WorkloadActual  13: 1 op, 2823358729.00 ns, 2.8234 s/op
+WorkloadActual  14: 1 op, 2967317965.00 ns, 2.9673 s/op
+WorkloadActual  15: 1 op, 2885464117.00 ns, 2.8855 s/op
+
+// AfterActualRun
+WorkloadResult   1: 1 op, 2973613134.00 ns, 2.9736 s/op
+WorkloadResult   2: 1 op, 2961437650.00 ns, 2.9614 s/op
+WorkloadResult   3: 1 op, 2844097530.00 ns, 2.8441 s/op
+WorkloadResult   4: 1 op, 2878566607.00 ns, 2.8786 s/op
+WorkloadResult   5: 1 op, 2938294088.00 ns, 2.9383 s/op
+WorkloadResult   6: 1 op, 2890179223.00 ns, 2.8902 s/op
+WorkloadResult   7: 1 op, 2914410466.00 ns, 2.9144 s/op
+WorkloadResult   8: 1 op, 2935956731.00 ns, 2.9360 s/op
+WorkloadResult   9: 1 op, 2877540232.00 ns, 2.8775 s/op
+WorkloadResult  10: 1 op, 2859134419.00 ns, 2.8591 s/op
+WorkloadResult  11: 1 op, 2952531895.00 ns, 2.9525 s/op
+WorkloadResult  12: 1 op, 2924211975.00 ns, 2.9242 s/op
+WorkloadResult  13: 1 op, 2823358729.00 ns, 2.8234 s/op
+WorkloadResult  14: 1 op, 2967317965.00 ns, 2.9673 s/op
+WorkloadResult  15: 1 op, 2885464117.00 ns, 2.8855 s/op
+// GC:  23 22 3 655484144 1
+// Threading:  0 0 1
+
+// AfterAll
+// Benchmark Process 33255 has exited with code 0.
+
+Mean = 2.908 s, StdErr = 0.012 s (0.42%), N = 15, StdDev = 0.047 s
+Min = 2.823 s, Q1 = 2.878 s, Median = 2.914 s, Q3 = 2.945 s, Max = 2.974 s
+IQR = 0.067 s, LowerFence = 2.777 s, UpperFence = 3.046 s
+ConfidenceInterval = [2.858 s; 2.959 s] (CI 99.9%), Margin = 0.050 s (1.73% of Mean)
+Skewness = -0.2, Kurtosis = 1.65, MValue = 2
+
+// ** Remained 0 (0.0 %) benchmark(s) to run. Estimated finish 2025-07-17 8:09 (0h 0m from now) **
+// ***** BenchmarkRunner: Finish  *****
+
+// * Export *
+  BenchmarkDotNet.Artifacts/results/VisibilityBenchmarks-report.csv
+  BenchmarkDotNet.Artifacts/results/VisibilityBenchmarks-report-github.md
+  BenchmarkDotNet.Artifacts/results/VisibilityBenchmarks-report.html
+
+// * Detailed results *
+VisibilityBenchmarks.Naive: DefaultJob
+Runtime = .NET 8.0.16 (8.0.1625.21506), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Concurrent Workstation
+Mean = 1.331 s, StdErr = 0.006 s (0.49%), N = 20, StdDev = 0.029 s
+Min = 1.288 s, Q1 = 1.313 s, Median = 1.325 s, Q3 = 1.348 s, Max = 1.397 s
+IQR = 0.035 s, LowerFence = 1.261 s, UpperFence = 1.400 s
+ConfidenceInterval = [1.306 s; 1.356 s] (CI 99.9%), Margin = 0.025 s (1.89% of Mean)
+Skewness = 0.72, Kurtosis = 2.82, MValue = 2
+-------------------- Histogram --------------------
+[1.287 s ; 1.315 s) | @@@@@@
+[1.315 s ; 1.349 s) | @@@@@@@@@@
+[1.349 s ; 1.379 s) | @@
+[1.379 s ; 1.411 s) | @@
+---------------------------------------------------
+
+VisibilityBenchmarks.BitOps: DefaultJob
+Runtime = .NET 8.0.16 (8.0.1625.21506), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Concurrent Workstation
+Mean = 15.222 s, StdErr = 0.035 s (0.23%), N = 14, StdDev = 0.130 s
+Min = 15.026 s, Q1 = 15.150 s, Median = 15.193 s, Q3 = 15.310 s, Max = 15.508 s
+IQR = 0.161 s, LowerFence = 14.908 s, UpperFence = 15.552 s
+ConfidenceInterval = [15.076 s; 15.369 s] (CI 99.9%), Margin = 0.147 s (0.96% of Mean)
+Skewness = 0.51, Kurtosis = 2.46, MValue = 2
+-------------------- Histogram --------------------
+[14.955 s ; 15.579 s) | @@@@@@@@@@@@@@
+---------------------------------------------------
+
+VisibilityBenchmarks.BitOpsOptimized: DefaultJob
+Runtime = .NET 8.0.16 (8.0.1625.21506), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Concurrent Workstation
+Mean = 3.562 s, StdErr = 0.016 s (0.46%), N = 15, StdDev = 0.063 s
+Min = 3.456 s, Q1 = 3.518 s, Median = 3.566 s, Q3 = 3.611 s, Max = 3.656 s
+IQR = 0.093 s, LowerFence = 3.378 s, UpperFence = 3.750 s
+ConfidenceInterval = [3.495 s; 3.630 s] (CI 99.9%), Margin = 0.067 s (1.89% of Mean)
+Skewness = -0.14, Kurtosis = 1.72, MValue = 2
+-------------------- Histogram --------------------
+[3.422 s ; 3.494 s) | @@
+[3.494 s ; 3.580 s) | @@@@@@@
+[3.580 s ; 3.665 s) | @@@@@@
+---------------------------------------------------
+
+VisibilityBenchmarks.Simd: DefaultJob
+Runtime = .NET 8.0.16 (8.0.1625.21506), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI; GC = Concurrent Workstation
+Mean = 2.908 s, StdErr = 0.012 s (0.42%), N = 15, StdDev = 0.047 s
+Min = 2.823 s, Q1 = 2.878 s, Median = 2.914 s, Q3 = 2.945 s, Max = 2.974 s
+IQR = 0.067 s, LowerFence = 2.777 s, UpperFence = 3.046 s
+ConfidenceInterval = [2.858 s; 2.959 s] (CI 99.9%), Margin = 0.050 s (1.73% of Mean)
+Skewness = -0.2, Kurtosis = 1.65, MValue = 2
+-------------------- Histogram --------------------
+[2.798 s ; 2.896 s) | @@@@@@@
+[2.896 s ; 2.978 s) | @@@@@@@@
+---------------------------------------------------
+
+// * Summary *
+
+BenchmarkDotNet v0.15.2, Linux Ubuntu 24.04.2 LTS (Noble Numbat) (container)
+Intel Xeon Platinum 8370C CPU 2.80GHz, 1 CPU, 2 logical cores and 1 physical core
+.NET SDK 8.0.410
+  [Host]     : .NET 8.0.16 (8.0.1625.21506), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  DefaultJob : .NET 8.0.16 (8.0.1625.21506), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+
+
+| Method          | Mean     | Error    | StdDev   | Gen0        | Gen1       | Gen2      | Allocated  |
+|---------------- |---------:|---------:|---------:|------------:|-----------:|----------:|-----------:|
+| Naive           |  1.331 s | 0.0251 s | 0.0289 s |  23000.0000 | 22000.0000 | 3000.0000 |  625.12 MB |
+| BitOps          | 15.222 s | 0.1466 s | 0.1300 s | 303000.0000 | 63000.0000 | 5000.0000 | 7274.63 MB |
+| BitOpsOptimized |  3.562 s | 0.0674 s | 0.0630 s |  23000.0000 | 22000.0000 | 3000.0000 |  640.75 MB |
+| Simd            |  2.908 s | 0.0502 s | 0.0470 s |  23000.0000 | 22000.0000 | 3000.0000 |  625.12 MB |
+
+// * Hints *
+Outliers
+  VisibilityBenchmarks.Naive: Default  -> 2 outliers were removed (1.44 s, 1.47 s)
+  VisibilityBenchmarks.BitOps: Default -> 1 outlier  was  removed (15.72 s)
+
+// * Legends *
+  Mean      : Arithmetic mean of all measurements
+  Error     : Half of 99.9% confidence interval
+  StdDev    : Standard deviation of all measurements
+  Gen0      : GC Generation 0 collects per 1000 operations
+  Gen1      : GC Generation 1 collects per 1000 operations
+  Gen2      : GC Generation 2 collects per 1000 operations
+  Allocated : Allocated memory per single operation (managed only, inclusive, 1KB = 1024B)
+  1 s       : 1 Second (1 sec)
+
+// * Diagnostic Output - MemoryDiagnoser *
+
+
+// ***** BenchmarkRunner: End *****
+Run time: 00:06:59 (419.78 sec), executed benchmarks: 4
+
+Global total time: 00:07:11 (431.77 sec), executed benchmarks: 4
+// * Artifacts cleanup *
+Artifacts cleanup is finished

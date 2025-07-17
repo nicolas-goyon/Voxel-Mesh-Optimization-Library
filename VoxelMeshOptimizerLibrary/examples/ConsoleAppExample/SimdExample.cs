@@ -62,6 +62,13 @@ public class SimdExample
         var visibleFacesBit = VisibilityCalculatorBit.GetVisibleFaces(voxels, threshold);
         sw.Stop();
         Console.WriteLine($"Computed visible faces for BitOps in {sw.Elapsed.TotalMilliseconds:N2} ms.");
+
+        
+        sw = Stopwatch.StartNew();
+        var bools = VisibilityCalculatorBit.ToBools(voxels, threshold);
+        var visibleFacesBitOpti = VisibilityCalculatorBinaryOptimized.GetVisibleFaces(bools);
+        sw.Stop();
+        Console.WriteLine($"Computed visible faces for Binary optimized in {sw.Elapsed.TotalMilliseconds:N2} ms.");
         #endregion
 
         #region Checks for validity
@@ -74,7 +81,7 @@ public class SimdExample
                     for (int f = 0; f < 6; f++)
                     {
                         if (visibleFaces[x, y, z][f]) count++;
-                        if (visibleFaces[x, y, z][f] != visibleFacesBit[x, y, z][f]) areEquals = false;
+                        if (visibleFaces[x, y, z][f] != visibleFacesBitOpti[x, y, z][f]) areEquals = false;
                     }
 
         // Console.WriteLine(
