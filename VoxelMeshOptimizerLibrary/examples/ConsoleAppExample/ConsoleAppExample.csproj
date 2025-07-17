@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\VoxelMeshOptimizer.Core.csproj" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.15.2" />
+
   </ItemGroup>
 
   <PropertyGroup>

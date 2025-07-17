@@ -1,26 +1,35 @@
-using VoxelMeshOptimizer.Core;
-using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
+// using VoxelMeshOptimizer.Core;
+// using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
 
-namespace ConsoleAppExample;
+// namespace ConsoleAppExample;
+
+// class Program
+// {
+//     static void Main(string[] args)
+//     {
+//         // ushort[,,] voxels = {
+//         //     { {0,0,0} , {0,0,0}, {0,0,0}},
+//         //     { {0,0,0} , {0,0,0}, {0,0,0}},
+//         //     { {0,0,0} , {0,0,0}, {0,0,0}},
+//         // };
+//         // var exampleChunk = new ExampleChunk(voxels);
+//         // var optimizer = new DisjointSetMeshOptimizer();
+//         // Mesh optimizedMesh = optimizer.Optimize(exampleChunk);
+
+//         // Console.WriteLine("Mesh optimized successfully!");
+
+//         Console.WriteLine($"Program start");
+//         SimdExample.Run();
+//         Console.WriteLine($"Program ends");
+//     }
+// }
+
+using BenchmarkDotNet.Running;
 
 class Program
 {
     static void Main(string[] args)
     {
-        // ushort[,,] voxels = {
-        //     { {0,0,0} , {0,0,0}, {0,0,0}},
-        //     { {0,0,0} , {0,0,0}, {0,0,0}},
-        //     { {0,0,0} , {0,0,0}, {0,0,0}},
-        // };
-        // var exampleChunk = new ExampleChunk(voxels);
-        // var optimizer = new DisjointSetMeshOptimizer();
-        // Mesh optimizedMesh = optimizer.Optimize(exampleChunk);
-
-        // Console.WriteLine("Mesh optimized successfully!");
-
-        Console.WriteLine($"Program start");
-        SimdExample.Run();
-        Console.WriteLine($"Program ends");
+        BenchmarkRunner.Run<VisibilityBenchmarks>();
     }
 }
-
