@@ -19,11 +19,8 @@ public class VisibilityBenchmarks
 
     private double[,,] voxels = null!;
     private bool[] packed = null!;
-    private bool[,,][] baseline = null!;
-    private bool[,,][] bitOps = null!;
-    private bool[,,][] bitOpsOptimized = null!;
-    private bool[,,][] simd = null!;
 
+    
     [IterationSetup]
     public void Setup()
     {
@@ -40,35 +37,41 @@ public class VisibilityBenchmarks
     }
 
 
-    private void Verify(bool[,,][] result, string label)
-    {
-        for (int x = 0; x < sizeX; x++)
-            for (int y = 0; y < sizeY; y++)
-                for (int z = 0; z < sizeZ; z++)
-                    for (int f = 0; f < 6; f++)
-                        if (result[x, y, z][f] != baseline[x, y, z][f])
-                            throw new InvalidOperationException($"{label} mismatch at {x},{y},{z} face {f}");
-    }
+    // private void Verify(bool[,,][] result, string label)
+    // {
+    //     for (int x = 0; x < sizeX; x++)
+    //         for (int y = 0; y < sizeY; y++)
+    //             for (int z = 0; z < sizeZ; z++)
+    //                 for (int f = 0; f < 6; f++)
+    //                     if (result[x, y, z][f] != baseline[x, y, z][f])
+    //                         throw new InvalidOperationException($"{label} mismatch at {x},{y},{z} face {f}");
+    // }
 
     [Benchmark(Baseline = true)]
     public void Naive()
     {
-        baseline = VisibilityCalculator.GetVisibleFaces(voxels, threshold);
+        VisibilityCalculator.GetVisibleFaces(voxels, threshold);
     }
 
     [Benchmark]
     public void BitOpsOptimized()
     {
         var bools = VisibilityCalculatorBinary.ToBools(voxels, threshold);
-        
-        bitOpsOptimized = VisibilityCalculatorBinary.GetVisibleFaces(bools);
+
+        VisibilityCalculatorBinary.GetVisibleFaces(bools);
     }
 
 
     [Benchmark]
     public void Simd()
     {
-        simd = VisibilityCalculatorSimd.GetVisibleFaces(packed, sizeX, sizeY, sizeZ);
+        VisibilityCalculatorSimd.GetVisibleFaces(packed, sizeX, sizeY, sizeZ);
     }
 
+
+    [Benchmark]
+    public void SimdOptimized()
+    {
+        VisibilityCalculatorSimd.GetVisibleFacesOptimized(packed, sizeX, sizeY, sizeZ);
+    }
 }

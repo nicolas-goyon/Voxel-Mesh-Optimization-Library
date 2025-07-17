@@ -1,7 +1,0 @@
-// Validating benchmarks:
-//    * Unable to use VisibilityBenchmarks.sizeX with [Params] because it's not public. Please, make it public.
-
-//    * Unable to use VisibilityBenchmarks.sizeY with [Params] because it's not public. Please, make it public.
-
-//    * Unable to use VisibilityBenchmarks.sizeZ with [Params] because it's not public. Please, make it public.
-

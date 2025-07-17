@@ -27,6 +27,89 @@ public static class VisibilityCalculatorSimd
                     result[idx++] = voxels[x, y, z] > threshold;
         return result;
     }
+    
+    
+    /// <summary>
+    /// Compute visible faces using a packed boolean voxel array with reduced index computations.
+    /// This version processes voxels in X-major order and uses SIMD for all six neighbor comparisons.
+    /// </summary>
+    public static bool[,,][] GetVisibleFacesOptimized(bool[] voxels, int sizeX, int sizeY, int sizeZ)
+    {
+        long total = (long)sizeX * sizeY * sizeZ;
+        if (voxels.Length < total)
+            throw new ArgumentException("Voxel array is smaller than expected", nameof(voxels));
+
+        var visible = new bool[sizeX, sizeY, sizeZ][];
+
+        int vecSize = Vector<byte>.Count;
+        byte[] curr = new byte[vecSize];
+        byte[] left = new byte[vecSize];
+        byte[] right = new byte[vecSize];
+        byte[] bottom = new byte[vecSize];
+        byte[] top = new byte[vecSize];
+        byte[] back = new byte[vecSize];
+        byte[] front = new byte[vecSize];
+
+        int rowStride = sizeX;
+        int sliceStride = sizeX * sizeY;
+
+        for (int z = 0; z < sizeZ; z++)
+        {
+            for (int y = 0; y < sizeY; y++)
+            {
+                int baseIndex = z * sliceStride + y * rowStride;
+                for (int x = 0; x < sizeX; x += vecSize)
+                {
+                    int chunk = Math.Min(vecSize, sizeX - x);
+                    for (int i = 0; i < chunk; i++)
+                    {
+                        int idx = baseIndex + x + i;
+                        curr[i] = voxels[idx] ? (byte)1 : (byte)0;
+                        left[i] = x + i > 0 ? (voxels[idx - 1] ? (byte)1 : (byte)0) : (byte)0;
+                        right[i] = x + i < sizeX - 1 ? (voxels[idx + 1] ? (byte)1 : (byte)0) : (byte)0;
+                        bottom[i] = y > 0 ? (voxels[idx - rowStride] ? (byte)1 : (byte)0) : (byte)0;
+                        top[i] = y < sizeY - 1 ? (voxels[idx + rowStride] ? (byte)1 : (byte)0) : (byte)0;
+                        back[i] = z > 0 ? (voxels[idx - sliceStride] ? (byte)1 : (byte)0) : (byte)0;
+                        front[i] = z < sizeZ - 1 ? (voxels[idx + sliceStride] ? (byte)1 : (byte)0) : (byte)0;
+                    }
+                    for (int i = chunk; i < vecSize; i++)
+                    {
+                        curr[i] = left[i] = right[i] = bottom[i] = top[i] = back[i] = front[i] = 0;
+                    }
+
+                    var vCurr = new Vector<byte>(curr);
+                    var vLeft = new Vector<byte>(left);
+                    var vRight = new Vector<byte>(right);
+                    var vBottom = new Vector<byte>(bottom);
+                    var vTop = new Vector<byte>(top);
+                    var vBack = new Vector<byte>(back);
+                    var vFront = new Vector<byte>(front);
+
+                    var vXneg = Vector.BitwiseAnd(vCurr, Vector.OnesComplement(vLeft));
+                    var vXpos = Vector.BitwiseAnd(vCurr, Vector.OnesComplement(vRight));
+                    var vYneg = Vector.BitwiseAnd(vCurr, Vector.OnesComplement(vBottom));
+                    var vYpos = Vector.BitwiseAnd(vCurr, Vector.OnesComplement(vTop));
+                    var vZneg = Vector.BitwiseAnd(vCurr, Vector.OnesComplement(vBack));
+                    var vZpos = Vector.BitwiseAnd(vCurr, Vector.OnesComplement(vFront));
+
+                    for (int i = 0; i < chunk; i++)
+                    {
+                        var faces = new bool[6];
+                        faces[(int)Face.Xneg] = vXneg[i] != 0;
+                        faces[(int)Face.Xpos] = vXpos[i] != 0;
+                        faces[(int)Face.Yneg] = vYneg[i] != 0;
+                        faces[(int)Face.Ypos] = vYpos[i] != 0;
+                        faces[(int)Face.Zneg] = vZneg[i] != 0;
+                        faces[(int)Face.Zpos] = vZpos[i] != 0;
+                        visible[x + i, y, z] = faces;
+                    }
+                }
+            }
+        }
+
+        return visible;
+    }
+
 
     /// <summary>
     /// Compute visible faces using a packed boolean voxel array. The X, Y and Z
@@ -82,9 +165,9 @@ public static class VisibilityCalculatorSimd
                 bool right = mRightFace[i] != 0;
 
                 bool bottom = inside && !GetValue(voxels, x, y - 1, z, sizeX, sizeY, sizeZ);
-                bool top    = inside && !GetValue(voxels, x, y + 1, z, sizeX, sizeY, sizeZ);
-                bool back   = inside && !GetValue(voxels, x, y, z - 1, sizeX, sizeY, sizeZ);
-                bool front  = inside && !GetValue(voxels, x, y, z + 1, sizeX, sizeY, sizeZ);
+                bool top = inside && !GetValue(voxels, x, y + 1, z, sizeX, sizeY, sizeZ);
+                bool back = inside && !GetValue(voxels, x, y, z - 1, sizeX, sizeY, sizeZ);
+                bool front = inside && !GetValue(voxels, x, y, z + 1, sizeX, sizeY, sizeZ);
 
                 var faces = new bool[6];
                 faces[(int)Face.Xneg] = left;
