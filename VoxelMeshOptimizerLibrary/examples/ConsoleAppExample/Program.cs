@@ -19,6 +19,23 @@ class Program
 
         // Console.WriteLine("Mesh optimized successfully!");
 
+
+        
+        ushort[,,] voxels = {
+            { {1,1,1} , {1,1,1}, {1,1,1}},
+            { {1,1,1} , {1,1,1}, {0,0,0}},
+            { {1,1,1} , {0,0,0}, {0,0,0}},
+        };
+        var exampleChunk = new ExampleChunk(voxels);
+
+        var mesh = exampleChunk.ToMesh();
+        var path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "TetsChunk" + ".obj");
+
+        // Act
+        ObjExporter.Export(mesh, path);
+
+
+
         var quad = new MeshQuad
         {
             Vertex0 = new Vector3(0, 0, 0),
@@ -30,8 +47,8 @@ class Program
         };
         var list = new List<MeshQuad>();
         list.Add(quad);
-        var mesh = new ExampleMesh(list);
-        var path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", Path.GetRandomFileName() + ".obj");
+        mesh = new ExampleMesh(list);
+        path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", Path.GetRandomFileName() + ".obj");
 
         // Act
         ObjExporter.Export(mesh, path);
