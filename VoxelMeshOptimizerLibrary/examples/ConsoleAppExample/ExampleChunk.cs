@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using VoxelMeshOptimizer.Core;
 using System.Numerics;
+using System.IO;
 
 namespace ConsoleAppExample
 {
@@ -30,6 +31,51 @@ namespace ConsoleAppExample
                     {
                         ushort value = voxelArray[x, y, z];
                         _voxels[x, y, z] = new ExampleVoxel(value);
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Initializes a new chunk from a file on disk.
+        /// The first line contains the comma separated dimensions (X,Y,Z)
+        /// and the second line contains all voxel IDs in X-Y-Z order, separated by commas.
+        /// </summary>
+        public ExampleChunk(string fileName)
+        {
+            var lines = File.ReadAllLines(fileName);
+            if (lines.Length < 2)
+            {
+                throw new ArgumentException("File must contain at least two lines", nameof(fileName));
+            }
+
+            var sizes = lines[0].Split(',', StringSplitOptions.RemoveEmptyEntries);
+            if (sizes.Length != 3)
+            {
+                throw new FormatException("First line must contain three comma-separated values.");
+            }
+
+            XDepth = uint.Parse(sizes[0]);
+            YDepth = uint.Parse(sizes[1]);
+            ZDepth = uint.Parse(sizes[2]);
+
+            _voxels = new ExampleVoxel[XDepth, YDepth, ZDepth];
+
+            var voxelIds = lines[1].Split(',', StringSplitOptions.RemoveEmptyEntries);
+            if (voxelIds.Length != XDepth * YDepth * ZDepth)
+            {
+                throw new FormatException("Voxel count does not match chunk dimensions.");
+            }
+
+            int index = 0;
+            for (uint x = 0; x < XDepth; x++)
+            {
+                for (uint y = 0; y < YDepth; y++)
+                {
+                    for (uint z = 0; z < ZDepth; z++)
+                    {
+                        ushort id = ushort.Parse(voxelIds[index++]);
+                        _voxels[x, y, z] = new ExampleVoxel(id);
                     }
                 }
             }
@@ -282,5 +328,29 @@ namespace ConsoleAppExample
         }
 
 
+        /// <summary>
+        /// Saves this chunk to a file. The first line contains the dimensions
+        /// (X,Y,Z) separated by commas. The second line contains all voxel IDs
+        /// separated by commas in X-Y-Z order.
+        /// </summary>
+        public void Save(string fileName)
+        {
+            using var writer = new StreamWriter(fileName);
+            writer.WriteLine($"{XDepth},{YDepth},{ZDepth}");
+
+            var ids = new List<string>();
+            for (uint x = 0; x < XDepth; x++)
+            {
+                for (uint y = 0; y < YDepth; y++)
+                {
+                    for (uint z = 0; z < ZDepth; z++)
+                    {
+                        ids.Add(_voxels[x, y, z].ID.ToString());
+                    }
+                }
+            }
+
+            writer.WriteLine(string.Join(',', ids));
+        }
     }
 }

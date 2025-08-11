@@ -3,6 +3,8 @@ using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
 
 namespace ConsoleAppExample;
 using System.Numerics;
+using VoxelMeshOptimizer.Core.OcclusionAlgorithms;
+using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 
 class Program
 {
@@ -20,21 +22,49 @@ class Program
         // Console.WriteLine("Mesh optimized successfully!");
 
 
+
+        // var exampleChunk = new ExampleChunk("TestChunkPerlinNoiseGen.chk");
+
+        // // var mesh = exampleChunk.ToMesh();
+        // var optimizer = new DisjointSetMeshOptimizer(new ExampleMesh());
+        // Mesh optimizedMesh = optimizer.Optimize(exampleChunk);
+
+        // var path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "Test2" + ".obj");
+
+        // // Act
+        // ObjExporter.Export(optimizedMesh, path);
+
+
+
+        var exampleChunk = PerlinNoiseChunkGen.CreatePerlinLandscape(8, 123);
+
+        var baseMesh = exampleChunk.ToMesh();
+        var path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "ChunkBase" + ".obj");
+        ObjExporter.Export(baseMesh, path);
+
+
         
-        ushort[,,] voxels = {
-            { {1,1,1} , {1,1,1}, {1,1,1}},
-            { {1,1,1} , {1,1,1}, {0,0,0}},
-            { {1,1,1} , {0,0,0}, {0,0,0}},
-        };
-        var exampleChunk = new ExampleChunk(voxels);
-
-        var mesh = exampleChunk.ToMesh();
-        // var path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "Test" + ".obj");
-
-        // Act
-        // ObjExporter.Export(mesh, path);
+        var occluder = new VoxelOcclusionOptimizer(exampleChunk);
+        var visibileFaces = occluder.ComputeVisibleFaces();
+        var occludedQuads = VisibleFacesMesher.Build(visibileFaces, exampleChunk);
+        var occludedMesh = new ExampleMesh(occludedQuads);
+        path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "ChunkBaseOccluded" + ".obj");
+        ObjExporter.Export(occludedMesh, path);
 
 
+        var visibileFacesFiltered = new VisibleFaces();
+        visibileFacesFiltered.PlanesByAxis[(Axis.X, AxisOrder.Descending)] = visibileFaces.PlanesByAxis[(Axis.X, AxisOrder.Descending)];
+        occludedQuads = VisibleFacesMesher.Build(visibileFacesFiltered, exampleChunk);
+        occludedMesh = new ExampleMesh(occludedQuads);
+        path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "ChunkBaseOccludedFiltered" + ".obj");
+        ObjExporter.Export(occludedMesh, path);
+
+        // var mesh = exampleChunk.ToMesh();
+        var optimizer = new DisjointSetMeshOptimizer(new ExampleMesh());
+        Mesh optimizedMesh = optimizer.Optimize(exampleChunk);
+
+        path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "ChunkOptimized" + ".obj");
+        ObjExporter.Export(optimizedMesh, path);
 
     }
 }

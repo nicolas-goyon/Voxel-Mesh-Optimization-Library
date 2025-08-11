@@ -14,13 +14,16 @@ public class DisjointSetVisiblePlaneOptimizer
     private readonly Voxel?[,] voxels;
     private readonly int width;
     private readonly int height;
+    private readonly Chunk<Voxel> chunk;
 
-    public DisjointSetVisiblePlaneOptimizer(VisiblePlane plane)
+    public DisjointSetVisiblePlaneOptimizer(VisiblePlane plane, Chunk<Voxel> chunk)
     {
         Guard.IsNotNull(plane, nameof(plane));
         Guard.IsNotNull(plane.Voxels, nameof(plane.Voxels));
         this.plane = plane;
         voxels = plane.Voxels;
+        this.chunk = chunk;
+
         width = voxels.GetLength(0);
         height = voxels.GetLength(1);
 
@@ -31,11 +34,6 @@ public class DisjointSetVisiblePlaneOptimizer
     }
 
     public void Optimize()
-    {
-        CreateSets();
-    }
-
-    private void CreateSets()
     {
         for (int y = 0; y < height; y++)
         {
@@ -107,9 +105,9 @@ public class DisjointSetVisiblePlaneOptimizer
         int root = disjointSet.Find(ToIndex(x, y));
         if (root != ToIndex(x, y)) return true;
 
-        return (x > 0     && AreSame(x, y, x - 1, y)) ||
+        return (x > 0 && AreSame(x, y, x - 1, y)) ||
                (x < width - 1 && AreSame(x, y, x + 1, y)) ||
-               (y > 0     && AreSame(x, y, x, y - 1)) ||
+               (y > 0 && AreSame(x, y, x, y - 1)) ||
                (y < height - 1 && AreSame(x, y, x, y + 1));
     }
 
@@ -129,6 +127,7 @@ public class DisjointSetVisiblePlaneOptimizer
     {
         var groups = new Dictionary<int, List<(int x, int y)>>();
 
+
         for (int y = 0; y < height; y++)
         {
             for (int x = 0; x < width; x++)
@@ -144,43 +143,146 @@ public class DisjointSetVisiblePlaneOptimizer
             }
         }
 
+
+
+
         var quads = new List<MeshQuad>();
-        foreach (var group in groups.Values)
+        foreach (var group in groups)
         {
-            var minX = group.Min(p => p.x);
-            var maxX = group.Max(p => p.x);
-            var minY = group.Min(p => p.y);
-            var maxY = group.Max(p => p.y);
+
+            var groupVoxels = group.Value;
+
+            var minX = groupVoxels.Min(p => p.x);
+            var maxX = groupVoxels.Max(p => p.x);
+            var minY = groupVoxels.Min(p => p.y);
+            var maxY = groupVoxels.Max(p => p.y);
+
 
             int width = maxX - minX + 1;
             int height = maxY - minY + 1;
 
-            var origin = new Vector3();
-            origin.SetAxis(plane.MajorAxis, plane.MajorAxisOrder == AxisOrder.Ascending ? minX : -minX);
-            origin.SetAxis(plane.MiddleAxis, plane.MiddleAxisOrder == AxisOrder.Ascending ? minY : -minY);
-            origin.SetAxis(plane.MinorAxis, plane.MinorAxisOrder == AxisOrder.Ascending ? (float)plane.SliceIndex : -(float)plane.SliceIndex);
 
-            var right = AxisExtensions.Direction(plane.MajorAxis, plane.MajorAxisOrder);
-            var up    = AxisExtensions.Direction(plane.MiddleAxis, plane.MiddleAxisOrder);
-            var normal = AxisExtensions.Direction(plane.MinorAxis, plane.MinorAxisOrder);
 
-            // Construct corners (clockwise)
-            var v0 = origin;
-            var v1 = origin + right * width;
-            var v2 = origin + right * width + up * height;
-            var v3 = origin + up * height;
-
+            MeshQuad quad = null;
             int voxelId = voxels[minX, minY]!.ID;
-
-            quads.Add(new MeshQuad
+            
+            
+            switch (plane.MajorAxis, plane.MajorAxisOrder)
             {
-                Vertex0 = v0,
-                Vertex1 = v1,
-                Vertex2 = v2,
-                Vertex3 = v3,
-                Normal = normal,
-                VoxelID = voxelId
-            });
+                case (Axis.X, AxisOrder.Descending):
+                    {
+                        #region DebugVoxels
+                            Console.WriteLine("\t\t==========================");
+                            Console.WriteLine($"== FaceIndex :  {plane.SliceIndex}");
+                            Console.WriteLine($"\tgroup : {group.Key}");
+                            foreach (var val in group.Value)
+                            {
+                                Console.WriteLine($"\t\tx:{val.x} - y:{val.y}");
+                            }
+                            
+                            Console.WriteLine("\tVoxels");
+                            for (int testX = 0; testX < voxels.GetLength(0); testX++)
+                            {
+                                Console.Write("\t| ");
+                                for (int testY = 0; testY < voxels.GetLength(1); testY++)
+                                {
+                                    if (group.Value.Contains((testX, testY))) Console.Write((voxels[testX, testY] == null ? "E" : voxels[testX, testY]!.ID) + " ");
+                                    else Console.Write((voxels[testX, testY] == null ? " " : ".") + " ");
+                                }
+                                Console.WriteLine("|");
+                            }
+                            Console.WriteLine($"\t\tMinX:{minX} - MaxX:{maxX} - MinY:{minY} - MaxY:{maxY}");
+                            Console.WriteLine($"\t\tWidth:{width} - Height:{height}");
+                        #endregion
+
+                        
+                        uint x = chunk.XDepth - plane.SliceIndex;
+                        var y1 = chunk.YDepth - minX;
+                        var y2 = chunk.YDepth - maxX - 1;
+                        var z1 = chunk.ZDepth - minY;
+                        var z2 = chunk.ZDepth - maxY - 1;
+                        quad = new MeshQuad
+                        {
+                            Vertex0 = new Vector3(x, y1, z1),
+                            Vertex1 = new Vector3(x, y2, z1),
+                            Vertex2 = new Vector3(x, y2, z2),
+                            Vertex3 = new Vector3(x, y1, z2),
+                            Normal = new Vector3(1, 0, 0),
+                            VoxelID = voxelId
+                        };
+                        break;
+                    }
+                case (Axis.X, AxisOrder.Ascending):
+                    // {
+                    //     quad = new MeshQuad
+                    //     {
+                    //         Vertex0 = new Vector3(minX, by, bz),
+                    //         Vertex1 = new Vector3(minX, by, bz + 1),
+                    //         Vertex2 = new Vector3(minX, by + 1, bz + 1),
+                    //         Vertex3 = new Vector3(minX, by + 1, bz),
+                    //         Normal = new Vector3(-1, 0, 0),
+                    //         VoxelID = voxelId
+                    //     };
+                    //     break;
+                    // }
+                case (Axis.Y, AxisOrder.Descending):
+                    // {
+                    //     quad = new MeshQuad
+                    //     {
+                    //         Vertex0 = new Vector3(bx, by + 1, bz + 1),
+                    //         Vertex1 = new Vector3(bx + 1, by + 1, bz + 1),
+                    //         Vertex2 = new Vector3(bx + 1, by + 1, bz),
+                    //         Vertex3 = new Vector3(bx, by + 1, bz),
+                    //         Normal = new Vector3(0, 1, 0),
+                    //         VoxelID = voxelId
+                    //     };
+                    //     break;
+                    // }
+                case (Axis.Y, AxisOrder.Ascending):
+                    // {
+                    //     quad = new MeshQuad
+                    //     {
+                    //         Vertex0 = new Vector3(bx, by, bz),
+                    //         Vertex1 = new Vector3(bx + 1, by, bz),
+                    //         Vertex2 = new Vector3(bx + 1, by, bz + 1),
+                    //         Vertex3 = new Vector3(bx, by, bz + 1),
+                    //         Normal = new Vector3(0, -1, 0),
+                    //         VoxelID = voxelId
+                    //     };
+                    //     break;
+                    // }
+                case (Axis.Z, AxisOrder.Descending):
+                    // {
+                    //     quad = new MeshQuad
+                    //     {
+                    //         Vertex0 = new Vector3(bx, by, bz + 1),
+                    //         Vertex1 = new Vector3(bx + 1, by, bz + 1),
+                    //         Vertex2 = new Vector3(bx + 1, by + 1, bz + 1),
+                    //         Vertex3 = new Vector3(bx, by + 1, bz + 1),
+                    //         Normal = new Vector3(0, 0, 1),
+                    //         VoxelID = voxelId
+                    //     };
+                    //     break;
+                    // }
+                case (Axis.Z, AxisOrder.Ascending):
+                    // {
+                    //     quad = new MeshQuad
+                    //     {
+                    //         Vertex0 = new Vector3(bx, by, bz),
+                    //         Vertex1 = new Vector3(bx, by + 1, bz),
+                    //         Vertex2 = new Vector3(bx + 1, by + 1, bz),
+                    //         Vertex3 = new Vector3(bx + 1, by, bz),
+                    //         Normal = new Vector3(0, 0, -1),
+                    //         VoxelID = voxelId
+                    //     };
+                    //     break;
+                    // }
+                    break;
+                default: throw new ArgumentOutOfRangeException();
+            }
+
+
+            if (quad != null) quads.Add(quad);
         }
 
         return quads;

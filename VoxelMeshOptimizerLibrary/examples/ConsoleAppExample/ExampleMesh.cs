@@ -11,4 +11,8 @@ public class ExampleMesh : Mesh
         Quads = quads;
     }
 
+    public ExampleMesh()
+    {
+        Quads = new();
+    }
 }
