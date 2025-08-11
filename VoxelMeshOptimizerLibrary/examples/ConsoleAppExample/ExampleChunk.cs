@@ -223,59 +223,59 @@ namespace ConsoleAppExample
             yield return new MeshQuad
             {
                 Vertex0 = new Vector3(bx, by, bz),
-                Vertex1 = new Vector3(bx + 1, by, bz),
+                Vertex1 = new Vector3(bx, by + 1, bz),
                 Vertex2 = new Vector3(bx + 1, by + 1, bz),
-                Vertex3 = new Vector3(bx, by + 1, bz),
+                Vertex3 = new Vector3(bx + 1, by, bz),
                 Normal = new Vector3(0, 0, -1),
                 VoxelID = voxelId
             };
 
             yield return new MeshQuad
             {
-                Vertex0 = new Vector3(bx + 1, by, bz + 1),
-                Vertex1 = new Vector3(bx, by, bz + 1),
-                Vertex2 = new Vector3(bx, by + 1, bz + 1),
-                Vertex3 = new Vector3(bx + 1, by + 1, bz + 1),
+                Vertex0 = new Vector3(bx, by, bz + 1),
+                Vertex1 = new Vector3(bx + 1, by, bz + 1),
+                Vertex2 = new Vector3(bx + 1, by + 1, bz + 1),
+                Vertex3 = new Vector3(bx, by + 1, bz + 1),
                 Normal = new Vector3(0, 0, 1),
                 VoxelID = voxelId
             };
 
             yield return new MeshQuad
             {
-                Vertex0 = new Vector3(bx, by, bz + 1),
-                Vertex1 = new Vector3(bx, by, bz),
-                Vertex2 = new Vector3(bx, by + 1, bz),
-                Vertex3 = new Vector3(bx, by + 1, bz + 1),
+                Vertex0 = new Vector3(bx, by, bz),
+                Vertex1 = new Vector3(bx, by, bz + 1),
+                Vertex2 = new Vector3(bx, by + 1, bz + 1),
+                Vertex3 = new Vector3(bx, by + 1, bz),
                 Normal = new Vector3(-1, 0, 0),
                 VoxelID = voxelId
             };
 
             yield return new MeshQuad
             {
-                Vertex0 = new Vector3(bx + 1, by, bz),
-                Vertex1 = new Vector3(bx + 1, by, bz + 1),
-                Vertex2 = new Vector3(bx + 1, by + 1, bz + 1),
-                Vertex3 = new Vector3(bx + 1, by + 1, bz),
+                Vertex0 = new Vector3(bx + 1, by, bz + 1),
+                Vertex1 = new Vector3(bx + 1, by, bz),
+                Vertex2 = new Vector3(bx + 1, by + 1, bz),
+                Vertex3 = new Vector3(bx + 1, by + 1, bz + 1),
                 Normal = new Vector3(1, 0, 0),
                 VoxelID = voxelId
             };
 
             yield return new MeshQuad
             {
-                Vertex0 = new Vector3(bx, by, bz + 1),
-                Vertex1 = new Vector3(bx + 1, by, bz + 1),
-                Vertex2 = new Vector3(bx + 1, by, bz),
-                Vertex3 = new Vector3(bx, by, bz),
+                Vertex0 = new Vector3(bx, by, bz),
+                Vertex1 = new Vector3(bx + 1, by, bz),
+                Vertex2 = new Vector3(bx + 1, by, bz + 1),
+                Vertex3 = new Vector3(bx, by, bz + 1),
                 Normal = new Vector3(0, -1, 0),
                 VoxelID = voxelId
             };
 
             yield return new MeshQuad
             {
-                Vertex0 = new Vector3(bx, by + 1, bz),
-                Vertex1 = new Vector3(bx + 1, by + 1, bz),
-                Vertex2 = new Vector3(bx + 1, by + 1, bz + 1),
-                Vertex3 = new Vector3(bx, by + 1, bz + 1),
+                Vertex0 = new Vector3(bx, by + 1, bz + 1),
+                Vertex1 = new Vector3(bx + 1, by + 1, bz + 1),
+                Vertex2 = new Vector3(bx + 1, by + 1, bz),
+                Vertex3 = new Vector3(bx, by + 1, bz),
                 Normal = new Vector3(0, 1, 0),
                 VoxelID = voxelId
             };
