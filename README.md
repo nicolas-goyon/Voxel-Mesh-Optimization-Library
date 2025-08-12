@@ -4,6 +4,10 @@
 
 The **Voxel Mesh Optimization Library** is a C# library designed to optimize voxel-based meshes for real-time rendering—ideal for game developers and any user interested in leveraging efficient 3D mesh generation techniques. The library transforms a collection of individual colored voxels into a single optimized mesh, reducing redundant faces and merging triangles with identical colors to improve display performance.
 
+Here bellow is a diagram explaining the global workflow :
+
+![Scheme](./docs/Readme_images/Scheme.png)
+
 ### Key Definitions
 
 - **Voxel:**  
