@@ -147,6 +147,7 @@ public class DisjointSetVisiblePlaneOptimizer
 
 
         var quads = new List<MeshQuad>();
+        MeshQuad? quad;
         foreach (var group in groups)
         {
 
@@ -163,39 +164,13 @@ public class DisjointSetVisiblePlaneOptimizer
 
 
 
-            MeshQuad quad = null;
             int voxelId = voxels[minX, minY]!.ID;
-            
-            
+
+
             switch (plane.MajorAxis, plane.MajorAxisOrder)
             {
                 case (Axis.X, AxisOrder.Descending):
                     {
-                        #region DebugVoxels
-                            Console.WriteLine("\t\t==========================");
-                            Console.WriteLine($"== FaceIndex :  {plane.SliceIndex}");
-                            Console.WriteLine($"\tgroup : {group.Key}");
-                            foreach (var val in group.Value)
-                            {
-                                Console.WriteLine($"\t\tx:{val.x} - y:{val.y}");
-                            }
-                            
-                            Console.WriteLine("\tVoxels");
-                            for (int testX = 0; testX < voxels.GetLength(0); testX++)
-                            {
-                                Console.Write("\t| ");
-                                for (int testY = 0; testY < voxels.GetLength(1); testY++)
-                                {
-                                    if (group.Value.Contains((testX, testY))) Console.Write((voxels[testX, testY] == null ? "E" : voxels[testX, testY]!.ID) + " ");
-                                    else Console.Write((voxels[testX, testY] == null ? " " : ".") + " ");
-                                }
-                                Console.WriteLine("|");
-                            }
-                            Console.WriteLine($"\t\tMinX:{minX} - MaxX:{maxX} - MinY:{minY} - MaxY:{maxY}");
-                            Console.WriteLine($"\t\tWidth:{width} - Height:{height}");
-                        #endregion
-
-                        
                         uint x = chunk.XDepth - plane.SliceIndex;
                         var y1 = chunk.YDepth - minX;
                         var y2 = chunk.YDepth - maxX - 1;
@@ -213,76 +188,103 @@ public class DisjointSetVisiblePlaneOptimizer
                         break;
                     }
                 case (Axis.X, AxisOrder.Ascending):
-                    // {
-                    //     quad = new MeshQuad
-                    //     {
-                    //         Vertex0 = new Vector3(minX, by, bz),
-                    //         Vertex1 = new Vector3(minX, by, bz + 1),
-                    //         Vertex2 = new Vector3(minX, by + 1, bz + 1),
-                    //         Vertex3 = new Vector3(minX, by + 1, bz),
-                    //         Normal = new Vector3(-1, 0, 0),
-                    //         VoxelID = voxelId
-                    //     };
-                    //     break;
-                    // }
+                    {
+                        
+                        uint x = plane.SliceIndex;
+                        var y1 = minX;
+                        var y2 = maxX + 1;
+                        var z1 = minY;
+                        var z2 = maxY + 1;
+                        quad = new MeshQuad
+                        {
+                            Vertex1 = new Vector3(x, y1, z1),
+                            Vertex0 = new Vector3(x, y2, z1),
+                            Vertex3 = new Vector3(x, y2, z2),
+                            Vertex2 = new Vector3(x, y1, z2),
+                            Normal = new Vector3(1, 0, 0),
+                            VoxelID = voxelId
+                        };
+                        break;
+                    }
                 case (Axis.Y, AxisOrder.Descending):
-                    // {
-                    //     quad = new MeshQuad
-                    //     {
-                    //         Vertex0 = new Vector3(bx, by + 1, bz + 1),
-                    //         Vertex1 = new Vector3(bx + 1, by + 1, bz + 1),
-                    //         Vertex2 = new Vector3(bx + 1, by + 1, bz),
-                    //         Vertex3 = new Vector3(bx, by + 1, bz),
-                    //         Normal = new Vector3(0, 1, 0),
-                    //         VoxelID = voxelId
-                    //     };
-                    //     break;
-                    // }
+                {
+                        var x1 = chunk.XDepth - minY;
+                        var x2 = chunk.XDepth - maxY - 1;
+                        uint y = chunk.YDepth - plane.SliceIndex;
+                        var z1 = chunk.ZDepth - minX;
+                        var z2 = chunk.ZDepth - maxX - 1;
+                        quad = new MeshQuad
+                        {
+                            Vertex0 = new Vector3(x1, y, z1),
+                            Vertex1 = new Vector3(x1, y, z2),
+                            Vertex2 = new Vector3(x2, y, z2),
+                            Vertex3 = new Vector3(x2, y, z1),
+                            Normal = new Vector3(1, 0, 0),
+                            VoxelID = voxelId
+                        };
+                        break;
+                    }
                 case (Axis.Y, AxisOrder.Ascending):
-                    // {
-                    //     quad = new MeshQuad
-                    //     {
-                    //         Vertex0 = new Vector3(bx, by, bz),
-                    //         Vertex1 = new Vector3(bx + 1, by, bz),
-                    //         Vertex2 = new Vector3(bx + 1, by, bz + 1),
-                    //         Vertex3 = new Vector3(bx, by, bz + 1),
-                    //         Normal = new Vector3(0, -1, 0),
-                    //         VoxelID = voxelId
-                    //     };
-                    //     break;
-                    // }
+                {
+                        var x1 = minY;
+                        var x2 = maxY + 1;
+                        uint y = plane.SliceIndex;
+                        var z1 = minX;
+                        var z2 = maxX + 1;
+                        quad = new MeshQuad
+                        {
+                            Vertex1 = new Vector3(x1, y, z1),
+                            Vertex0 = new Vector3(x1, y, z2),
+                            Vertex3 = new Vector3(x2, y, z2),
+                            Vertex2 = new Vector3(x2, y, z1),
+                            Normal = new Vector3(1, 0, 0),
+                            VoxelID = voxelId
+                        };
+                        break;
+                    }
                 case (Axis.Z, AxisOrder.Descending):
-                    // {
-                    //     quad = new MeshQuad
-                    //     {
-                    //         Vertex0 = new Vector3(bx, by, bz + 1),
-                    //         Vertex1 = new Vector3(bx + 1, by, bz + 1),
-                    //         Vertex2 = new Vector3(bx + 1, by + 1, bz + 1),
-                    //         Vertex3 = new Vector3(bx, by + 1, bz + 1),
-                    //         Normal = new Vector3(0, 0, 1),
-                    //         VoxelID = voxelId
-                    //     };
-                    //     break;
-                    // }
+                {
+                        var x1 = chunk.XDepth - minY;
+                        var x2 = chunk.XDepth - maxY - 1;
+                        var y1 = chunk.YDepth - minX;
+                        var y2 = chunk.YDepth - maxX - 1;
+                        uint z = chunk.ZDepth - plane.SliceIndex;
+                        quad = new MeshQuad
+                        {
+                            Vertex1 = new Vector3(x1, y1, z),
+                            Vertex0 = new Vector3(x1, y2, z),
+                            Vertex3 = new Vector3(x2, y2, z),
+                            Vertex2 = new Vector3(x2, y1, z),
+                            Normal = new Vector3(1, 0, 0),
+                            VoxelID = voxelId
+                        };
+                        break;
+                    }
                 case (Axis.Z, AxisOrder.Ascending):
-                    // {
-                    //     quad = new MeshQuad
-                    //     {
-                    //         Vertex0 = new Vector3(bx, by, bz),
-                    //         Vertex1 = new Vector3(bx, by + 1, bz),
-                    //         Vertex2 = new Vector3(bx + 1, by + 1, bz),
-                    //         Vertex3 = new Vector3(bx + 1, by, bz),
-                    //         Normal = new Vector3(0, 0, -1),
-                    //         VoxelID = voxelId
-                    //     };
-                    //     break;
-                    // }
-                    break;
+                    {
+                        var x1 = minY;
+                        var x2 = maxY + 1;
+                        var y1 = minX;
+                        var y2 = maxX + 1;
+                        uint z = plane.SliceIndex;
+                        quad = new MeshQuad
+                        {
+                            Vertex0 = new Vector3(x1, y1, z),
+                            Vertex1 = new Vector3(x1, y2, z),
+                            Vertex2 = new Vector3(x2, y2, z),
+                            Vertex3 = new Vector3(x2, y1, z),
+                            Normal = new Vector3(1, 0, 0),
+                            VoxelID = voxelId
+                        };
+                        break;
+                    }
                 default: throw new ArgumentOutOfRangeException();
             }
 
 
-            if (quad != null) quads.Add(quad);
+            if (quad == null) throw new Exception("Unexpected null value");
+
+            quads.Add(quad);
         }
 
         return quads;

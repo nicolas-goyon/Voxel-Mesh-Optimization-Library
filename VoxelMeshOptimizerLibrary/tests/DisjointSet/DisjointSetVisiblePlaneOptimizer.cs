@@ -31,12 +31,12 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
     public void ToMeshQuads_ShouldCreateSingleQuad_ForUniformBlock()
     {
         ushort?[,] ids = {
-        {1, 1},
-        {1, 1}
-    };
+            {1, 1},
+            {1, 1}
+        };
 
         var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, );
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();

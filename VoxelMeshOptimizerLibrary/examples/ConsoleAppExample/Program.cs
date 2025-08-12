@@ -36,7 +36,7 @@ class Program
 
 
 
-        var exampleChunk = PerlinNoiseChunkGen.CreatePerlinLandscape(8, 123);
+        var exampleChunk = PerlinNoiseChunkGen.CreatePerlinLandscape(50, 123);
 
         var baseMesh = exampleChunk.ToMesh();
         var path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "ChunkBase" + ".obj");
@@ -51,13 +51,6 @@ class Program
         path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "ChunkBaseOccluded" + ".obj");
         ObjExporter.Export(occludedMesh, path);
 
-
-        var visibileFacesFiltered = new VisibleFaces();
-        visibileFacesFiltered.PlanesByAxis[(Axis.X, AxisOrder.Descending)] = visibileFaces.PlanesByAxis[(Axis.X, AxisOrder.Descending)];
-        occludedQuads = VisibleFacesMesher.Build(visibileFacesFiltered, exampleChunk);
-        occludedMesh = new ExampleMesh(occludedQuads);
-        path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "ChunkBaseOccludedFiltered" + ".obj");
-        ObjExporter.Export(occludedMesh, path);
 
         // var mesh = exampleChunk.ToMesh();
         var optimizer = new DisjointSetMeshOptimizer(new ExampleMesh());

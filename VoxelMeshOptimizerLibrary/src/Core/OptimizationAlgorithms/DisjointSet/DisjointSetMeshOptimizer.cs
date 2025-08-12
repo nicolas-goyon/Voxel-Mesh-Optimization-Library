@@ -20,7 +20,6 @@ public class DisjointSetMeshOptimizer : MeshOptimizer
         var visibileFaces = occluder.ComputeVisibleFaces();
 
         foreach (var visibleFace in visibileFaces.PlanesByAxis){
-            Console.WriteLine($"Axis : {visibleFace.Key.Item1}, AxisOrder : {visibleFace.Key.Item2}");
             foreach (var face in visibleFace.Value)
             {
                 var optimizer = new DisjointSetVisiblePlaneOptimizer(face, chunk);

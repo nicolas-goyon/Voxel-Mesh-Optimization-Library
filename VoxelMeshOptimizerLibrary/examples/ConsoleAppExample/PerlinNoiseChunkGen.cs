@@ -21,11 +21,11 @@ public class PerlinNoiseChunkGen
                 float nz = z / (float)size;
 
                 float height =
-                    noise.Noise(nx * 1f, nz * 1f) * 2f +
-                    noise.Noise(nx * 2f, nz * 2f) * 1f +
-                    noise.Noise(nx * 4f, nz * 4f) * 0.5f;
+                    noise.Noise(nx * 1f, nz * 1f) * 20f +
+                    noise.Noise(nx * 2f, nz * 2f) * 10f +
+                    noise.Noise(nx * 4f, nz * 4f) * 5f;
 
-                int h = Math.Clamp((int)(height + 0.5f), 0, size - 1);
+                int h = Math.Clamp((int)(height + 5f), 0, size - 1);
                 for (int y = 0; y <= h; y++)
                 {
                     voxels[x, y, z] = 1;
