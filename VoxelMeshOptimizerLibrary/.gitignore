@@ -3,3 +3,5 @@ TestResults/
 **/obj/
 **/**/bin/
 **/**/obj/
+
+/examples/Benchmark/BenchmarkDotNet.Artifacts
