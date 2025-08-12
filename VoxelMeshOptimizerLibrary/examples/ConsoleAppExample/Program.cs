@@ -23,8 +23,8 @@ class Program
 
 
 
-        var exampleChunk = new ExampleChunk("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/Resources/TestChunkPerlinNoiseGen.chk");
-        exampleChunk.Save("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/Resources/TestChunkPerlinNoiseGen.chk");
+        // var exampleChunk = new ExampleChunk("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/Resources/TestChunkPerlinNoiseGen.chk");
+        // exampleChunk.Save("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/Resources/TestChunkPerlinNoiseGen.chk");
 
         // // var mesh = exampleChunk.ToMesh();
         // var optimizer = new DisjointSetMeshOptimizer(new ExampleMesh());
