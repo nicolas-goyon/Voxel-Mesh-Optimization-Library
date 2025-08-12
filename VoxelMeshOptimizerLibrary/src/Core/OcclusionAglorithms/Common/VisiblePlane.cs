@@ -69,11 +69,12 @@ public class VisiblePlane
         MiddleAxisOrder = middleAxisOrder;
 
         MinorAxis = minorAxis;
-        MinorAxisOrder = minorAxisOrder; 
-        
+        MinorAxisOrder = minorAxisOrder;
+
 
         SliceIndex = sliceIndex;
         Voxels = new Voxel?[width, height];
+
     }
 
     /// <summary>
@@ -127,7 +128,7 @@ public class VisiblePlane
         string minorSign = MinorAxisOrder == AxisOrder.Ascending ? "+" : "-";
 
         // Header avec ordre ascendant/descendant
-        sb.AppendLine($"Plane(Major={majorSign}{MajorAxis}, Middle={middleSign}{MiddleAxis}, Minor={minorSign}{MinorAxis}, SliceIndex={SliceIndex})");
+        sb.AppendLine(ToString());
         sb.AppendLine("Voxels (each cell shows 'ID' or '.' if null):");
 
         int width = Voxels.GetLength(0);

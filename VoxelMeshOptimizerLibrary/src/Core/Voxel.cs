@@ -13,10 +13,10 @@ public interface Voxel
 public enum VoxelFace
 {
     None = 0,
-    Zpos = 1 << 0,  // Front
-    Zneg = 1 << 1,   // Back
-    Xneg = 1 << 2,   // Right
-    Xpos = 1 << 3,  // Left
-    Ypos = 1 << 4,    // Bottom
-    Yneg = 1 << 5  // Top
+    Zpos = 1 << 0,  // Back
+    Zneg = 1 << 1,   // Front
+    Xneg = 1 << 2,   // Left
+    Xpos = 1 << 3,  // Right
+    Ypos = 1 << 4,    // Top
+    Yneg = 1 << 5  // Bottom
 }

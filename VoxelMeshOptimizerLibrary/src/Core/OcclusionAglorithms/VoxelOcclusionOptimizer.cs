@@ -81,7 +81,6 @@ public class VoxelOcclusionOptimizer : Occluder
 
         // Dictionary to store the visible planes keyed by the slice index.
         uint sliceCount = chunk.GetDepth(sliceAxis);
-        Console.WriteLine("=========================== " + sliceCount + " ===========================");
         var planesBySlice = new VisiblePlane[sliceCount];
 
         chunk.ForEachCoordinate(
