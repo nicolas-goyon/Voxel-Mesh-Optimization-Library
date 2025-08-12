@@ -9,7 +9,7 @@ namespace VoxelMeshOptimizer.Tests.DisjointSetTesting;
 
 public partial class DisjointSetVisiblePlaneOptimizerTests
 {
-    private static VisiblePlane CreatePlaneFromIds(ushort?[,] ids)
+    private static (VisiblePlane plane, TestChunk chunk) CreatePlaneFromIds(ushort?[,] ids)
     {
         int w = ids.GetLength(0), h = ids.GetLength(1);
         var plane = new VisiblePlane(
@@ -18,11 +18,22 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
             Axis.Z, AxisOrder.Ascending,
             0, (uint)w, (uint)h
         );
+        var chunk = new TestChunk(1, (uint)w, (uint)h);
+
         for (int x = 0; x < w; x++)
+        {
             for (int y = 0; y < h; y++)
-                if (ids[x, y] != null && ids[x, y].HasValue)
-                    plane.Voxels[x, y] = new TestVoxel(ids[x, y].Value, true);
-        return plane;
+            {
+                if (ids[x, y] is ushort id)
+                {
+                    var voxel = new TestVoxel(id, true);
+                    plane.Voxels[x, y] = voxel;
+                    chunk.Set(0, (uint)x, (uint)y, voxel);
+                }
+            }
+        }
+
+        return (plane, chunk);
     }
 
     #region ToMeshQuads (Refactored from ToResult)
@@ -31,12 +42,12 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
     public void ToMeshQuads_ShouldCreateSingleQuad_ForUniformBlock()
     {
         ushort?[,] ids = {
-        {1, 1},
-        {1, 1}
-    };
+            {1, 1},
+            {1, 1}
+        };
 
-        var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var (plane, chunk) = CreatePlaneFromIds(ids);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();
@@ -53,8 +64,8 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
         {3, 4}
     };
 
-        var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var (plane, chunk) = CreatePlaneFromIds(ids);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();
@@ -75,8 +86,8 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
         {3, 3, 4, 4}
     };
 
-        var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var (plane, chunk) = CreatePlaneFromIds(ids);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();
@@ -96,8 +107,8 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
         {1, 3}
     };
 
-        var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var (plane, chunk) = CreatePlaneFromIds(ids);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();
@@ -117,8 +128,8 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
         {2, 2, 2}
     };
 
-        var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var (plane, chunk) = CreatePlaneFromIds(ids);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();
@@ -133,8 +144,8 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
     public void ToMeshQuads_SinglePixel_ReturnsSingleQuad()
     {
         ushort?[,] ids = { { 1 } };
-        var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var (plane, chunk) = CreatePlaneFromIds(ids);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();
@@ -146,8 +157,8 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
     public void ToMeshQuads_TwoDifferentPixels_CreatesTwoQuads()
     {
         ushort?[,] ids = { { 1, 2 } };
-        var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var (plane, chunk) = CreatePlaneFromIds(ids);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();
@@ -158,8 +169,8 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
     public void ToMeshQuads_TwoSamePixels_CreatesOneQuad()
     {
         ushort?[,] ids = { { 1, 1 } };
-        var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var (plane, chunk) = CreatePlaneFromIds(ids);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();
@@ -174,8 +185,8 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
         { 1, 1 },
         { 1, 1 }
     };
-        var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var (plane, chunk) = CreatePlaneFromIds(ids);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();
@@ -191,8 +202,8 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
         { 1, 2, 2 },
         { 3, 3, 2 }
     };
-        var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var (plane, chunk) = CreatePlaneFromIds(ids);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();
@@ -219,15 +230,19 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
     [Fact]
     public void Constructor_NullPixels_ThrowsArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(null));
+        Assert.Throws<ArgumentNullException>(() => new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(null, null));
     }
 
     [Fact]
     public void Constructor_EmptyPixels_ThrowsArgumentException()
     {
-        ushort?[,] ids = new ushort?[0, 0];
-        var plane = CreatePlaneFromIds(ids);
-        Assert.Throws<ArgumentOutOfRangeException>(() => new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane));
+        var plane = new VisiblePlane(
+            Axis.X, AxisOrder.Ascending,
+            Axis.Y, AxisOrder.Ascending,
+            Axis.Z, AxisOrder.Ascending,
+            0, 0, 0
+        );
+        Assert.Throws<ArgumentOutOfRangeException>(() => new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, new TestChunk(1,1,1)));
     }
 
     #endregion
@@ -241,8 +256,8 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
             {1, 1}
         };
 
-        var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var (plane, chunk) = CreatePlaneFromIds(ids);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();
@@ -252,13 +267,13 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
         var quad = quads[0];
 
         // Check normal
-        Assert.Equal(new Vector3(0, 0, 1), quad.Normal);
+        Assert.Equal(new Vector3(1, 0, 0), quad.Normal);
 
-        // Vertices should form a square (1x1 at origin)
-        Assert.Equal(new Vector3(0, 0, 0), quad.Vertex0);
-        Assert.Equal(new Vector3(2, 0, 0), quad.Vertex1);
-        Assert.Equal(new Vector3(2, 2, 0), quad.Vertex2);
-        Assert.Equal(new Vector3(0, 2, 0), quad.Vertex3);
+        // Vertices should form a square (2x2 in YZ plane at X=0)
+        Assert.Equal(new Vector3(0, 2, 0), quad.Vertex0);
+        Assert.Equal(new Vector3(0, 0, 0), quad.Vertex1);
+        Assert.Equal(new Vector3(0, 0, 2), quad.Vertex2);
+        Assert.Equal(new Vector3(0, 2, 2), quad.Vertex3);
 
         Assert.Equal(1, quad.VoxelID);
     }
@@ -278,22 +293,25 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
             0, 2, 2
         );
 
+        var chunk = new TestChunk(1,2,2);
         for (int x = 0; x < 2; x++)
         {
             for (int y = 0; y < 2; y++)
             {
-                plane.Voxels[x, y] = new TestVoxel(id: 1, isSolid: true);
+                var voxel = new TestVoxel(id: 1, isSolid: true);
+                plane.Voxels[x, y] = voxel;
+                chunk.Set(0, (uint)x, (uint)y, voxel);
             }
         }
 
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
         var quads = optimizer.ToMeshQuads();
 
         Assert.Single(quads);
 
         var quad = quads[0];
-        Assert.Equal(new Vector3(0, 0, -1), quad.Normal);
+        Assert.Equal(new Vector3(1, 0, 0), quad.Normal);
     }
 
     [Fact]
@@ -304,8 +322,9 @@ public partial class DisjointSetVisiblePlaneOptimizerTests
             {null, 2}
         };
 
-        var plane = CreatePlaneFromIds(ids);
-        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane);
+
+        var (plane, chunk) = CreatePlaneFromIds(ids);
+        var optimizer = new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, chunk);
         optimizer.Optimize();
 
         var quads = optimizer.ToMeshQuads();

@@ -24,14 +24,14 @@ public enum AxisOrder{
 public static class AxisExtensions {
     public static VoxelFace ToVoxelFace(Axis axis, AxisOrder axisOrder){
         return (axis, axisOrder) switch{
-            (Axis.X, AxisOrder.Ascending)   => VoxelFace.Xpos,
-            (Axis.X, AxisOrder.Descending)  => VoxelFace.Xneg,
+            (Axis.X, AxisOrder.Ascending)   => VoxelFace.Xneg,
+            (Axis.X, AxisOrder.Descending)  => VoxelFace.Xpos,
 
-            (Axis.Y, AxisOrder.Ascending)   => VoxelFace.Ypos,
-            (Axis.Y, AxisOrder.Descending)  => VoxelFace.Yneg,
+            (Axis.Y, AxisOrder.Ascending)   => VoxelFace.Yneg,
+            (Axis.Y, AxisOrder.Descending)  => VoxelFace.Ypos,
 
-            (Axis.Z, AxisOrder.Ascending)   => VoxelFace.Zpos,
-            (Axis.Z, AxisOrder.Descending)  => VoxelFace.Zneg,
+            (Axis.Z, AxisOrder.Ascending)   => VoxelFace.Zneg,
+            (Axis.Z, AxisOrder.Descending)  => VoxelFace.Zpos,
 
             _ => throw new ArgumentOutOfRangeException(),
         };
@@ -49,36 +49,33 @@ public static class AxisExtensions {
     /// <param name="chunk">The chunk containing the voxel.</param>
     /// <returns>The depth of the voxel relative to the face specified by axis and order.</returns>
     public static uint GetDepthFromAxis(
-        Axis axis, 
-        AxisOrder axisOrder, 
-        uint x, 
-        uint y, 
-        uint z, 
+        Axis axis,
+        AxisOrder axisOrder,
+        uint x,
+        uint y,
+        uint z,
         Chunk<Voxel> chunk)
     {
-        if (chunk.IsOutOfBound(x,y,z)) throw new ArgumentOutOfRangeException();
+        if (chunk.IsOutOfBound(x, y, z)) throw new ArgumentOutOfRangeException();
 
         // Select the relevant coordinate based on the axis.
-        uint coordinate = axis switch
+        uint relativeDepth = axis switch
         {
             Axis.X => x,
             Axis.Y => y,
             Axis.Z => z,
             _ => throw new ArgumentException("Invalid axis", nameof(axis))
         };
-        
+
         // Get the total depth of the chunk along the selected axis.
         uint totalDepth = chunk.GetDepth(axis);
-        
+
         // Calculate the depth from the face determined by the axis order.
-        uint depth = axisOrder == AxisOrder.Ascending 
-            ? coordinate 
-            : totalDepth - 1 - coordinate;
-        
-        return depth;
+        if (axisOrder == AxisOrder.Ascending) return relativeDepth;
+        else return totalDepth - 1 - relativeDepth;
     }
 
-    public static void SetAxis(this ref Vector3 vector, Axis axis, float value)
+    public static void SetAxis(Vector3 vector, Axis axis, float value)
     {
         switch (axis)
         {
@@ -90,7 +87,7 @@ public static class AxisExtensions {
 
     public static Vector3 Direction(Axis axis, AxisOrder order)
     {
-        float sign = order == AxisOrder.Ascending ? 1f : -1f;
+        float sign = order == AxisOrder.Ascending ? -1f : 1f;
         return axis switch
         {
             Axis.X => new Vector3(sign, 0, 0),

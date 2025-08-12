@@ -20,8 +20,9 @@ public class DisjointSetMeshOptimizer : MeshOptimizer
         var visibileFaces = occluder.ComputeVisibleFaces();
 
         foreach (var visibleFace in visibileFaces.PlanesByAxis){
-            foreach (var face in visibleFace.Value){
-                var optimizer = new DisjointSetVisiblePlaneOptimizer(face);
+            foreach (var face in visibleFace.Value)
+            {
+                var optimizer = new DisjointSetVisiblePlaneOptimizer(face, chunk);
                 optimizer.Optimize();
                 var quads = optimizer.ToMeshQuads();
                 mesh.Quads.AddRange(quads);

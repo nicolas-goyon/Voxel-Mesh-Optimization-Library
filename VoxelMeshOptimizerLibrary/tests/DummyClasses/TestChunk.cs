@@ -19,6 +19,11 @@ public class TestChunk : Chunk<TestVoxel>
         ZDepth = zDepth;
         data = new TestVoxel[xDepth, yDepth, zDepth];
     }
+
+    public TestChunk(uint[,,] ids)
+    {
+        
+    }
     
     /// <summary>
     /// Retrieves the voxel at the given position (X,Y,Z), ignoring the axis fields for now.
