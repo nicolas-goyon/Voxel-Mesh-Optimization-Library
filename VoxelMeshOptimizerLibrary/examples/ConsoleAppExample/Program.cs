@@ -23,13 +23,14 @@ class Program
 
 
 
-        // var exampleChunk = new ExampleChunk("TestChunkPerlinNoiseGen.chk");
+        var exampleChunk = new ExampleChunk("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/Resources/TestChunkPerlinNoiseGen.chk");
+        exampleChunk.Save("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/Resources/TestChunkPerlinNoiseGen.chk");
 
         // // var mesh = exampleChunk.ToMesh();
         // var optimizer = new DisjointSetMeshOptimizer(new ExampleMesh());
         // Mesh optimizedMesh = optimizer.Optimize(exampleChunk);
 
-        // var path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "Test2" + ".obj");
+        // var path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/Resources", "Test2" + ".obj");
 
         // // Act
         // ObjExporter.Export(optimizedMesh, path);
@@ -39,7 +40,7 @@ class Program
         var exampleChunk = PerlinNoiseChunkGen.CreatePerlinLandscape(50, 123);
 
         var baseMesh = exampleChunk.ToMesh();
-        var path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "ChunkBase" + ".obj");
+        var path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/Resources", "ChunkBase" + ".obj");
         ObjExporter.Export(baseMesh, path);
 
 
@@ -48,7 +49,7 @@ class Program
         var visibileFaces = occluder.ComputeVisibleFaces();
         var occludedQuads = VisibleFacesMesher.Build(visibileFaces, exampleChunk);
         var occludedMesh = new ExampleMesh(occludedQuads);
-        path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "ChunkBaseOccluded" + ".obj");
+        path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/Resources", "ChunkBaseOccluded" + ".obj");
         ObjExporter.Export(occludedMesh, path);
 
 
@@ -56,7 +57,7 @@ class Program
         var optimizer = new DisjointSetMeshOptimizer(new ExampleMesh());
         Mesh optimizedMesh = optimizer.Optimize(exampleChunk);
 
-        path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples", "ChunkOptimized" + ".obj");
+        path = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/Resources", "ChunkOptimized" + ".obj");
         ObjExporter.Export(optimizedMesh, path);
 
     }
