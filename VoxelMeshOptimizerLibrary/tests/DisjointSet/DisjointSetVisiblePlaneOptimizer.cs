@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace VoxelMeshOptimizer.Tests.DisjointSetTesting;
 
-public partial class DisjointSetVisiblePlaneOptimizerTests
+public class DisjointSetVisiblePlaneOptimizerTests
 {
     private static (VisiblePlane plane, TestChunk chunk) CreatePlaneFromIds(ushort?[,] ids)
     {

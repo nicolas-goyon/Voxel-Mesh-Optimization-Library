@@ -1,4 +1,4 @@
-namespace VoxelMeshOptimizer.Core;
+namespace VoxelMeshOptimizer.Toolkit;
 
 using System;
 using System.Collections.Generic;
@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Numerics;
 using System.Text;
+using VoxelMeshOptimizer.Core;
 
 /// <summary>
 /// Utility class to export a <see cref="Mesh"/> to the Wavefront OBJ format.
@@ -18,10 +19,9 @@ public static class ObjExporter
     /// <param name="mesh">Mesh to export.</param>
     /// <param name="filePath">Destination file path.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="mesh"/> or <paramref name="filePath"/> is null.</exception>
-    public static void Export(Mesh mesh, string filePath)
+    public static string MeshToObjString(Mesh mesh)
     {
         if (mesh is null) throw new ArgumentNullException(nameof(mesh));
-        if (filePath is null) throw new ArgumentNullException(nameof(filePath));
 
         var vertices = new List<Vector3>();
         var vertexIndices = new Dictionary<Vector3, int>();
@@ -31,10 +31,10 @@ public static class ObjExporter
         // Collect unique vertices and assign indices (1-based as per OBJ spec)
         foreach (var quad in mesh.Quads)
         {
-            AddVertex(quad.Vertex0);
-            AddVertex(quad.Vertex1);
-            AddVertex(quad.Vertex2);
-            AddVertex(quad.Vertex3);
+            AddVertex(quad.Vertex0, vertexIndices, vertices);
+            AddVertex(quad.Vertex1, vertexIndices, vertices);
+            AddVertex(quad.Vertex2, vertexIndices, vertices);
+            AddVertex(quad.Vertex3, vertexIndices, vertices);
         }
 
         // Write vertex positions
@@ -53,16 +53,17 @@ public static class ObjExporter
             sb.AppendLine($"f {i0} {i1} {i2} {i3}");
         }
 
-        File.WriteAllText(filePath, sb.ToString());
-        Console.WriteLine(filePath);
+        return sb.ToString();
 
-        void AddVertex(Vector3 v)
+    }
+
+
+    private static void AddVertex(Vector3 v, Dictionary<Vector3, int> vertexIndices, List<Vector3> vertices)
+    {
+        if (!vertexIndices.ContainsKey(v))
         {
-            if (!vertexIndices.ContainsKey(v))
-            {
-                vertices.Add(v);
-                vertexIndices[v] = vertices.Count; // 1-based
-            }
+            vertices.Add(v);
+            vertexIndices[v] = vertices.Count; // 1-based
         }
     }
 }
