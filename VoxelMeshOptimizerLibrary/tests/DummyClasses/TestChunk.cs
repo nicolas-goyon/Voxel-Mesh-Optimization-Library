@@ -1,5 +1,6 @@
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Tests.DummyClasses;
+using System.Numerics;
 
 namespace VoxelMeshOptimizer.Tests.DummyClasses;
 
@@ -20,11 +21,28 @@ public class TestChunk : Chunk<TestVoxel>
         data = new TestVoxel[xDepth, yDepth, zDepth];
     }
 
-    public TestChunk(uint[,,] ids)
+    public TestChunk(ushort[,,] ids)
     {
-        
+        XDepth = (uint)ids.GetLength(0);
+        YDepth = (uint)ids.GetLength(1);
+        ZDepth = (uint)ids.GetLength(2);
+
+        data = new TestVoxel[XDepth, YDepth, ZDepth];
+
+        // Initialize from the ushort array
+        for (uint x = 0; x < XDepth; x++)
+        {
+            for (uint y = 0; y < YDepth; y++)
+            {
+                for (uint z = 0; z < ZDepth; z++)
+                {
+                    ushort value = ids[x, y, z];
+                    data[x, y, z] = new TestVoxel(value, value != 0);
+                }
+            }
+        }
     }
-    
+
     /// <summary>
     /// Retrieves the voxel at the given position (X,Y,Z), ignoring the axis fields for now.
     /// Throws if out of range, or you could choose to return null.
@@ -80,15 +98,15 @@ public class TestChunk : Chunk<TestVoxel>
                 {
                     uint x = 0, y = 0, z = 0;
 
-                    if      (majorA == Axis.X) x = majorVal;
+                    if (majorA == Axis.X) x = majorVal;
                     else if (majorA == Axis.Y) y = majorVal;
                     else if (majorA == Axis.Z) z = majorVal;
 
-                    if      (middleA == Axis.X) x = midVal;
+                    if (middleA == Axis.X) x = midVal;
                     else if (middleA == Axis.Y) y = midVal;
                     else if (middleA == Axis.Z) z = midVal;
 
-                    if      (minorA == Axis.X) x = minVal;
+                    if (minorA == Axis.X) x = minVal;
                     else if (minorA == Axis.Y) y = minVal;
                     else if (minorA == Axis.Z) z = minVal;
 
@@ -112,7 +130,7 @@ public class TestChunk : Chunk<TestVoxel>
                 yield return (uint)i;
         }
     }
-    
+
     /// <summary>
     /// Simple helper to pick the chunk’s dimension (depth) by axis.
     /// </summary>
@@ -127,8 +145,9 @@ public class TestChunk : Chunk<TestVoxel>
         };
     }
 
-    public bool IsOutOfBound(uint x, uint y, uint z){
-        return x < 0 || x >= GetDepth(Axis.X) 
+    public bool IsOutOfBound(uint x, uint y, uint z)
+    {
+        return x < 0 || x >= GetDepth(Axis.X)
             || y < 0 || y >= GetDepth(Axis.Y)
             || z < 0 || z >= GetDepth(Axis.Z);
     }
@@ -137,7 +156,8 @@ public class TestChunk : Chunk<TestVoxel>
         Axis major,
         Axis middle,
         Axis minor
-    ){
+    )
+    {
         return major != middle && middle != minor && minor != major;
     }
 
@@ -149,9 +169,108 @@ public class TestChunk : Chunk<TestVoxel>
     {
         // "Plane dimensions" = minor dimension (x-axis of the plane),
         //                      middle dimension (y-axis of the plane).
-        var planeWidth  = GetDepth(middle);
+        var planeWidth = GetDepth(middle);
         var planeHeight = GetDepth(minor);
 
         return (planeWidth, planeHeight);
     }
+
+    
+    
+        
+        /// <summary>
+        /// Builds a mesh that contains every face for each solid voxel in the chunk.
+        /// This is a naïve implementation without any form of optimization.
+        /// </summary>
+        public Mesh ToMesh()
+        {
+            var list = new List<MeshQuad>();
+
+            for (uint x = 0; x < XDepth; x++)
+            {
+                for (uint y = 0; y < YDepth; y++)
+                {
+                    for (uint z = 0; z < ZDepth; z++)
+                    {
+                        var voxel = data[x, y, z];
+                        if (!voxel.IsSolid)
+                            continue;
+
+                        list.AddRange(CreateVoxelQuads(x, y, z, voxel.ID));
+                    }
+                }
+            }
+            var mesh = new TestMesh(list);
+
+            return mesh;
+        }
+
+        private static IEnumerable<MeshQuad> CreateVoxelQuads(uint x, uint y, uint z, ushort voxelId)
+        {
+            var bx = (float)x;
+            var by = (float)y;
+            var bz = (float)z;
+
+
+            yield return new MeshQuad
+            {
+                Vertex0 = new Vector3(bx, by, bz),
+                Vertex1 = new Vector3(bx, by + 1, bz),
+                Vertex2 = new Vector3(bx + 1, by + 1, bz),
+                Vertex3 = new Vector3(bx + 1, by, bz),
+                Normal = new Vector3(0, 0, -1),
+                VoxelID = voxelId
+            };
+
+            yield return new MeshQuad
+            {
+                Vertex0 = new Vector3(bx, by, bz + 1),
+                Vertex1 = new Vector3(bx + 1, by, bz + 1),
+                Vertex2 = new Vector3(bx + 1, by + 1, bz + 1),
+                Vertex3 = new Vector3(bx, by + 1, bz + 1),
+                Normal = new Vector3(0, 0, 1),
+                VoxelID = voxelId
+            };
+
+            yield return new MeshQuad
+            {
+                Vertex0 = new Vector3(bx, by, bz),
+                Vertex1 = new Vector3(bx, by, bz + 1),
+                Vertex2 = new Vector3(bx, by + 1, bz + 1),
+                Vertex3 = new Vector3(bx, by + 1, bz),
+                Normal = new Vector3(-1, 0, 0),
+                VoxelID = voxelId
+            };
+
+            yield return new MeshQuad
+            {
+                Vertex0 = new Vector3(bx + 1, by, bz + 1),
+                Vertex1 = new Vector3(bx + 1, by, bz),
+                Vertex2 = new Vector3(bx + 1, by + 1, bz),
+                Vertex3 = new Vector3(bx + 1, by + 1, bz + 1),
+                Normal = new Vector3(1, 0, 0),
+                VoxelID = voxelId
+            };
+
+            yield return new MeshQuad
+            {
+                Vertex0 = new Vector3(bx, by, bz),
+                Vertex1 = new Vector3(bx + 1, by, bz),
+                Vertex2 = new Vector3(bx + 1, by, bz + 1),
+                Vertex3 = new Vector3(bx, by, bz + 1),
+                Normal = new Vector3(0, -1, 0),
+                VoxelID = voxelId
+            };
+
+            yield return new MeshQuad
+            {
+                Vertex0 = new Vector3(bx, by + 1, bz + 1),
+                Vertex1 = new Vector3(bx + 1, by + 1, bz + 1),
+                Vertex2 = new Vector3(bx + 1, by + 1, bz),
+                Vertex3 = new Vector3(bx, by + 1, bz),
+                Normal = new Vector3(0, 1, 0),
+                VoxelID = voxelId
+            };
+        }
+
 }

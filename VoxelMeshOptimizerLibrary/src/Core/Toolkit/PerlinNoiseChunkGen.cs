@@ -1,4 +1,4 @@
-namespace ConsoleAppExample;
+namespace VoxelMeshOptimizer.Toolkit;
 
 public class PerlinNoiseChunkGen
 {
@@ -8,7 +8,7 @@ public class PerlinNoiseChunkGen
     /// noise frequencies, and blocks up to that height are
     /// assigned the ID 1.
     /// </summary>
-    public static ExampleChunk CreatePerlinLandscape(int size = 50, int seed = 0)
+    public static ushort[,,] CreatePerlinLandscape(int size = 50, int seed = 0)
     {
         var voxels = new ushort[size, size, size];
         var noise = new PerlinNoise(seed);
@@ -33,7 +33,7 @@ public class PerlinNoiseChunkGen
             }
         }
 
-        return new ExampleChunk(voxels);
+        return voxels;
     }
 
 

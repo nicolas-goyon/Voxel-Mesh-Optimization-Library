@@ -3,7 +3,7 @@ using System.Numerics;
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 
-namespace ConsoleAppExample;
+namespace VoxelMeshOptimizer.Toolkit;
 
 /// <summary>
 /// Utility class that converts <see cref="VisibleFaces"/> produced by
