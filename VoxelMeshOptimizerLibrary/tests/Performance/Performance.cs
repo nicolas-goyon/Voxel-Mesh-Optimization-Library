@@ -16,6 +16,20 @@ public class Performance
         return new TestChunk(voxelsShort);
     }
 
+    private static void ValidateTriangles(Mesh mesh, int expectedTriangles, bool exact)
+    {
+        var triangleCount = mesh.Quads.Count * 2;
+        if (exact)
+        {
+            Assert.Equal(expectedTriangles, triangleCount);
+        }
+        else
+        {
+            Assert.True(triangleCount < expectedTriangles,
+                $"Expected less than {expectedTriangles} triangles but got {triangleCount}.");
+        }
+    }
+
 
     [Fact]
     public void Baseline()
@@ -23,6 +37,7 @@ public class Performance
         var chunk = Setup();
         var baseMesh = chunk.ToMesh();
         ObjExporter.MeshToObjString(baseMesh);
+        ValidateTriangles(baseMesh, 542160, true);
 
     }
 
@@ -36,6 +51,7 @@ public class Performance
         var occludedQuads = VisibleFacesMesher.Build(visibileFaces, chunk);
         var occludedMesh = new TestMesh(occludedQuads);
         ObjExporter.MeshToObjString(occludedMesh);
+        ValidateTriangles(occludedMesh, 25000, false);
 
 
     }
@@ -47,6 +63,7 @@ public class Performance
         var optimizer = new DisjointSetMeshOptimizer(mesh);
         Mesh optimizedMesh = optimizer.Optimize(chunk);
         ObjExporter.MeshToObjString(optimizedMesh);
+        ValidateTriangles(optimizedMesh, 5000, false);
 
     }
 }
