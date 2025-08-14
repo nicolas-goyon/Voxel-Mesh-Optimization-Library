@@ -1,5 +1,4 @@
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Running;
 using ConsoleAppExample;
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms;
@@ -7,29 +6,46 @@ using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
 using VoxelMeshOptimizer.Toolkit;
 
 [MemoryDiagnoser]
-[MarkdownExporter, AsciiDocExporter, HtmlExporter, CsvExporter, RPlotExporter]
+[MarkdownExporter, AsciiDocExporter, HtmlExporter, CsvExporter, RPlotExporter,JsonExporter]
 public class SpeedBenchmarks
 {
     private ExampleChunk exampleChunk;
 
-    
+
     [IterationSetup]
     public void Setup()
     {
-
         exampleChunk = new ExampleChunk(PerlinNoiseChunkGen.CreatePerlinLandscape(50, 123));
     }
 
 
+    [Benchmark]
+    public void Occluder()
+    {
+        var occluder = new VoxelOcclusionOptimizer(exampleChunk);
+        var visibileFaces = occluder.ComputeVisibleFaces();
+        VisibleFacesMesher.Build(visibileFaces, exampleChunk);
+    }
+
+
+    [Benchmark]
+    public void Optimize()
+    {
+        var optimizer = new DisjointSetMeshOptimizer(new ExampleMesh());
+        optimizer.Optimize(exampleChunk);
+    }
+    
+
+
     [Benchmark(Baseline = true)]
-    public void Default()
+    public void Default_MeshToString()
     {
         var baseMesh = exampleChunk.ToMesh();
         ObjExporter.MeshToObjString(baseMesh);
     }
 
     [Benchmark]
-    public void Occluded()
+    public void Occluder_MeshToString()
     {
         var occluder = new VoxelOcclusionOptimizer(exampleChunk);
         var visibileFaces = occluder.ComputeVisibleFaces();
@@ -40,7 +56,7 @@ public class SpeedBenchmarks
 
 
     [Benchmark]
-    public void Optimized()
+    public void Optimize_MeshToString()
     {
         var optimizer = new DisjointSetMeshOptimizer(new ExampleMesh());
         Mesh optimizedMesh = optimizer.Optimize(exampleChunk);
