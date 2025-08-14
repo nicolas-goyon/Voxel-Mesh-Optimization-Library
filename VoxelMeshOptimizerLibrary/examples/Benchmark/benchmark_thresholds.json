@@ -1,0 +1,7 @@
+{
+  "Default_MeshToString": {"mean_ms_min": 100.0, "mean_ms_max": 500.0},
+  "Occluder": {"mean_ms_max": 200.0, "error_ratio_max": 0.10, "alloc_bytes_max": 20000000},
+  "Optimize": {"mean_ms_max": 200.0, "error_ratio_max": 0.10, "alloc_bytes_max": 20000000},
+  "Occluder_MeshToString": {"mean_ms_max": 300.0, "error_ratio_max": 0.10, "alloc_bytes_max": 20000000},
+  "Optimize_MeshToString": {"mean_ms_max": 300.0, "error_ratio_max": 0.10, "alloc_bytes_max": 20000000}
+}
