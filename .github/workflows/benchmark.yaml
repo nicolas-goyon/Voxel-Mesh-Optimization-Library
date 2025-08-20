@@ -2,7 +2,7 @@ name: Minimal benchmark setup
 on:
   push:
     branches:
-      - 21-feature-add-benchmark-results-to-readme-or-other-documentation
+      - main
 
 permissions:
   # deployments permission to deploy GitHub pages website
