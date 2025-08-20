@@ -29,9 +29,6 @@ jobs:
         run: dotnet run --project examples/BenchmarkGithubPages/BenchmarkGithubPages.csproj -c Release
         working-directory: ./VoxelMeshOptimizerLibrary
 
-      - name: Tree files
-        run: tree
-        working-directory: ./VoxelMeshOptimizerLibrary
 
       # Download previous benchmark result from cache (if exists)
       - name: Download previous benchmark data
@@ -45,7 +42,7 @@ jobs:
         uses: benchmark-action/github-action-benchmark@v1
         with:
           tool: 'benchmarkdotnet'
-          output-file-path: VoxelMeshOptimizerLibrary/BenchmarkDotNet.Artifacts/results/Sample.Benchmarks-report-full-compressed.json
+          output-file-path: VoxelMeshOptimizerLibrary/BenchmarkDotNet.Artifacts/results/SpeedBenchmarks-report-full-compressed.json
           # Where the previous data file is stored
           external-data-json-path: ./cache/benchmark-data.json
           # Workflow will fail when an alert happens
