@@ -4,4 +4,4 @@ TestResults/
 **/**/bin/
 **/**/obj/
 
-/examples/Benchmark/BenchmarkDotNet.Artifacts
+/**/**/BenchmarkDotNet.Artifacts
