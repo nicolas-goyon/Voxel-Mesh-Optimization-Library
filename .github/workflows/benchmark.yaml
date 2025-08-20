@@ -43,8 +43,6 @@ jobs:
         with:
           tool: 'benchmarkdotnet'
           output-file-path: VoxelMeshOptimizerLibrary/BenchmarkDotNet.Artifacts/results/SpeedBenchmarks-report-full-compressed.json
-          # Where the previous data file is stored
-          external-data-json-path: ./cache/benchmark-data.json
           # Workflow will fail when an alert happens
           fail-on-alert: true
           # Access token to deploy GitHub Pages branch
