@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1755699716073,
+  "lastUpdate": 1755700735529,
   "repoUrl": "https://github.com/nicolas-goyon/Voxel-Mesh-Optimization-Library",
   "entries": {
     "Benchmark": [
@@ -54,6 +54,60 @@ window.BENCHMARK_DATA = {
             "value": 13873931.233333332,
             "unit": "ns",
             "range": "± 614296.3111523641"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "38950115+nicolas-goyon@users.noreply.github.com",
+            "name": "nicolas-goyon",
+            "username": "nicolas-goyon"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "b6cd64e376b833eeb6e2cc59dc5c1bbe0bcf80a6",
+          "message": "Adding benchmark results to github pages\n\nDev",
+          "timestamp": "2025-08-20T16:38:02+02:00",
+          "tree_id": "fde1e80ff2f8b44a884685d453130ce1aee2abe3",
+          "url": "https://github.com/nicolas-goyon/Voxel-Mesh-Optimization-Library/commit/b6cd64e376b833eeb6e2cc59dc5c1bbe0bcf80a6"
+        },
+        "date": 1755700735097,
+        "tool": "benchmarkdotnet",
+        "benches": [
+          {
+            "name": "SpeedBenchmarks.Occluder",
+            "value": 10672186.974358974,
+            "unit": "ns",
+            "range": "± 329781.9248933969"
+          },
+          {
+            "name": "SpeedBenchmarks.Optimize",
+            "value": 12592874.081081081,
+            "unit": "ns",
+            "range": "± 419686.0869409407"
+          },
+          {
+            "name": "SpeedBenchmarks.Default_MeshToString",
+            "value": 121767659.9375,
+            "unit": "ns",
+            "range": "± 1029014.3805519576"
+          },
+          {
+            "name": "SpeedBenchmarks.Occluder_MeshToString",
+            "value": 18050700.027777776,
+            "unit": "ns",
+            "range": "± 436005.1661573674"
+          },
+          {
+            "name": "SpeedBenchmarks.Optimize_MeshToString",
+            "value": 13873163.154761905,
+            "unit": "ns",
+            "range": "± 993192.0892723708"
           }
         ]
       }
