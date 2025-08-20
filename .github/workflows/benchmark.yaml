@@ -1,0 +1,53 @@
+name: Minimal benchmark setup
+on:
+  push:
+    branches:
+      - 21-feature-add-benchmark-results-to-readme-or-other-documentation
+
+permissions:
+  # deployments permission to deploy GitHub pages website
+  deployments: write
+  # contents permission to update benchmark contents in gh-pages branch
+  contents: write
+
+jobs:
+  benchmark:
+    name: Performance regression check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      
+      
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./VoxelMeshOptimizerLibrary
+
+      - name: Run benchmarks
+        run: dotnet run --project examples/BenchmarkGithubPages/BenchmarkGithubPages.csproj -c Release
+        working-directory: ./VoxelMeshOptimizerLibrary
+
+      # Download previous benchmark result from cache (if exists)
+      - name: Download previous benchmark data
+        uses: actions/cache@v4
+        with:
+          path: ./cache
+          key: ${{ runner.os }}-benchmark
+      
+      # Run `github-action-benchmark` action
+      - name: Store benchmark result
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          tool: 'benchmarkdotnet'
+          output-file-path: BenchmarkDotNet.Artifacts/results/Sample.Benchmarks-report-full-compressed.json
+          # Where the previous data file is stored
+          external-data-json-path: ./cache/benchmark-data.json
+          # Workflow will fail when an alert happens
+          fail-on-alert: true
+          # Access token to deploy GitHub Pages branch
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Push and deploy GitHub pages branch automatically
+          auto-push: true
+      # Upload the updated cache file for the next job by actions/cache

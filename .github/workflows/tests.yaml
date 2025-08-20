@@ -50,6 +50,10 @@ jobs:
         with:
           name: coverage-report
           path: VoxelMeshOptimizerLibrary/TestResults/CoverageReport
+  
+  
+  
+  
   benchmark:
     runs-on: ubuntu-latest
     needs: build-and-test
@@ -74,7 +78,7 @@ jobs:
       - name: Verify benchmark thresholds
         env:
           BENCHMARK_THRESHOLDS: examples/Benchmark/benchmark_thresholds.json
-        run: python scripts/verify_benchmarks.py BenchmarkDotNet.Artifacts/results/SpeedBenchmarks-report.json
+        run: python examples/Benchmark/verify_benchmarks.py BenchmarkDotNet.Artifacts/results/SpeedBenchmarks-report.json
         working-directory: ./VoxelMeshOptimizerLibrary
 
       - name: Upload benchmark results
