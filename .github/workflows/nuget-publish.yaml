@@ -1,0 +1,59 @@
+name: Publish NuGet package
+
+'on':
+  workflow_run:
+    workflows: ["CI/CD - Tests & Coverage"]
+    types:
+      - completed
+  push:
+    branches:
+      - main
+
+      
+jobs:
+  publish:
+    if: >-
+      ${{
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.head_branch == 'main'
+      }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Check for core version change
+        id: check_version
+        run: |
+          PROJECT=VoxelMeshOptimizerLibrary/src/Core/VoxelMeshOptimizer.Core.csproj
+          if git diff HEAD^ HEAD -- "$PROJECT" | \
+            grep -E '^[+-].*<Version>'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Pack library
+        if: steps.check_version.outputs.changed == 'true'
+        run: |
+          dotnet pack \
+            VoxelMeshOptimizerLibrary/src/Core/VoxelMeshOptimizer.Core.csproj \
+            -c Release \
+            -o ./artifacts
+
+      - name: Publish to NuGet
+        if: steps.check_version.outputs.changed == 'true'
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push artifacts/*.nupkg \
+            --api-key $NUGET_API_KEY \
+            --source https://api.nuget.org/v3/index.json
