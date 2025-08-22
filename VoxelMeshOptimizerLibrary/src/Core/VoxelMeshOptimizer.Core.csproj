@@ -1,6 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <PackageId>VoxelMeshOptimizer</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Nicolas Goyon</Authors>
+    <Description>Rasterization : Create a 3D meshes of triangles or quads from a chunk of voxel.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/nicolas-goyon/Voxel-Mesh-Optimization-Library</RepositoryUrl>
+
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
