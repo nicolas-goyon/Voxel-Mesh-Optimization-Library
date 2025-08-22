@@ -5,7 +5,11 @@ name: Publish NuGet package
     workflows: ["CI/CD - Tests & Coverage"]
     types:
       - completed
+  push:
+    branches:
+      - main
 
+      
 jobs:
   publish:
     if: >-
