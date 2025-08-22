@@ -7,12 +7,16 @@
     <Description>Rasterization : Create a 3D meshes of triangles or quads from a chunk of voxel.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/nicolas-goyon/Voxel-Mesh-Optimization-Library</RepositoryUrl>
+    <PackageReadmeFile>README.NuGet.md</PackageReadmeFile>
 
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="README.NuGet.md" Pack="true" PackagePath="" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.0" />
   </ItemGroup>
