@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using System.Numerics;
-using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 
-namespace VoxelMeshOptimizer.Toolkit;
+namespace VoxelMeshOptimizer.Core.Toolkit;
 
 /// <summary>
 /// Utility class that converts <see cref="VisibleFaces"/> produced by
@@ -22,13 +20,13 @@ public static class VisibleFacesMesher
     /// <returns>A list of quads representing each visible voxel face.</returns>
     public static List<MeshQuad> Build(VisibleFaces visibleFaces, Chunk chunk)
     {
-        var quads = new List<MeshQuad>();
+        List<MeshQuad> quads = [];
 
-        foreach (var kvp in visibleFaces.PlanesByAxis)
+        foreach (KeyValuePair<(Axis, AxisOrder), List<VisiblePlane>> kvp in visibleFaces.PlanesByAxis)
         {
-            var sliceAxis = kvp.Key.Item1;
-            var axisOrder = kvp.Key.Item2;
-            foreach (var plane in kvp.Value)
+            Axis sliceAxis = kvp.Key.Item1;
+            AxisOrder axisOrder = kvp.Key.Item2;
+            foreach (VisiblePlane plane in kvp.Value)
             {
                 uint width = (uint)plane.Voxels.GetLength(0);
                 uint height = (uint)plane.Voxels.GetLength(1);
@@ -37,11 +35,11 @@ public static class VisibleFacesMesher
                 {
                     for (uint py = 0; py < height; py++)
                     {
-                        var voxel = plane.Voxels[px, py];
+                        Voxel? voxel = plane.Voxels[px, py];
                         if (!voxel.HasValue || !voxel!.Value.IsSolid) continue;
 
                         // reconstruct absolute coordinates
-                        var coords = ReconstructCoordinates(plane, px, py, chunk);
+                        (uint x, uint y, uint z) coords = ReconstructCoordinates(plane, px, py, chunk);
                         quads.Add(CreateQuad(coords.x, coords.y, coords.z, voxel!.Value.ID, sliceAxis, axisOrder));
                     }
                 }
