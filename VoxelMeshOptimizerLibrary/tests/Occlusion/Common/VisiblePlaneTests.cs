@@ -1,8 +1,7 @@
-using Xunit;
-using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 using VoxelMeshOptimizer.Core;
+using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 
-namespace VoxelMeshOptimizer.Tests.OcclusionAlgorithms.Common;
+namespace VoxelMeshOptimizer.Tests.Occlusion.Common;
 
 public class VisiblePlaneTests
 {
@@ -10,7 +9,7 @@ public class VisiblePlaneTests
     public void Constructor_ShouldInitializePropertiesCorrectly()
     {
         // Arrange
-        var plane = new VisiblePlane(Axis.X, AxisOrder.Ascending, Axis.Y, AxisOrder.Ascending, Axis.Z, AxisOrder.Ascending, 2, 3, 4);
+        VisiblePlane plane = new(Axis.X, AxisOrder.Ascending, Axis.Y, AxisOrder.Ascending, Axis.Z, AxisOrder.Ascending, 2, 3, 4);
 
 
         // Assert
@@ -32,7 +31,7 @@ public class VisiblePlaneTests
     public void IsPlaneEmpty_ShouldReturnTrue_WhenNoVoxelsAreSet()
     {
         // Arrange
-        var plane = new VisiblePlane(Axis.X, AxisOrder.Ascending, Axis.Y, AxisOrder.Ascending, Axis.Z, AxisOrder.Ascending, 0, 2, 2);
+        VisiblePlane plane = new(Axis.X, AxisOrder.Ascending, Axis.Y, AxisOrder.Ascending, Axis.Z, AxisOrder.Ascending, 0, 2, 2);
 
         // Act & Assert
         Assert.True(plane.IsPlaneEmpty);
@@ -42,8 +41,13 @@ public class VisiblePlaneTests
     public void IsPlaneEmpty_ShouldReturnFalse_WhenAtLeastOneVoxelIsSet()
     {
         // Arrange
-        var plane = new VisiblePlane(Axis.X, AxisOrder.Ascending, Axis.Y, AxisOrder.Ascending, Axis.Z, AxisOrder.Ascending, 0, 2, 2);
-        plane.Voxels[0, 0] = new Voxel(1);
+        VisiblePlane plane = new(Axis.X, AxisOrder.Ascending, Axis.Y, AxisOrder.Ascending, Axis.Z, AxisOrder.Ascending, 0, 2, 2)
+            {
+                Voxels =
+                {
+                    [0, 0] = new Voxel(1)
+                }
+            };
 
         // Act & Assert
         Assert.False(plane.IsPlaneEmpty);
@@ -65,9 +69,14 @@ public class VisiblePlaneTests
     public void Voxels_SetVoxel_ShouldBeAccessibleCorrectly()
     {
         // Arrange
-        var voxel = new Voxel(99);
-        var plane = new VisiblePlane(Axis.X, AxisOrder.Ascending, Axis.Y, AxisOrder.Ascending, Axis.Z, AxisOrder.Ascending, 0, 1, 1);
-        plane.Voxels[0, 0] = voxel;
+        Voxel voxel = new(99);
+        VisiblePlane plane = new(Axis.X, AxisOrder.Ascending, Axis.Y, AxisOrder.Ascending, Axis.Z, AxisOrder.Ascending, 0, 1, 1)
+            {
+                Voxels =
+                {
+                    [0, 0] = voxel
+                }
+            };
 
         // Assert
         Assert.Equal(voxel, plane.Voxels[0, 0]);
@@ -78,7 +87,7 @@ public class VisiblePlaneTests
     public void ConvertToPixelArray_AllVoxelsNonNull_ReturnsCorrectIDs()
     {
         // Arrange: Create a 2x2 VisiblePlane with all voxels.
-        Voxel?[,] voxels = new Voxel?[2, 2]
+        Voxel?[,] voxels = new Voxel?[,]
         {
             { new Voxel(10), new Voxel(20) },
             { new Voxel(30), new Voxel(40) }
@@ -109,7 +118,7 @@ public class VisiblePlaneTests
     public void ConvertToPixelArray_WithNullVoxels_ReturnsMinusOneForNulls()
     {
         // Arrange: Create a 3x2 VisiblePlane with some null voxels.
-        Voxel?[,] voxels = new Voxel?[3, 2]
+        Voxel?[,] voxels = new Voxel?[,]
         {
             { new Voxel(5), null },
             { null, new Voxel(15) },

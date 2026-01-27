@@ -3,6 +3,7 @@ using ConsoleAppExample;
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms;
 using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
+using VoxelMeshOptimizer.Core.Toolkit;
 using VoxelMeshOptimizer.Toolkit;
 
 

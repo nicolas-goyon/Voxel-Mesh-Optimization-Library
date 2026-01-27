@@ -1,5 +1,6 @@
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
+using VoxelMeshOptimizer.Core.Toolkit;
 
 namespace ConsoleAppExample;
 using System.Numerics;

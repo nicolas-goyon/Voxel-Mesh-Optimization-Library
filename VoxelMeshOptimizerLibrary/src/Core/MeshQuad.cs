@@ -1,7 +1,7 @@
 namespace VoxelMeshOptimizer.Core;
 using System.Numerics;
 
-public record MeshQuad
+public struct MeshQuad
 {
     public Vector3 Vertex0 { get; init; } // bottom-left
     public Vector3 Vertex1 { get; init; } // bottom-right

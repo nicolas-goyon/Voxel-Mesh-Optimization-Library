@@ -72,7 +72,7 @@ public static class AxisExtensions {
 
         // Calculate the depth from the face determined by the axis order.
         if (axisOrder == AxisOrder.Ascending) return relativeDepth;
-        else return totalDepth - 1 - relativeDepth;
+        return totalDepth - 1 - relativeDepth;
     }
 
     public static void SetAxis(Vector3 vector, Axis axis, float value)
@@ -82,6 +82,8 @@ public static class AxisExtensions {
             case Axis.X: vector.X = value; break;
             case Axis.Y: vector.Y = value; break;
             case Axis.Z: vector.Z = value; break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(axis), axis, null);
         }
     }
 
@@ -93,7 +95,7 @@ public static class AxisExtensions {
             Axis.X => new Vector3(sign, 0, 0),
             Axis.Y => new Vector3(0, sign, 0),
             Axis.Z => new Vector3(0, 0, sign),
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(paramName:nameof(axis), actualValue:axis, message:"Axis not recognized")
         };
     }
     
