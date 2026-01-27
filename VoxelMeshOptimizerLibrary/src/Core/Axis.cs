@@ -54,7 +54,7 @@ public static class AxisExtensions {
         uint x,
         uint y,
         uint z,
-        Chunk<Voxel> chunk)
+        Chunk chunk)
     {
         if (chunk.IsOutOfBound(x, y, z)) throw new ArgumentOutOfRangeException();
 
@@ -179,7 +179,7 @@ public static class AxisExtensions {
         Axis planeAxis1, AxisOrder planeAxis1Order,
         Axis planeAxis2, AxisOrder planeAxis2Order,
         uint x, uint y, uint z,
-        Chunk<Voxel> chunk)
+        Chunk chunk)
     {
         // Ensure that all three axes are distinct.
         if (!chunk.AreDifferentAxis(sliceAxis, planeAxis1, planeAxis2))

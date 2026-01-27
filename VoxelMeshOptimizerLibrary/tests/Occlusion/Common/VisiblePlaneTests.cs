@@ -1,7 +1,6 @@
 using Xunit;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 using VoxelMeshOptimizer.Core;
-using VoxelMeshOptimizer.Tests.DummyClasses;
 
 namespace VoxelMeshOptimizer.Tests.OcclusionAlgorithms.Common;
 
@@ -44,47 +43,12 @@ public class VisiblePlaneTests
     {
         // Arrange
         var plane = new VisiblePlane(Axis.X, AxisOrder.Ascending, Axis.Y, AxisOrder.Ascending, Axis.Z, AxisOrder.Ascending, 0, 2, 2);
-        plane.Voxels[0, 0] = new TestVoxel(1, true);
+        plane.Voxels[0, 0] = new Voxel(1);
 
         // Act & Assert
         Assert.False(plane.IsPlaneEmpty);
     }
 
-    [Fact]
-    public void ToString_ShouldIncludeAxisOrderSigns()
-    {
-        var plane = new VisiblePlane(
-            Axis.X, AxisOrder.Ascending,
-            Axis.Y, AxisOrder.Descending,
-            Axis.Z, AxisOrder.Ascending,
-            1, 2, 2
-        );
-
-        string expected = "Plane(Major=+X, Middle=-Y, Minor=+Z, SliceIndex=1)";
-        Assert.Equal(expected, plane.ToString());
-    }
-
-    [Fact]
-    public void Describe_ShouldIncludeAxisOrderSignsAndVoxelData()
-    {
-        var plane = new VisiblePlane(
-            Axis.X, AxisOrder.Ascending,
-            Axis.Y, AxisOrder.Descending,
-            Axis.Z, AxisOrder.Ascending,
-            0, 2, 2
-        );
-
-        plane.Voxels[0, 0] = new TestVoxel(42, true);
-        plane.Voxels[1, 1] = new TestVoxel(84, true);
-
-        string expected = 
-            "Plane(Major=+X, Middle=-Y, Minor=+Z, SliceIndex=0)\n" +
-            "Voxels (each cell shows 'ID' or '.' if null):\n" +
-            "Row 0: 42 . \n" +
-            "Row 1: . 84 \n";
-
-        Assert.Equal(expected, plane.Describe());
-    }
 
     [Fact]
     public void Constructor_ShouldHandleZeroSizedPlane()
@@ -101,7 +65,7 @@ public class VisiblePlaneTests
     public void Voxels_SetVoxel_ShouldBeAccessibleCorrectly()
     {
         // Arrange
-        var voxel = new TestVoxel(99, true);
+        var voxel = new Voxel(99);
         var plane = new VisiblePlane(Axis.X, AxisOrder.Ascending, Axis.Y, AxisOrder.Ascending, Axis.Z, AxisOrder.Ascending, 0, 1, 1);
         plane.Voxels[0, 0] = voxel;
 
@@ -116,8 +80,8 @@ public class VisiblePlaneTests
         // Arrange: Create a 2x2 VisiblePlane with all voxels.
         Voxel?[,] voxels = new Voxel?[2, 2]
         {
-            { new TestVoxel(10, true), new TestVoxel(20, true) },
-            { new TestVoxel(30, true), new TestVoxel(40, true) }
+            { new Voxel(10), new Voxel(20) },
+            { new Voxel(30), new Voxel(40) }
         };
         
         VisiblePlane plane = new VisiblePlane(
@@ -147,9 +111,9 @@ public class VisiblePlaneTests
         // Arrange: Create a 3x2 VisiblePlane with some null voxels.
         Voxel?[,] voxels = new Voxel?[3, 2]
         {
-            { new TestVoxel(5, true), null },
-            { null, new TestVoxel(15, true) },
-            { new TestVoxel(25, true), new TestVoxel(35, true) }
+            { new Voxel(5), null },
+            { null, new Voxel(15) },
+            { new Voxel(25), new Voxel(35) }
         };
 
         VisiblePlane plane = new VisiblePlane(

@@ -20,7 +20,7 @@ public static class VisibleFacesMesher
     /// <param name="visibleFaces">The result of <see cref="VoxelOcclusionOptimizer.ComputeVisibleFaces"/>.</param>
     /// <param name="chunk">The chunk from which the visibility information was computed.</param>
     /// <returns>A list of quads representing each visible voxel face.</returns>
-    public static List<MeshQuad> Build(VisibleFaces visibleFaces, Chunk<Voxel> chunk)
+    public static List<MeshQuad> Build(VisibleFaces visibleFaces, Chunk chunk)
     {
         var quads = new List<MeshQuad>();
 
@@ -51,7 +51,7 @@ public static class VisibleFacesMesher
         return quads;
     }
 
-    private static (uint x, uint y, uint z) ReconstructCoordinates(VisiblePlane plane, uint planeX, uint planeY, Chunk<Voxel> chunk)
+    private static (uint x, uint y, uint z) ReconstructCoordinates(VisiblePlane plane, uint planeX, uint planeY, Chunk chunk)
     {
         uint majorCoord = plane.MajorAxisOrder == AxisOrder.Ascending
             ? plane.SliceIndex

@@ -1,11 +1,8 @@
-using System;
-using Xunit;
 using VoxelMeshOptimizer.Core;
-using VoxelMeshOptimizer.Tests.DummyClasses;
+using VoxelMeshOptimizer.Tests.Helpers;
 
 namespace VoxelMeshOptimizer.Tests.Core;
 
-#region AxisExtensionsTests
 public class AxisExtensionsTests
 {
     #region GetDepthFromAxis Tests
@@ -14,7 +11,7 @@ public class AxisExtensionsTests
     public void GetDepthFromAxis_Ascending_ReturnsCoordinateValue_ForAxisX()
     {
         // Arrange: Create a TestChunk with known dimensions.
-        var chunk = new TestChunk(10, 20, 30);
+        var chunk = ChunkGen.GenerateChunk(10, 20, 30);
         uint x = 3, y = 5, z = 7;
 
         // Act: For Axis.X and Ascending order, depth should equal the x coordinate.
@@ -28,7 +25,7 @@ public class AxisExtensionsTests
     public void GetDepthFromAxis_Descending_ReturnsFlippedValue_ForAxisX()
     {
         // Arrange: Create a TestChunk.
-        var chunk = new TestChunk(10, 20, 30);
+        var chunk = ChunkGen.GenerateChunk(10, 20, 30);
         uint x = 2, y = 10, z = 15;
         // For Descending order on Axis.X:
         // Expected depth = (chunk.XDepth - 1) - x = (10 - 1) - 2 = 7.
@@ -45,7 +42,7 @@ public class AxisExtensionsTests
     public void GetDepthFromAxis_OnNearFace_ReturnsZeroDepth()
     {
         // Arrange: Create a TestChunk.
-        var chunk = new TestChunk(8, 8, 8);
+        var chunk = ChunkGen.GenerateChunk(8, 8, 8);
         // For a voxel on the near face:
         uint coordinate = 0;
 
@@ -59,7 +56,7 @@ public class AxisExtensionsTests
     public void GetDepthFromAxis_OnFarFace_ReturnsMaxDepth_ForDescendingOrder()
     {
         // Arrange
-        var chunk = new TestChunk(8, 8, 8);
+        var chunk = ChunkGen.GenerateChunk(8, 8, 8);
         // For a voxel on the far face in Descending order:
         uint x = chunk.XDepth - 1, y = chunk.YDepth - 1, z = chunk.ZDepth - 1;
         // For Descending order, depth for x equals (chunk.XDepth - 1) - (chunk.XDepth - 1) = 0.
@@ -78,7 +75,7 @@ public class AxisExtensionsTests
     public void GetDepthFromAxis_OutOfBoundCoordinate_ThrowsArgumentOutOfRangeException()
     {
         // Arrange
-        var chunk = new TestChunk(10, 10, 10);
+        var chunk = ChunkGen.GenerateChunk(10, 10, 10);
         uint x = 11, y = 5, z = 5; // x is out-of-bound (since valid indices are 0-9)
 
         // Act & Assert
@@ -164,7 +161,7 @@ public class AxisExtensionsTests
         // we simulate an error situation by manually invoking ForEachCoordinate (which enforces distinct axes)
         // with invalid repeated axis values.
 
-        var chunk = new TestChunk(5, 5, 5);
+        var chunk = ChunkGen.GenerateChunk(5, 5, 5);
         // Here, we purposely call ForEachCoordinate with non-distinct axes to trigger an exception.
         // The exception type from TestChunk.ForEachCoordinate is ArgumentException.
         Assert.Throws<ArgumentException>(() =>
@@ -182,7 +179,7 @@ public class AxisExtensionsTests
     public void GetSlicePlanePosition_Ascending_ReturnsSameAbsoluteCoordinates()
     {
         // Arrange: Create a TestChunk.
-        var chunk = new TestChunk(10, 20, 30);
+        var chunk = ChunkGen.GenerateChunk(10, 20, 30);
         uint x = 3, y = 5, z = 7;
         // For Ascending order on the in-plane axes, the position is used as-is.
         // We choose:
@@ -211,7 +208,7 @@ public class AxisExtensionsTests
     public void GetSlicePlanePosition_Descending_ReturnsFlippedCoordinatesForPlaneAxes()
     {
         // Arrange: Create a TestChunk with known dimensions.
-        var chunk = new TestChunk(10, 20, 30);
+        var chunk = ChunkGen.GenerateChunk(10, 20, 30);
         // Let the absolute coordinates be:
         uint x = 2, y = 3, z = 4;
         // For planeAxis1 (X) descending: flippedX = (chunk.XDepth - 1) - x = (10 - 1) - 2 = 7.
@@ -243,7 +240,7 @@ public class AxisExtensionsTests
     public void GetSlicePlanePosition_MixedOrders_SliceOrderDoesNotInfluenceOutput()
     {
         // Arrange: We test that using a different sliceOrder (Ascending vs Descending) does not affect the result.
-        var chunk = new TestChunk(10, 20, 30);
+        var chunk = ChunkGen.GenerateChunk(10, 20, 30);
         uint x = 4, y = 8, z = 2;
 
         Axis sliceAxis = Axis.Z;
@@ -277,7 +274,7 @@ public class AxisExtensionsTests
     public void GetSlicePlanePosition_NonDistinctAxes_ThrowsArgumentException()
     {
         // Arrange:
-        var chunk = new TestChunk(10, 10, 10);
+        var chunk = ChunkGen.GenerateChunk(10, 10, 10);
         uint x = 5, y = 5, z = 5;
         // Use non-distinct axes (e.g., sliceAxis and planeAxis1 are both Axis.X)
         Axis sliceAxis = Axis.X;
@@ -305,7 +302,7 @@ public class AxisExtensionsTests
         // Arrange:
         // Here we cast an integer value (that isn't defined) to Axis.
         // This test is "nice to have" rather than required.
-        var chunk = new TestChunk(10, 10, 10);
+        var chunk = ChunkGen.GenerateChunk(10, 10, 10);
         uint x = 2, y = 2, z = 2;
         // Cast integer 100 (an undefined value) to Axis.
         Axis invalidAxis = (Axis)100;
@@ -320,4 +317,3 @@ public class AxisExtensionsTests
 
     #endregion
 }
-#endregion

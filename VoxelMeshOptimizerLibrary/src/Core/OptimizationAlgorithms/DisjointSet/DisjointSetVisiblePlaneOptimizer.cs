@@ -14,9 +14,9 @@ public class DisjointSetVisiblePlaneOptimizer
     private readonly Voxel?[,] voxels;
     private readonly int width;
     private readonly int height;
-    private readonly Chunk<Voxel> chunk;
+    private readonly Chunk chunk;
 
-    public DisjointSetVisiblePlaneOptimizer(VisiblePlane plane, Chunk<Voxel> chunk)
+    public DisjointSetVisiblePlaneOptimizer(VisiblePlane plane, Chunk chunk)
     {
         Guard.IsNotNull(plane, nameof(plane));
         Guard.IsNotNull(plane.Voxels, nameof(plane.Voxels));

@@ -1,5 +1,5 @@
 using VoxelMeshOptimizer.Core;
-using VoxelMeshOptimizer.Tests.DummyClasses;
+using VoxelMeshOptimizer.Tests.Helpers;
 using Xunit;
 
 namespace VoxelMeshOptimizer.Tests.Occlusion;
@@ -10,7 +10,7 @@ public class VoxelVisibilityMapTests
     public void SolidChunk_AllOuterFacesShouldBeVisible_InnerFacesNotVisible()
     {
         // Arrange
-        var chunk = new TestChunk(2, 2, 2);
+        var chunk = ChunkGen.GenerateChunk(2, 2, 2);
         
         // Fill entire chunk with solid voxels
         for (uint x = 0; x < 2; x++)
@@ -19,7 +19,7 @@ public class VoxelVisibilityMapTests
             {
                 for (uint z = 0; z < 2; z++)
                 {
-                    chunk.Set(x, y, z, new TestVoxel(id: 1, isSolid: true));
+                    chunk.Set(x, y, z, new Voxel(id: 1));
                 }
             }
         }
@@ -74,8 +74,8 @@ public class VoxelVisibilityMapTests
     public void SingleVoxel_AllSixFacesShouldBeVisible()
     {
         // Arrange
-        var chunk = new TestChunk(1, 1, 1);
-        chunk.Set(0, 0, 0, new TestVoxel(id: 99, isSolid: true));
+        var chunk = ChunkGen.GenerateChunk(1, 1, 1);
+        chunk.Set(0, 0, 0, new Voxel(id: 99));
 
         // Act
         var visibilityMap = new VoxelVisibilityMap(chunk);
@@ -96,7 +96,7 @@ public class VoxelVisibilityMapTests
     public void EmptyChunk_NoVoxelsNoVisibleFaces()
     {
         // Arrange
-        var chunk = new TestChunk(2, 2, 2);
+        var chunk = ChunkGen.GenerateChunk(2, 2, 2);
         // no voxels set => they are all null
 
         // Act
@@ -120,10 +120,10 @@ public class VoxelVisibilityMapTests
     public void MixedSolidAndNull_CheckTransitions()
     {
         // Arrange
-        var chunk = new TestChunk(2, 2, 2);
+        var chunk = ChunkGen.GenerateChunk(2, 2, 2);
 
         // Place a solid voxel in one corner, empty in others.
-        chunk.Set(0, 0, 0, new TestVoxel(id: 1, isSolid: true));
+        chunk.Set(0, 0, 0, new Voxel(id: 1));
         // Let (0,0,1), (0,1,0), (0,1,1), etc. remain null => air
         // so that (1,0,0) => also air, etc.
 
@@ -150,8 +150,8 @@ public class VoxelVisibilityMapTests
     public void CheckErrorHandling_OutOfRangeShouldReturnNone()
     {
         // Arrange
-        var chunk = new TestChunk(1, 1, 1);
-        chunk.Set(0, 0, 0, new TestVoxel(id: 123, isSolid: true));
+        var chunk = ChunkGen.GenerateChunk(1, 1, 1);
+        chunk.Set(0, 0, 0, new Voxel(id: 123));
         var visibilityMap = new VoxelVisibilityMap(chunk);
 
         // Act
