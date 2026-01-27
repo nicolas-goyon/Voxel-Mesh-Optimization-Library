@@ -38,11 +38,11 @@ public static class VisibleFacesMesher
                     for (uint py = 0; py < height; py++)
                     {
                         var voxel = plane.Voxels[px, py];
-                        if (voxel == null || !voxel.IsSolid) continue;
+                        if (!voxel.HasValue || !voxel!.Value.IsSolid) continue;
 
                         // reconstruct absolute coordinates
                         var coords = ReconstructCoordinates(plane, px, py, chunk);
-                        quads.Add(CreateQuad(coords.x, coords.y, coords.z, voxel.ID, sliceAxis, axisOrder));
+                        quads.Add(CreateQuad(coords.x, coords.y, coords.z, voxel!.Value.ID, sliceAxis, axisOrder));
                     }
                 }
             }

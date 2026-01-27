@@ -70,7 +70,7 @@ public class VisiblePlaneTests
         plane.Voxels[0, 0] = voxel;
 
         // Assert
-        Assert.Same(voxel, plane.Voxels[0, 0]);
+        Assert.Equal(voxel, plane.Voxels[0, 0]);
     }
 
 

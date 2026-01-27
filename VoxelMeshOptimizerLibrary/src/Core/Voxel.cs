@@ -2,7 +2,7 @@ namespace VoxelMeshOptimizer.Core;
 using System;
 
 
-public class Voxel
+public struct Voxel
 {
     public ushort ID { get;}
     public bool IsSolid => ID != 0;
