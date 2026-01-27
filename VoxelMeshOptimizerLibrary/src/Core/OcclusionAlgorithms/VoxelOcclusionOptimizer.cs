@@ -1,13 +1,11 @@
-using System.Collections.Generic;
 using System.Data;
-using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 
 namespace VoxelMeshOptimizer.Core.OcclusionAlgorithms;
 /// <summary>
 /// Optimizes voxel occlusion by computing visible voxel planes based on the provided voxel chunk.
 /// </summary>
-public class VoxelOcclusionOptimizer : Occluder
+public class VoxelOcclusionOptimizer
 {
     /// <summary>
     /// The voxel chunk to be processed.
@@ -71,23 +69,23 @@ public class VoxelOcclusionOptimizer : Occluder
     private List<VisiblePlane> BuildPlanesForAxis(Axis sliceAxis, AxisOrder axisOrder)
     {
         // Map the slice axis to the corresponding voxel face flag.
-        var faceFlag = AxisExtensions.ToVoxelFace(sliceAxis, axisOrder);
+        VoxelFace faceFlag = AxisExtensions.ToVoxelFace(sliceAxis, axisOrder);
 
         // Determine the order in which the voxels are iterated.
-        var (majorA, majorAO, middleA, middleAO, minorA, minorAO) = AxisExtensions.DefineIterationOrder(sliceAxis, axisOrder);
+        (Axis majorA, AxisOrder majorAO, Axis middleA, AxisOrder middleAO, Axis minorA, AxisOrder minorAO) = AxisExtensions.DefineIterationOrder(sliceAxis, axisOrder);
 
         // Retrieve the dimensions of the 2D plane slice.
         (uint planeWidth, uint planeHeight) = chunk.GetPlaneDimensions(majorA, middleA, minorA);
 
         // Dictionary to store the visible planes keyed by the slice index.
         uint sliceCount = chunk.GetDepth(sliceAxis);
-        var planesBySlice = new VisiblePlane[sliceCount];
+        VisiblePlane?[] planesBySlice = new VisiblePlane?[sliceCount];
 
         chunk.ForEachCoordinate(
             majorA: majorA, majorAsc: majorAO,
             middleA: middleA, middleAsc: middleAO,
             minorA: minorA, minorAsc: minorAO,
-            (uint x, uint y, uint z) =>
+            (x, y, z) =>
             {
                 VoxelFace faces = visibilityMap.GetVisibleFaces(x, y, z);
                 if (!faces.HasFlag(faceFlag)) return;
@@ -96,37 +94,29 @@ public class VoxelOcclusionOptimizer : Occluder
                 uint sliceIndex = AxisExtensions.GetDepthFromAxis(sliceAxis, axisOrder, x, y, z, chunk);
 
                 // Select the appropriate visible plane.
-                if (planesBySlice[sliceIndex] == null){
-                    planesBySlice[sliceIndex] = new VisiblePlane(
-                        majorA, majorAO, 
-                        middleA, middleAO, 
-                        minorA, minorAO,
-                        sliceIndex,
-                        planeWidth, planeHeight
-                    );
-                }
-                var plane = planesBySlice[sliceIndex];
+                planesBySlice[sliceIndex] ??= new VisiblePlane(
+                    majorA, majorAO,
+                    middleA, middleAO,
+                    minorA, minorAO,
+                    sliceIndex,
+                    planeWidth, planeHeight
+                );
+                VisiblePlane? plane = planesBySlice[sliceIndex];
 
                 // Compute the 2D position on the plane from the 3D coordinates.
-                var (planeX, planeY) = AxisExtensions.GetSlicePlanePosition(
+                (uint planeX, uint planeY) = AxisExtensions.GetSlicePlanePosition(
                     majorA, majorAO,
                     middleA, middleAO,
                     minorA, minorAO,
                     x, y, z, chunk);
 
-                plane.Voxels[planeX, planeY] = chunk.Get(x, y, z);
+                plane!.Voxels[planeX, planeY] = chunk.Get(x, y, z);
             }
         );
 
         // Gather the resulting non-empty planes.
-        var result = new List<VisiblePlane>();
-        foreach (var plane in planesBySlice)
-        {
-            if (plane != null && !plane.IsPlaneEmpty)
-            {
-                result.Add(plane);
-            }
-        }
+        List<VisiblePlane> result = [];
+        result.AddRange(planesBySlice.OfType<VisiblePlane>().Where(plane => !plane.IsPlaneEmpty));
 
         return result;
     }
