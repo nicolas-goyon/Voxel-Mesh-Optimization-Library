@@ -2,8 +2,8 @@ namespace VoxelMeshOptimizer.Core;
 
 public class VoxelVisibilityMap
 {
-    private VoxelFace[,,] visibilityMap;
-    private Chunk chunk;
+    private readonly VoxelFace[,,] visibilityMap;
+    private readonly Chunk chunk;
 
     public VoxelVisibilityMap(Chunk chunk)
     {
@@ -18,9 +18,9 @@ public class VoxelVisibilityMap
             Axis.X, AxisOrder.Ascending,
             Axis.Y, AxisOrder.Ascending,
             Axis.Z, AxisOrder.Ascending,
-        (uint x, uint y, uint z) => {
+        (x, y, z) => {
             Voxel voxel = chunk.Get(x, y, z);
-            if (voxel == null || !voxel.IsSolid)
+            if (!voxel.IsSolid)
             {
                 visibilityMap[x, y, z] = VoxelFace.None;
                 return;
@@ -45,12 +45,12 @@ public class VoxelVisibilityMap
         if (chunk.IsOutOfBound(x,y,z)) return true;
 
         Voxel adjacentVoxel = chunk.Get(x, y, z);
-        return adjacentVoxel == null || !adjacentVoxel.IsSolid;
+        return !adjacentVoxel.IsSolid;
     }
 
     public VoxelFace GetVisibleFaces(uint x, uint y, uint z)
     {
-        if (x < 0 || x >= chunk.XDepth || y < 0 || y >= chunk.YDepth || z < 0 || z >= chunk.ZDepth)
+        if (x >= chunk.XDepth || y >= chunk.YDepth || z >= chunk.ZDepth)
             return VoxelFace.None;
         return visibilityMap[x, y, z];
     }

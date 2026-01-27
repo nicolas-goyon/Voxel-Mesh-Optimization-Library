@@ -4,7 +4,7 @@ namespace VoxelMeshOptimizer.Core;
 public class Chunk
 {
         private readonly Voxel[,,] _voxels;
-
+        
         public uint XDepth { get; init; }
         public uint YDepth { get; init; }
         public uint ZDepth { get; init; }
