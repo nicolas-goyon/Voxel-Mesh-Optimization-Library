@@ -9,13 +9,13 @@ using VoxelMeshOptimizer.Toolkit;
 [MarkdownExporter, AsciiDocExporter, HtmlExporter, CsvExporter, RPlotExporter,JsonExporter]
 public class SpeedBenchmarks
 {
-    private ExampleChunk exampleChunk;
+    private Chunk exampleChunk;
 
 
     [IterationSetup]
     public void Setup()
     {
-        exampleChunk = new ExampleChunk(PerlinNoiseChunkGen.CreatePerlinLandscape(50, 123));
+        exampleChunk = new Chunk(PerlinNoiseChunkGen.CreatePerlinLandscape(50, 123));
     }
 
 
@@ -31,7 +31,7 @@ public class SpeedBenchmarks
     [Benchmark]
     public void Optimize()
     {
-        var optimizer = new DisjointSetMeshOptimizer(new ExampleMesh());
+        var optimizer = new DisjointSetMeshOptimizer(new Mesh());
         optimizer.Optimize(exampleChunk);
     }
     
@@ -50,7 +50,7 @@ public class SpeedBenchmarks
         var occluder = new VoxelOcclusionOptimizer(exampleChunk);
         var visibileFaces = occluder.ComputeVisibleFaces();
         var occludedQuads = VisibleFacesMesher.Build(visibileFaces, exampleChunk);
-        var occludedMesh = new ExampleMesh(occludedQuads);
+        var occludedMesh = new Mesh(occludedQuads);
         ObjExporter.MeshToObjString(occludedMesh);
     }
 
@@ -58,7 +58,7 @@ public class SpeedBenchmarks
     [Benchmark]
     public void Optimize_MeshToString()
     {
-        var optimizer = new DisjointSetMeshOptimizer(new ExampleMesh());
+        var optimizer = new DisjointSetMeshOptimizer(new Mesh());
         Mesh optimizedMesh = optimizer.Optimize(exampleChunk);
         ObjExporter.MeshToObjString(optimizedMesh);
     }

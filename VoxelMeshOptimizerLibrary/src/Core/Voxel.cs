@@ -2,11 +2,18 @@ namespace VoxelMeshOptimizer.Core;
 using System;
 
 
-public interface Voxel
+public class Voxel
 {
     public ushort ID { get;}
-    public bool IsSolid {get;}
+    public bool IsSolid => ID != 0;
+    
+    
+    public Voxel (ushort id)
+    {
+        ID = id;
+    }
 }
+
 
 
 [Flags]

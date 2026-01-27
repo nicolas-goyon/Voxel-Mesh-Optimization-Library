@@ -1,15 +1,13 @@
-using Xunit;
-using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 using VoxelMeshOptimizer.Core;
-using VoxelMeshOptimizer.Tests.DummyClasses;
 using System.Numerics;
+using VoxelMeshOptimizer.Tests.Helpers;
 
 namespace VoxelMeshOptimizer.Tests.DisjointSetTesting;
 
 public class DisjointSetVisiblePlaneOptimizerTests
 {
-    private static (VisiblePlane plane, TestChunk chunk) CreatePlaneFromIds(ushort?[,] ids)
+    private static (VisiblePlane plane, Chunk chunk) CreatePlaneFromIds(ushort?[,] ids)
     {
         int w = ids.GetLength(0), h = ids.GetLength(1);
         var plane = new VisiblePlane(
@@ -18,7 +16,7 @@ public class DisjointSetVisiblePlaneOptimizerTests
             Axis.Z, AxisOrder.Ascending,
             0, (uint)w, (uint)h
         );
-        var chunk = new TestChunk(1, (uint)w, (uint)h);
+        var chunk = ChunkGen.GenerateChunk(1, (uint)w, (uint)h);
 
         for (int x = 0; x < w; x++)
         {
@@ -26,7 +24,7 @@ public class DisjointSetVisiblePlaneOptimizerTests
             {
                 if (ids[x, y] is ushort id)
                 {
-                    var voxel = new TestVoxel(id, true);
+                    var voxel = new Voxel(id);
                     plane.Voxels[x, y] = voxel;
                     chunk.Set(0, (uint)x, (uint)y, voxel);
                 }
@@ -242,7 +240,7 @@ public class DisjointSetVisiblePlaneOptimizerTests
             Axis.Z, AxisOrder.Ascending,
             0, 0, 0
         );
-        Assert.Throws<ArgumentOutOfRangeException>(() => new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, new TestChunk(1,1,1)));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet.DisjointSetVisiblePlaneOptimizer(plane, ChunkGen.GenerateChunk(1,1,1)));
     }
 
     #endregion
@@ -293,12 +291,12 @@ public class DisjointSetVisiblePlaneOptimizerTests
             0, 2, 2
         );
 
-        var chunk = new TestChunk(1,2,2);
+        var chunk = ChunkGen.GenerateChunk(1,2,2);
         for (int x = 0; x < 2; x++)
         {
             for (int y = 0; y < 2; y++)
             {
-                var voxel = new TestVoxel(id: 1, isSolid: true);
+                var voxel = new Voxel(id: 1);
                 plane.Voxels[x, y] = voxel;
                 chunk.Set(0, (uint)x, (uint)y, voxel);
             }

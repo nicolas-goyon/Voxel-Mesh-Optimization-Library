@@ -4,8 +4,8 @@ using Xunit;
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
-using VoxelMeshOptimizer.Tests.DummyClasses;
 using System.Data;
+using VoxelMeshOptimizer.Tests.Helpers;
 
 namespace VoxelMeshOptimizer.Tests.OcclusionTests;
 
@@ -30,7 +30,7 @@ public class VoxelOcclusionOptimizerTests
         // Arrange
         // Note: The TestChunk is constructed but no voxel is explicitly set,
         // so by default each voxel in TestChunk is null.
-        var emptyChunk = new TestChunk(10, 10, 10);
+        var emptyChunk = ChunkGen.GenerateChunk(10, 10, 10);
         var optimizer = new VoxelOcclusionOptimizer(emptyChunk);
 
         emptyChunk.ForEachCoordinate(
@@ -38,7 +38,7 @@ public class VoxelOcclusionOptimizerTests
             Axis.Y, AxisOrder.Ascending,
             Axis.Z, AxisOrder.Ascending,
             (x,y,z) => {
-                emptyChunk.Set(x,y,z, new TestVoxel(1,false));
+                emptyChunk.Set(x,y,z, new Voxel(0));
             }
         );
 
@@ -66,14 +66,14 @@ public class VoxelOcclusionOptimizerTests
         var xDepth = 10u;
         var yDepth = 10u;
         var zDepth = 10u;
-        var fullChunk = new TestChunk(xDepth, yDepth, zDepth);
+        var fullChunk = ChunkGen.GenerateChunk(xDepth, yDepth, zDepth);
         for (uint x = 0; x < xDepth; x++)
         {
             for (uint y = 0; y < yDepth; y++)
             {
                 for (uint z = 0; z < zDepth; z++)
                 {
-                    fullChunk.Set(x, y, z, new TestVoxel(1, true));
+                    fullChunk.Set(x, y, z, new Voxel(1));
                 }
             }
         }
@@ -102,8 +102,8 @@ public class VoxelOcclusionOptimizerTests
     {
         // Arrange
         // Create a 1x1x1 chunk with one solid voxel.
-        var singleVoxelChunk = new TestChunk(1, 1, 1);
-        singleVoxelChunk.Set(0, 0, 0, new TestVoxel(42, true));
+        var singleVoxelChunk = ChunkGen.GenerateChunk(1, 1, 1);
+        singleVoxelChunk.Set(0, 0, 0, new Voxel(42));
         var optimizer = new VoxelOcclusionOptimizer(singleVoxelChunk);
 
         // Act
@@ -140,7 +140,7 @@ public class VoxelOcclusionOptimizerTests
         // Create a 3x3x3 chunk where all voxels are solid except the center voxel,
         // which will be non-solid to simulate an internal hole.
         var chunkSize = 3u;
-        var irregularChunk = new TestChunk(chunkSize, chunkSize, chunkSize);
+        var irregularChunk = ChunkGen.GenerateChunk(chunkSize, chunkSize, chunkSize);
         for (uint x = 0; x < chunkSize; x++)
         {
             for (uint y = 0; y < chunkSize; y++)
@@ -149,7 +149,7 @@ public class VoxelOcclusionOptimizerTests
                 {
                     // Set the center voxel (1,1,1) as non-solid. Others are solid.
                     bool isSolid = !(x == 1 && y == 1 && z == 1);
-                    irregularChunk.Set(x, y, z, new TestVoxel(1, isSolid));
+                    irregularChunk.Set(x, y, z, new Voxel((isSolid ? (ushort)1 : (ushort)0)));
                 }
             }
         }

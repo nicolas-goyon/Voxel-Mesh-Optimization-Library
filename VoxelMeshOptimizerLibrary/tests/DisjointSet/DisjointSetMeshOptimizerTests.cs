@@ -1,28 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
-using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
-using VoxelMeshOptimizer.Tests.DummyClasses;
-using Xunit;
+using VoxelMeshOptimizer.Tests.Helpers;
 
 namespace VoxelMeshOptimizer.Tests.DisjointSetTesting;
 
 public class DisjointSetMeshOptimizerTests
 {
-    private class TestMesh : Mesh
-    {
-        public List<MeshQuad> Quads { get; } = new();
-    }
 
     
 
     [Fact]
     public void Optimize_ShouldThrow_WhenMeshIsNotEmpty()
     {
-        var mesh = new TestMesh();
+        var mesh = new Mesh();
         mesh.Quads.Add(new MeshQuad());
 
 
@@ -32,8 +23,8 @@ public class DisjointSetMeshOptimizerTests
     [Fact]
     public void Optimize_ShouldReturnEmptyMesh_WhenChunkIsEmpty()
     {
-        var mesh = new TestMesh();
-        var chunk = new TestChunk(2, 2, 2);
+        var mesh = new Mesh();
+        var chunk = ChunkGen.GenerateChunk(2, 2, 2);
 
         // All voxels are null by default (empty)
         var optimizer = new DisjointSetMeshOptimizer(mesh);
@@ -45,9 +36,9 @@ public class DisjointSetMeshOptimizerTests
     [Fact]
     public void Optimize_ShouldProduce6Quads_ForSingleSolidVoxel()
     {
-        var mesh = new TestMesh();
-        var chunk = new TestChunk(1, 1, 1);
-        chunk.Set(0, 0, 0, new TestVoxel(42, true));
+        var mesh = new Mesh();
+        var chunk = ChunkGen.GenerateChunk(1, 1, 1);
+        chunk.Set(0, 0, 0, new Voxel(42));
 
         var optimizer = new DisjointSetMeshOptimizer(mesh);
         var result = optimizer.Optimize(chunk);
@@ -59,10 +50,10 @@ public class DisjointSetMeshOptimizerTests
     [Fact]
     public void Optimize_ShouldPreserveVoxelIDs_InAllGeneratedQuads()
     {
-        var mesh = new TestMesh();
-        var chunk = new TestChunk(2, 1, 1);
-        chunk.Set(0, 0, 0, new TestVoxel(100, true));
-        chunk.Set(1, 0, 0, new TestVoxel(200, true));
+        var mesh = new Mesh();
+        var chunk = ChunkGen.GenerateChunk(2, 1, 1);
+        chunk.Set(0, 0, 0, new Voxel(100));
+        chunk.Set(1, 0, 0, new Voxel(200));
 
         var optimizer = new DisjointSetMeshOptimizer(mesh);
         var result = optimizer.Optimize(chunk);
@@ -74,9 +65,9 @@ public class DisjointSetMeshOptimizerTests
     [Fact]
     public void Optimize_ShouldGenerateCorrectNormals_BasedOnFaceOrientation()
     {
-        var mesh = new TestMesh();
-        var chunk = new TestChunk(1, 1, 1);
-        chunk.Set(0, 0, 0, new TestVoxel(5, true));
+        var mesh = new Mesh();
+        var chunk = ChunkGen.GenerateChunk(1, 1, 1);
+        chunk.Set(0, 0, 0, new Voxel(5));
 
         var optimizer = new DisjointSetMeshOptimizer(mesh);
         var result = optimizer.Optimize(chunk);

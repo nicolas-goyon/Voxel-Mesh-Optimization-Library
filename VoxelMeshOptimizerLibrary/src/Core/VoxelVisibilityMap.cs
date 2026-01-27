@@ -3,9 +3,9 @@ namespace VoxelMeshOptimizer.Core;
 public class VoxelVisibilityMap
 {
     private VoxelFace[,,] visibilityMap;
-    private Chunk<Voxel> chunk;
+    private Chunk chunk;
 
-    public VoxelVisibilityMap(Chunk<Voxel> chunk)
+    public VoxelVisibilityMap(Chunk chunk)
     {
         this.chunk = chunk;
         visibilityMap = new VoxelFace[chunk.XDepth, chunk.YDepth, chunk.ZDepth];

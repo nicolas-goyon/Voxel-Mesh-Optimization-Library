@@ -12,7 +12,7 @@ public class VoxelOcclusionOptimizer : Occluder
     /// <summary>
     /// The voxel chunk to be processed.
     /// </summary>
-    private readonly Chunk<Voxel> chunk;
+    private readonly Chunk chunk;
 
     /// <summary>
     /// The visibility map generated from the voxel chunk.
@@ -23,11 +23,9 @@ public class VoxelOcclusionOptimizer : Occluder
     /// Initializes a new instance of the <see cref="VoxelOcclusionOptimizer"/> class.
     /// </summary>
     /// <param name="chunk">The voxel chunk to optimize.</param>
-    public VoxelOcclusionOptimizer(Chunk<Voxel> chunk)
+    public VoxelOcclusionOptimizer(Chunk chunk)
     {
-        if (chunk == null) throw new NoNullAllowedException();
-
-        this.chunk = chunk;
+        this.chunk = chunk ?? throw new NoNullAllowedException();
         visibilityMap = new VoxelVisibilityMap(chunk);
     }
 
@@ -39,16 +37,18 @@ public class VoxelOcclusionOptimizer : Occluder
     /// </returns>
     public VisibleFaces ComputeVisibleFaces()
     {
-        var result = new VisibleFaces();
-
-        result.PlanesByAxis[(Axis.X, AxisOrder.Ascending)] = BuildPlanesForAxis(Axis.X, AxisOrder.Ascending);
-        result.PlanesByAxis[(Axis.X, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.X, AxisOrder.Descending);
-
-        result.PlanesByAxis[(Axis.Y, AxisOrder.Ascending)] = BuildPlanesForAxis(Axis.Y, AxisOrder.Ascending);
-        result.PlanesByAxis[(Axis.Y, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.Y, AxisOrder.Descending);
-
-        result.PlanesByAxis[(Axis.Z, AxisOrder.Ascending)] = BuildPlanesForAxis(Axis.Z, AxisOrder.Ascending);
-        result.PlanesByAxis[(Axis.Z, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.Z, AxisOrder.Descending);
+        VisibleFaces result = new VisibleFaces
+        {
+            PlanesByAxis =
+            {
+                [(Axis.X, AxisOrder.Ascending)] = BuildPlanesForAxis(Axis.X, AxisOrder.Ascending),
+                [(Axis.X, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.X, AxisOrder.Descending),
+                [(Axis.Y, AxisOrder.Ascending)] = BuildPlanesForAxis(Axis.Y, AxisOrder.Ascending),
+                [(Axis.Y, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.Y, AxisOrder.Descending),
+                [(Axis.Z, AxisOrder.Ascending)] = BuildPlanesForAxis(Axis.Z, AxisOrder.Ascending),
+                [(Axis.Z, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.Z, AxisOrder.Descending)
+            }
+        };
 
         return result;
     }
@@ -84,12 +84,12 @@ public class VoxelOcclusionOptimizer : Occluder
         var planesBySlice = new VisiblePlane[sliceCount];
 
         chunk.ForEachCoordinate(
-            major: majorA, majorAsc: majorAO,
-            middle: middleA, middleAsc: middleAO,
-            minor: minorA, minorAsc: minorAO,
+            majorA: majorA, majorAsc: majorAO,
+            middleA: middleA, middleAsc: middleAO,
+            minorA: minorA, minorAsc: minorAO,
             (uint x, uint y, uint z) =>
             {
-                var faces = visibilityMap.GetVisibleFaces(x, y, z);
+                VoxelFace faces = visibilityMap.GetVisibleFaces(x, y, z);
                 if (!faces.HasFlag(faceFlag)) return;
 
                 // Retrieve the current slice index.

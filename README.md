@@ -62,6 +62,14 @@ For detailed guidelines on setting up a development environment, contributing co
 - Example applications and benchmarks live in the `examples` folder.
 - Benchmark results are published on the project’s GitHub Pages.
 
+### Benchmark
+- Move to benchmark directory
+- Execute : 
+  ```bash
+  dotnet restore
+  dotnet run --configuration Release
+  ```
+
 ## Support
 
 If you have questions, need help, or wish to contribute further improvements, please open an issue in the repository or reach out directly. Contributions and feedback are greatly appreciated!

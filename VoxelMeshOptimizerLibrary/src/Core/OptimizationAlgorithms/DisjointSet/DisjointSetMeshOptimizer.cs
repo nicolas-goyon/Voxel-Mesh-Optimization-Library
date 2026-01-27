@@ -14,7 +14,7 @@ public class DisjointSetMeshOptimizer : MeshOptimizer
     }
 
 
-    public Mesh Optimize(Chunk<Voxel> chunk)
+    public Mesh Optimize(Chunk chunk)
     {
         var occluder = new VoxelOcclusionOptimizer(chunk);
         var visibileFaces = occluder.ComputeVisibleFaces();

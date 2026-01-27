@@ -1,7 +1,6 @@
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms;
 using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
-using VoxelMeshOptimizer.Tests.DummyClasses;
 using VoxelMeshOptimizer.Toolkit;
 using Xunit;
 
@@ -9,11 +8,11 @@ namespace VoxelMeshOptimizer.Tests.Performance;
 
 public class Performance
 {
-    public static TestChunk Setup()
+    public static Chunk Setup()
     {
         var size = 50;
         var voxelsShort = PerlinNoiseChunkGen.CreatePerlinLandscape(size, 123);
-        return new TestChunk(voxelsShort);
+        return new Chunk(voxelsShort);
     }
 
     private static void ValidateTriangles(Mesh mesh, int expectedTriangles, bool exact)
@@ -49,7 +48,7 @@ public class Performance
         var occluder = new VoxelOcclusionOptimizer(chunk);
         var visibileFaces = occluder.ComputeVisibleFaces();
         var occludedQuads = VisibleFacesMesher.Build(visibileFaces, chunk);
-        var occludedMesh = new TestMesh(occludedQuads);
+        var occludedMesh = new Mesh(occludedQuads);
         ObjExporter.MeshToObjString(occludedMesh);
         ValidateTriangles(occludedMesh, 25000, false);
 
@@ -58,9 +57,9 @@ public class Performance
     [Fact]
     public void Optimization()
     {
-        var chunk = Setup();
-        var mesh = new TestMesh();
-        var optimizer = new DisjointSetMeshOptimizer(mesh);
+        Chunk chunk = Setup();
+        Mesh mesh = new();
+        DisjointSetMeshOptimizer optimizer = new(mesh);
         Mesh optimizedMesh = optimizer.Optimize(chunk);
         ObjExporter.MeshToObjString(optimizedMesh);
         ValidateTriangles(optimizedMesh, 5000, false);

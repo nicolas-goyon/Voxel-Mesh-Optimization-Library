@@ -1,6 +1,17 @@
 namespace VoxelMeshOptimizer.Core;
 
-public interface Mesh
+public class Mesh
 {
-    List<MeshQuad> Quads {get;}
+    public List<MeshQuad> Quads { get; set; }
+
+    public Mesh(List<MeshQuad> quads)
+    {
+        Quads = quads;
+
+    }
+
+    public Mesh()
+    {
+        Quads = new();
+    }
 }
