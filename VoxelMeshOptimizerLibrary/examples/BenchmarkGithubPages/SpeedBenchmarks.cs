@@ -1,6 +1,7 @@
 using BenchmarkDotNet.Attributes;
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms;
+using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
 using VoxelMeshOptimizer.Core.Toolkit;
 using VoxelMeshOptimizer.Toolkit;
@@ -24,8 +25,8 @@ public class SpeedBenchmarks
     [Benchmark]
     public void Occluder()
     {
-        var occluder = new VoxelOcclusionOptimizer(exampleChunk);
-        var visibileFaces = occluder.ComputeVisibleFaces();
+        VoxelOcclusionOptimizer occluder = new VoxelOcclusionOptimizer(exampleChunk);
+        VisibleFaces visibileFaces = occluder.ComputeVisibleFaces();
         VisibleFacesMesher.Build(visibileFaces, exampleChunk);
     }
 
@@ -33,7 +34,7 @@ public class SpeedBenchmarks
     [Benchmark]
     public void Optimize()
     {
-        var optimizer = new DisjointSetMeshOptimizer(new Mesh());
+        DisjointSetMeshOptimizer optimizer = new DisjointSetMeshOptimizer(new Mesh());
         optimizer.Optimize(exampleChunk);
     }
     
@@ -42,17 +43,17 @@ public class SpeedBenchmarks
     [Benchmark(Baseline = true)]
     public void Default_MeshToString()
     {
-        var baseMesh = exampleChunk.ToMesh();
+        Mesh baseMesh = exampleChunk.ToMesh();
         ObjExporter.MeshToObjString(baseMesh);
     }
 
     [Benchmark]
     public void Occluder_MeshToString()
     {
-        var occluder = new VoxelOcclusionOptimizer(exampleChunk);
-        var visibileFaces = occluder.ComputeVisibleFaces();
-        var occludedQuads = VisibleFacesMesher.Build(visibileFaces, exampleChunk);
-        var occludedMesh = new Mesh(occludedQuads);
+        VoxelOcclusionOptimizer occluder = new VoxelOcclusionOptimizer(exampleChunk);
+        VisibleFaces visibileFaces = occluder.ComputeVisibleFaces();
+        List<MeshQuad> occludedQuads = VisibleFacesMesher.Build(visibileFaces, exampleChunk);
+        Mesh occludedMesh = new Mesh(occludedQuads);
         ObjExporter.MeshToObjString(occludedMesh);
     }
 
@@ -60,7 +61,7 @@ public class SpeedBenchmarks
     [Benchmark]
     public void Optimize_MeshToString()
     {
-        var optimizer = new DisjointSetMeshOptimizer(new Mesh());
+        DisjointSetMeshOptimizer optimizer = new DisjointSetMeshOptimizer(new Mesh());
         Mesh optimizedMesh = optimizer.Optimize(exampleChunk);
         ObjExporter.MeshToObjString(optimizedMesh);
     }

@@ -10,8 +10,8 @@ public class PerlinNoiseChunkGen
     /// </summary>
     public static ushort[,,] CreatePerlinLandscape(int size = 50, int seed = 0)
     {
-        var voxels = new ushort[size, size, size];
-        var noise = new PerlinNoise(seed);
+        ushort[,,] voxels = new ushort[size, size, size];
+        PerlinNoise noise = new PerlinNoise(seed);
 
         for (int x = 0; x < size; x++)
         {
@@ -63,7 +63,7 @@ public class PerlinNoiseChunkGen
             int[] perm = (int[])permutation.Clone();
             if (seed != 0)
             {
-                var random = new Random(seed);
+                Random random = new Random(seed);
                 for (int i = 0; i < 256; i++)
                 {
                     int swapIndex = random.Next(i, 256);

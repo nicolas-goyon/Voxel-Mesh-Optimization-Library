@@ -23,13 +23,13 @@ public static class ObjExporter
     {
         if (mesh is null) throw new ArgumentNullException(nameof(mesh));
 
-        var vertices = new List<Vector3>();
-        var vertexIndices = new Dictionary<Vector3, int>();
+        List<Vector3> vertices = new List<Vector3>();
+        Dictionary<Vector3, int> vertexIndices = new Dictionary<Vector3, int>();
 
-        var sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         // Collect unique vertices and assign indices (1-based as per OBJ spec)
-        foreach (var quad in mesh.Quads)
+        foreach (MeshQuad quad in mesh.Quads)
         {
             AddVertex(quad.Vertex0, vertexIndices, vertices);
             AddVertex(quad.Vertex1, vertexIndices, vertices);
@@ -38,13 +38,13 @@ public static class ObjExporter
         }
 
         // Write vertex positions
-        foreach (var v in vertices)
+        foreach (Vector3 v in vertices)
         {
             sb.AppendLine(string.Format(CultureInfo.InvariantCulture, "v {0} {1} {2}", v.X, v.Y, v.Z));
         }
 
         // Write faces using quad indices
-        foreach (var quad in mesh.Quads)
+        foreach (MeshQuad quad in mesh.Quads)
         {
             int i0 = vertexIndices[quad.Vertex0];
             int i1 = vertexIndices[quad.Vertex1];

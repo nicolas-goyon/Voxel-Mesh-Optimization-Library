@@ -8,13 +8,27 @@ namespace VoxelMeshOptimizer.Core.Multithreading
         private readonly Queue<(Int3 chunkPosition, Func<Int3, Chunk> chunkDataGenerationCallback)> _tasks = new();
         private readonly ConcurrentQueue<ChunkMeshGenerationWorker> _pendingWorkers = new();
         private readonly ConcurrentQueue<(Chunk chunk, Mesh mesh)> _completedMeshes = new();
+        /**
+         * Enqueue Signal
+         */
         private readonly AutoResetEvent _signal = new(false);
+
+        /**
+         * Signal that allow the handler to actually wait for a work to be finished.
+         */
+        private readonly SemaphoreSlim _finishedSignal;
+        
         private readonly Thread _thread;
         private volatile bool _running = true;
         private readonly int _maxConcurrentWorkers;
+        
+        private CancellationTokenSource _cts = new();
+        private CancellationToken _ct;
 
         public ChunkGenerationThread(int maxConcurrentWorkers = 2)
         {
+            _ct = _cts.Token;
+            _finishedSignal = new SemaphoreSlim(0); // TODO : Not sure if its the right thing to do
             _thread = new Thread(ThreadLoop)
             {
                 IsBackground = true,
@@ -47,6 +61,16 @@ namespace VoxelMeshOptimizer.Core.Multithreading
         {
             while (true)
             {
+                try
+                {
+                    _ct.ThrowIfCancellationRequested();
+                }
+                catch (OperationCanceledException)
+                {
+                    Console.WriteLine("WorkerThread cancelled"); // TODO : Strange behaviour, seems like it showed multiple times when having jobs in queue
+                    return;
+                }
+                
                 // Start new workers if we have capacity
                 while (_pendingWorkers.Count < _maxConcurrentWorkers && _tasks.Count > 0)
                 {
@@ -65,6 +89,7 @@ namespace VoxelMeshOptimizer.Core.Multithreading
                     
                     (Chunk chunk, Mesh mesh) = worker.Execute();
                     _completedMeshes.Enqueue((chunk, mesh));
+                    _finishedSignal.Release();
                 }
 
                 // If no tasks are pending and no workers are running, wait for new tasks
@@ -77,6 +102,17 @@ namespace VoxelMeshOptimizer.Core.Multithreading
                 _signal.WaitOne();
             }
         }
+
+        public (Chunk chunk, Mesh mesh) WaitForFinishedWork(TimeSpan timeout)
+        {
+            _finishedSignal.Wait(timeout);
+            if (!TryDequeueGeneratedMesh(out (Chunk chunk, Mesh mesh) result))
+            {
+                throw new InvalidOperationException(message: "ChunkGeneration work finished but nothing was dequeued");
+            }
+
+            return result;
+        }
         
         public void Dispose()
         {
@@ -87,8 +123,8 @@ namespace VoxelMeshOptimizer.Core.Multithreading
 
             _running = false;
             _signal.Set();
-            // _thread.Join(); 
-            _thread.Abort();
+            _cts.Cancel();
+            _thread.Join(); 
             _signal.Dispose();
         }
         

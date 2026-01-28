@@ -1,9 +1,10 @@
 using System.Numerics;
+using CommunityToolkit.Diagnostics;
 
 namespace VoxelMeshOptimizer.Core;
 public class Chunk
 {
-        private readonly Voxel[,,] _voxels;
+        private readonly Voxel[,,] voxels;
         
         public uint XDepth { get; init; }
         public uint YDepth { get; init; }
@@ -15,7 +16,7 @@ public class Chunk
             YDepth = (uint)voxelArray.GetLength(1);
             ZDepth = (uint)voxelArray.GetLength(2);
 
-            _voxels = new Voxel[XDepth, YDepth, ZDepth];
+            voxels = new Voxel[XDepth, YDepth, ZDepth];
 
             // Initialize from the ushort array
             for (uint x = 0; x < XDepth; x++)
@@ -25,7 +26,7 @@ public class Chunk
                     for (uint z = 0; z < ZDepth; z++)
                     {
                         ushort value = voxelArray[x, y, z];
-                        _voxels[x, y, z] = new Voxel(value);
+                        voxels[x, y, z] = new Voxel(value);
                     }
                 }
             }
@@ -38,13 +39,13 @@ public class Chunk
         /// </summary>
         public Chunk(string fileName)
         {
-            var lines = File.ReadAllLines(fileName);
+            string[] lines = File.ReadAllLines(fileName);
             if (lines.Length < 2)
             {
                 throw new ArgumentException("File must contain at least two lines", nameof(fileName));
             }
 
-            var sizes = lines[0].Split(',', StringSplitOptions.RemoveEmptyEntries);
+            string[] sizes = lines[0].Split(',', StringSplitOptions.RemoveEmptyEntries);
             if (sizes.Length != 3)
             {
                 throw new FormatException("First line must contain three comma-separated values.");
@@ -54,9 +55,9 @@ public class Chunk
             YDepth = uint.Parse(sizes[1]);
             ZDepth = uint.Parse(sizes[2]);
 
-            _voxels = new Voxel[XDepth, YDepth, ZDepth];
+            voxels = new Voxel[XDepth, YDepth, ZDepth];
 
-            var voxelIds = lines[1].Split(',', StringSplitOptions.RemoveEmptyEntries);
+            string[] voxelIds = lines[1].Split(',', StringSplitOptions.RemoveEmptyEntries);
             if (voxelIds.Length != XDepth * YDepth * ZDepth)
             {
                 throw new FormatException("Voxel count does not match chunk dimensions.");
@@ -70,7 +71,7 @@ public class Chunk
                     for (uint z = 0; z < ZDepth; z++)
                     {
                         ushort id = ushort.Parse(voxelIds[index++]);
-                        _voxels[x, y, z] = new Voxel(id);
+                        voxels[x, y, z] = new Voxel(id);
                     }
                 }
             }
@@ -87,7 +88,7 @@ public class Chunk
                 {
                     for (uint z = 0; z < ZDepth; z++)
                     {
-                        yield return _voxels[x, y, z];
+                        yield return voxels[x, y, z];
                     }
                 }
             }
@@ -97,14 +98,14 @@ public class Chunk
         /// Retrieves the voxel at the given position (X,Y,Z), ignoring the axis fields for now.
         /// Throws if out of range, or you could choose to return null.
         /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public Voxel Get(uint x, uint y, uint z)
         {
-            if (x >= XDepth || y >= YDepth || z >= ZDepth)
-            {
-                throw new ArgumentOutOfRangeException("Requested voxel coordinates are out of bounds.");
-            }
+            Guard.IsLessThan(x, XDepth);
+            Guard.IsLessThan(y, YDepth);
+            Guard.IsLessThan(z, ZDepth);
 
-            return _voxels[x, y, z];
+            return voxels[x, y, z];
         }
 
         /// <summary>
@@ -112,12 +113,11 @@ public class Chunk
         /// </summary>
         public void Set(uint x, uint y, uint z, Voxel voxel)
         {
-            if (x >= XDepth || y >= YDepth || z >= ZDepth)
-            {
-                throw new ArgumentOutOfRangeException("Requested voxel coordinates are out of bounds.");
-            }
+            Guard.IsLessThan(x, XDepth);
+            Guard.IsLessThan(y, YDepth);
+            Guard.IsLessThan(z, ZDepth);
 
-            _voxels[x, y, z] = voxel;
+            voxels[x, y, z] = voxel;
         }
 
         /// <summary>
@@ -140,25 +140,58 @@ public class Chunk
 
             // 4) Triple-nested loop in the order: major -> middle -> minor
             //    We find which axis is major, middle, minor, then nest them accordingly.
-            foreach (var majorVal in BuildRange(GetDepth(majorA), majorAsc))
+            foreach (uint majorVal in BuildRange(GetDepth(majorA), majorAsc))
             {
-                foreach (var midVal in BuildRange(GetDepth(middleA), middleAsc))
+                foreach (uint midVal in BuildRange(GetDepth(middleA), middleAsc))
                 {
-                    foreach (var minVal in BuildRange(GetDepth(minorA), minorAsc))
+                    foreach (uint minVal in BuildRange(GetDepth(minorA), minorAsc))
                     {
                         uint x = 0, y = 0, z = 0;
 
-                        if (majorA == Axis.X) x = majorVal;
-                        else if (majorA == Axis.Y) y = majorVal;
-                        else if (majorA == Axis.Z) z = majorVal;
+                        switch (majorA)
+                        {
+                            case Axis.X:
+                                x = majorVal;
+                                break;
+                            case Axis.Y:
+                                y = majorVal;
+                                break;
+                            case Axis.Z:
+                                z = majorVal;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(majorA), majorA, null);
+                        }
 
-                        if (middleA == Axis.X) x = midVal;
-                        else if (middleA == Axis.Y) y = midVal;
-                        else if (middleA == Axis.Z) z = midVal;
+                        switch (middleA)
+                        {
+                            case Axis.X:
+                                x = midVal;
+                                break;
+                            case Axis.Y:
+                                y = midVal;
+                                break;
+                            case Axis.Z:
+                                z = midVal;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(middleA), middleA, null);
+                        }
 
-                        if (minorA == Axis.X) x = minVal;
-                        else if (minorA == Axis.Y) y = minVal;
-                        else if (minorA == Axis.Z) z = minVal;
+                        switch (minorA)
+                        {
+                            case Axis.X:
+                                x = minVal;
+                                break;
+                            case Axis.Y:
+                                y = minVal;
+                                break;
+                            case Axis.Z:
+                                z = minVal;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(minorA), minorA, null);
+                        }
 
                         action(x, y, z);
                     }
@@ -198,12 +231,10 @@ public class Chunk
 
         public bool IsOutOfBound(uint x, uint y, uint z)
         {
-            return x < 0 || x >= GetDepth(Axis.X)
-                || y < 0 || y >= GetDepth(Axis.Y)
-                || z < 0 || z >= GetDepth(Axis.Z);
+            return x >= GetDepth(Axis.X) || y >= GetDepth(Axis.Y) || z >= GetDepth(Axis.Z);
         }
 
-        public bool AreDifferentAxis(
+        public static bool AreDifferentAxis(
             Axis major,
             Axis middle,
             Axis minor
@@ -220,8 +251,8 @@ public class Chunk
         {
             // "Plane dimensions" = minor dimension (x-axis of the plane),
             //                      middle dimension (y-axis of the plane).
-            var planeWidth = GetDepth(middle);
-            var planeHeight = GetDepth(minor);
+            uint planeWidth = GetDepth(middle);
+            uint planeHeight = GetDepth(minor);
 
             return (planeWidth, planeHeight);
         }
@@ -233,7 +264,7 @@ public class Chunk
         /// </summary>
         public Mesh ToMesh()
         {
-            var list = new List<MeshQuad>();
+            List<MeshQuad> list = new List<MeshQuad>();
 
             for (uint x = 0; x < XDepth; x++)
             {
@@ -241,7 +272,7 @@ public class Chunk
                 {
                     for (uint z = 0; z < ZDepth; z++)
                     {
-                        var voxel = _voxels[x, y, z];
+                        Voxel voxel = voxels[x, y, z];
                         if (!voxel.IsSolid)
                             continue;
 
@@ -249,16 +280,16 @@ public class Chunk
                     }
                 }
             }
-            var mesh = new Mesh(list);
+            Mesh mesh = new Mesh(list);
 
             return mesh;
         }
 
         private static IEnumerable<MeshQuad> CreateVoxelQuads(uint x, uint y, uint z, ushort voxelId)
         {
-            var bx = (float)x;
-            var by = (float)y;
-            var bz = (float)z;
+            float bx = x;
+            float by = y;
+            float bz = z;
 
 
             yield return new MeshQuad
@@ -268,7 +299,7 @@ public class Chunk
                 Vertex2 = new Vector3(bx + 1, by + 1, bz),
                 Vertex3 = new Vector3(bx + 1, by, bz),
                 Normal = new Vector3(0, 0, -1),
-                VoxelID = voxelId
+                VoxelId = voxelId
             };
 
             yield return new MeshQuad
@@ -278,7 +309,7 @@ public class Chunk
                 Vertex2 = new Vector3(bx + 1, by + 1, bz + 1),
                 Vertex3 = new Vector3(bx, by + 1, bz + 1),
                 Normal = new Vector3(0, 0, 1),
-                VoxelID = voxelId
+                VoxelId = voxelId
             };
 
             yield return new MeshQuad
@@ -288,7 +319,7 @@ public class Chunk
                 Vertex2 = new Vector3(bx, by + 1, bz + 1),
                 Vertex3 = new Vector3(bx, by + 1, bz),
                 Normal = new Vector3(-1, 0, 0),
-                VoxelID = voxelId
+                VoxelId = voxelId
             };
 
             yield return new MeshQuad
@@ -298,7 +329,7 @@ public class Chunk
                 Vertex2 = new Vector3(bx + 1, by + 1, bz),
                 Vertex3 = new Vector3(bx + 1, by + 1, bz + 1),
                 Normal = new Vector3(1, 0, 0),
-                VoxelID = voxelId
+                VoxelId = voxelId
             };
 
             yield return new MeshQuad
@@ -308,7 +339,7 @@ public class Chunk
                 Vertex2 = new Vector3(bx + 1, by, bz + 1),
                 Vertex3 = new Vector3(bx, by, bz + 1),
                 Normal = new Vector3(0, -1, 0),
-                VoxelID = voxelId
+                VoxelId = voxelId
             };
 
             yield return new MeshQuad
@@ -318,7 +349,7 @@ public class Chunk
                 Vertex2 = new Vector3(bx + 1, by + 1, bz),
                 Vertex3 = new Vector3(bx, by + 1, bz),
                 Normal = new Vector3(0, 1, 0),
-                VoxelID = voxelId
+                VoxelId = voxelId
             };
         }
 
@@ -330,17 +361,17 @@ public class Chunk
         /// </summary>
         public void Save(string fileName)
         {
-            using var writer = new StreamWriter(fileName);
+            using StreamWriter writer = new(fileName);
             writer.WriteLine($"{XDepth},{YDepth},{ZDepth}");
 
-            var ids = new List<string>();
+            List<string> ids = [];
             for (uint x = 0; x < XDepth; x++)
             {
                 for (uint y = 0; y < YDepth; y++)
                 {
                     for (uint z = 0; z < ZDepth; z++)
                     {
-                        ids.Add(_voxels[x, y, z].ID.ToString());
+                        ids.Add(voxels[x, y, z].ID.ToString());
                     }
                 }
             }

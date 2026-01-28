@@ -180,7 +180,7 @@ public class DisjointSetVisiblePlaneOptimizer
                             Vertex2 = new Vector3(x, y2, z2),
                             Vertex3 = new Vector3(x, y1, z2),
                             Normal = new Vector3(1, 0, 0),
-                            VoxelID = voxelId
+                            VoxelId = voxelId
                         };
                         break;
                     }
@@ -199,7 +199,7 @@ public class DisjointSetVisiblePlaneOptimizer
                             Vertex3 = new Vector3(x, y2, z2),
                             Vertex2 = new Vector3(x, y1, z2),
                             Normal = new Vector3(1, 0, 0),
-                            VoxelID = voxelId
+                            VoxelId = voxelId
                         };
                         break;
                     }
@@ -217,7 +217,7 @@ public class DisjointSetVisiblePlaneOptimizer
                             Vertex2 = new Vector3(x2, y, z2),
                             Vertex3 = new Vector3(x2, y, z1),
                             Normal = new Vector3(1, 0, 0),
-                            VoxelID = voxelId
+                            VoxelId = voxelId
                         };
                         break;
                     }
@@ -235,7 +235,7 @@ public class DisjointSetVisiblePlaneOptimizer
                             Vertex3 = new Vector3(x2, y, z2),
                             Vertex2 = new Vector3(x2, y, z1),
                             Normal = new Vector3(1, 0, 0),
-                            VoxelID = voxelId
+                            VoxelId = voxelId
                         };
                         break;
                     }
@@ -253,7 +253,7 @@ public class DisjointSetVisiblePlaneOptimizer
                             Vertex3 = new Vector3(x2, y2, z),
                             Vertex2 = new Vector3(x2, y1, z),
                             Normal = new Vector3(1, 0, 0),
-                            VoxelID = voxelId
+                            VoxelId = voxelId
                         };
                         break;
                     }
@@ -271,7 +271,7 @@ public class DisjointSetVisiblePlaneOptimizer
                             Vertex2 = new Vector3(x2, y2, z),
                             Vertex3 = new Vector3(x2, y1, z),
                             Normal = new Vector3(1, 0, 0),
-                            VoxelID = voxelId
+                            VoxelId = voxelId
                         };
                         break;
                     }

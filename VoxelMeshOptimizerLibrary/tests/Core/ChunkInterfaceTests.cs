@@ -14,7 +14,7 @@ public class ChunkInterfaceTests
     [Fact]
     public void ChunkDimensionsAndPlaneDimensions(){
         // Arrange
-        var chunk = ChunkGen.GenerateChunk(2, 2, 1);
+        Chunk chunk = ChunkGen.GenerateChunk(2, 2, 1);
 
         // Only one voxel => set it to solid
         chunk.ForEachCoordinate(
@@ -41,7 +41,7 @@ public class ChunkInterfaceTests
     [Fact]
     public void AreDifferentAxis(){
         // Arrange
-        var chunk = ChunkGen.GenerateChunk(2, 2, 1);
+        Chunk chunk = ChunkGen.GenerateChunk(2, 2, 1);
 
         // Only one voxel => set it to solid
         chunk.ForEachCoordinate(
@@ -55,22 +55,22 @@ public class ChunkInterfaceTests
             }
         );
 
-        Assert.True(chunk.AreDifferentAxis(Axis.X,Axis.Y,Axis.Z));
-        Assert.False(chunk.AreDifferentAxis(Axis.X,Axis.X,Axis.Z));
-        Assert.False(chunk.AreDifferentAxis(Axis.X,Axis.Y,Axis.X));
-        Assert.False(chunk.AreDifferentAxis(Axis.Y,Axis.Y,Axis.Z));
-        Assert.False(chunk.AreDifferentAxis(Axis.X,Axis.Y,Axis.Y));
-        Assert.False(chunk.AreDifferentAxis(Axis.Z,Axis.Y,Axis.Z));
-        Assert.False(chunk.AreDifferentAxis(Axis.X,Axis.Z,Axis.Z));
-        Assert.False(chunk.AreDifferentAxis(Axis.X,Axis.X,Axis.X));
+        Assert.True(Chunk.AreDifferentAxis(Axis.X,Axis.Y,Axis.Z));
+        Assert.False(Chunk.AreDifferentAxis(Axis.X,Axis.X,Axis.Z));
+        Assert.False(Chunk.AreDifferentAxis(Axis.X,Axis.Y,Axis.X));
+        Assert.False(Chunk.AreDifferentAxis(Axis.Y,Axis.Y,Axis.Z));
+        Assert.False(Chunk.AreDifferentAxis(Axis.X,Axis.Y,Axis.Y));
+        Assert.False(Chunk.AreDifferentAxis(Axis.Z,Axis.Y,Axis.Z));
+        Assert.False(Chunk.AreDifferentAxis(Axis.X,Axis.Z,Axis.Z));
+        Assert.False(Chunk.AreDifferentAxis(Axis.X,Axis.X,Axis.X));
     }
 
     [Fact]
     public void GetDimension_ForEachCoordinate_CorrectOrder(){
         // Arrange
-        var chunk = ChunkGen.GenerateChunk(2, 2, 2);
+        Chunk chunk = ChunkGen.GenerateChunk(2, 2, 2);
 
-        var expectedOrder = new (uint, uint, uint)[]{
+        (uint, uint, uint)[] expectedOrder = new (uint, uint, uint)[]{
             (0,0,0),
             (0,0,1),
             (0,1,0),
@@ -282,7 +282,7 @@ public class ChunkInterfaceTests
     [Fact]
     public void GetDimension_ForEachCoordinate_Throws_WhenAxisEquals(){
         // Arrange
-        var chunk = ChunkGen.GenerateChunk(2, 2, 1);
+        Chunk chunk = ChunkGen.GenerateChunk(2, 2, 1);
 
         // Only one voxel => set it to solid
         chunk.ForEachCoordinate(
@@ -326,7 +326,7 @@ public class ChunkInterfaceTests
 
     [Fact]
     public void SetGet_ThrowsError_WhenOutOfBound(){
-        var chunk = ChunkGen.GenerateChunk(2, 2, 1);
+        Chunk chunk = ChunkGen.GenerateChunk(2, 2, 1);
         Assert.Throws<ArgumentOutOfRangeException>(()=>chunk.Set(2,0,0, new Voxel(id: 1)));
         Assert.Throws<ArgumentOutOfRangeException>(()=>chunk.Set(0,2,0, new Voxel(id: 1)));
         Assert.Throws<ArgumentOutOfRangeException>(()=>chunk.Set(0,0,2, new Voxel(id: 1)));

@@ -58,7 +58,7 @@ public class VisiblePlaneTests
     public void Constructor_ShouldHandleZeroSizedPlane()
     {
         // Arrange
-        var plane = new VisiblePlane(Axis.X, AxisOrder.Ascending, Axis.Y, AxisOrder.Ascending, Axis.Z, AxisOrder.Ascending, 0, 0, 0);
+        VisiblePlane plane = new VisiblePlane(Axis.X, AxisOrder.Ascending, Axis.Y, AxisOrder.Ascending, Axis.Z, AxisOrder.Ascending, 0, 0, 0);
 
         // Assert
         Assert.Empty(plane.Voxels);

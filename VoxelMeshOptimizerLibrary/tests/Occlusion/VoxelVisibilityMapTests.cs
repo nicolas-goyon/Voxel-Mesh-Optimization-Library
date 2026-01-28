@@ -108,7 +108,7 @@ public class VoxelVisibilityMapTests
             {
                 for (uint z = 0; z < 2; z++)
                 {
-                    var faces = visibilityMap.GetVisibleFaces(x, y, z);
+                    VoxelFace faces = visibilityMap.GetVisibleFaces(x, y, z);
                     Assert.Equal(VoxelFace.None, faces);
                 }
             }

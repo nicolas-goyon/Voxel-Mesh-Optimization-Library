@@ -1,3 +1,5 @@
+using CommunityToolkit.Diagnostics;
+
 namespace VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
 
 public struct DisjointSet {
@@ -15,7 +17,7 @@ public struct DisjointSet {
         * @throws IllegalArgumentException if {@code n < 0}
         */
     public DisjointSet(int n) {
-        if (n < 0) throw new System.ArgumentOutOfRangeException("n should be over or equal to 0");
+        Guard.IsGreaterThan(n, -1, "n");
 
         count = n;
         parent = new int[n];
@@ -62,10 +64,7 @@ public struct DisjointSet {
 
     // validate that p is a valid index
     private void Validate(int p) {
-        int n = parent.Length;
-        if (p < 0 || p >= n) {
-            throw new System.IndexOutOfRangeException("index " + p + " is not between 0 and " + (n - 1));
-        }
+        Guard.IsInRange(p, 0, parent.Length);
     }
 
     /**

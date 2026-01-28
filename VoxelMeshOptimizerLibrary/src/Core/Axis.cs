@@ -184,7 +184,7 @@ public static class AxisExtensions {
         Chunk chunk)
     {
         // Ensure that all three axes are distinct.
-        if (!chunk.AreDifferentAxis(sliceAxis, planeAxis1, planeAxis2))
+        if (!Chunk.AreDifferentAxis(sliceAxis, planeAxis1, planeAxis2))
             throw new ArgumentException("All axes must be distinct.");
 
         // Determine the coordinate on the plane for planeAxis1 (mapped to the X coordinate on the slice plane).
