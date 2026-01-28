@@ -1,5 +1,6 @@
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms;
+using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
 using VoxelMeshOptimizer.Core.Toolkit;
 using VoxelMeshOptimizer.Toolkit;
@@ -11,14 +12,14 @@ public class Performance
 {
     public static Chunk Setup()
     {
-        var size = 50;
-        var voxelsShort = PerlinNoiseChunkGen.CreatePerlinLandscape(size, 123);
+        int size = 50;
+        ushort[,,] voxelsShort = PerlinNoiseChunkGen.CreatePerlinLandscape(size, 123);
         return new Chunk(voxelsShort);
     }
 
     private static void ValidateTriangles(Mesh mesh, int expectedTriangles, bool exact)
     {
-        var triangleCount = mesh.Quads.Count * 2;
+        int triangleCount = mesh.Quads.Count * 2;
         if (exact)
         {
             Assert.Equal(expectedTriangles, triangleCount);
@@ -34,8 +35,8 @@ public class Performance
     [Fact]
     public void Baseline()
     {
-        var chunk = Setup();
-        var baseMesh = chunk.ToMesh();
+        Chunk chunk = Setup();
+        Mesh baseMesh = chunk.ToMesh();
         ObjExporter.MeshToObjString(baseMesh);
         ValidateTriangles(baseMesh, 542160, true);
 
@@ -45,11 +46,11 @@ public class Performance
     public void Occlusion()
     {
 
-        var chunk = Setup();
-        var occluder = new VoxelOcclusionOptimizer(chunk);
-        var visibileFaces = occluder.ComputeVisibleFaces();
-        var occludedQuads = VisibleFacesMesher.Build(visibileFaces, chunk);
-        var occludedMesh = new Mesh(occludedQuads);
+        Chunk chunk = Setup();
+        VoxelOcclusionOptimizer occluder = new VoxelOcclusionOptimizer(chunk);
+        VisibleFaces visibileFaces = occluder.ComputeVisibleFaces();
+        List<MeshQuad> occludedQuads = VisibleFacesMesher.Build(visibileFaces, chunk);
+        Mesh occludedMesh = new Mesh(occludedQuads);
         ObjExporter.MeshToObjString(occludedMesh);
         ValidateTriangles(occludedMesh, 25000, false);
 

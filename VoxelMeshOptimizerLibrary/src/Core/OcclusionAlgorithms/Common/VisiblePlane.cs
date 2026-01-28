@@ -120,7 +120,7 @@ public class VisiblePlane
     /// </summary>
     public string Describe()
     {
-        var sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         // Indique les signes +/- selon AxisOrder
         string majorSign = MajorAxisOrder == AxisOrder.Ascending ? "+" : "-";
@@ -139,7 +139,7 @@ public class VisiblePlane
             sb.Append($"Row {y}: ");
             for (int x = 0; x < width; x++)
             {
-                var v = Voxels[x, y];
+                Voxel? v = Voxels[x, y];
                 sb.Append(v is null ? ". " : $"{v.Value.ID} ");
             }
             sb.AppendLine();
@@ -165,7 +165,7 @@ public class VisiblePlane
         {
             for (int y = 0; y < height; y++)
             {
-                var voxel = Voxels[x, y];
+                Voxel? voxel = Voxels[x, y];
                 pixelArray[x, y] = voxel?.ID ?? -1; // TODO : Get a look at this later on, we may need to throw errors.
             }
         }

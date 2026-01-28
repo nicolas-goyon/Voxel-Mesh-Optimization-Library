@@ -101,7 +101,7 @@ public static class VisibleFacesMesher
                 Vertex2 = new Vector3(bx + 1, by + 1, bz),
                 Vertex3 = new Vector3(bx + 1, by + 1, bz + 1),
                 Normal = new Vector3(1, 0, 0),
-                VoxelID = voxelId
+                VoxelId = voxelId
             },
             (Axis.X, AxisOrder.Ascending) => new MeshQuad
             {
@@ -110,7 +110,7 @@ public static class VisibleFacesMesher
                 Vertex2 = new Vector3(bx, by + 1, bz + 1),
                 Vertex3 = new Vector3(bx, by + 1, bz),
                 Normal = new Vector3(-1, 0, 0),
-                VoxelID = voxelId
+                VoxelId = voxelId
             },
             (Axis.Y, AxisOrder.Descending) => new MeshQuad
             {
@@ -119,7 +119,7 @@ public static class VisibleFacesMesher
                 Vertex2 = new Vector3(bx + 1, by + 1, bz),
                 Vertex3 = new Vector3(bx, by + 1, bz),
                 Normal = new Vector3(0, 1, 0),
-                VoxelID = voxelId
+                VoxelId = voxelId
             },
             (Axis.Y, AxisOrder.Ascending) => new MeshQuad
             {
@@ -128,7 +128,7 @@ public static class VisibleFacesMesher
                 Vertex2 = new Vector3(bx + 1, by, bz + 1),
                 Vertex3 = new Vector3(bx, by, bz + 1),
                 Normal = new Vector3(0, -1, 0),
-                VoxelID = voxelId
+                VoxelId = voxelId
             },
             (Axis.Z, AxisOrder.Descending) => new MeshQuad
             {
@@ -137,7 +137,7 @@ public static class VisibleFacesMesher
                 Vertex2 = new Vector3(bx + 1, by + 1, bz + 1),
                 Vertex3 = new Vector3(bx, by + 1, bz + 1),
                 Normal = new Vector3(0, 0, 1),
-                VoxelID = voxelId
+                VoxelId = voxelId
             },
             (Axis.Z, AxisOrder.Ascending) => new MeshQuad
             {
@@ -146,7 +146,7 @@ public static class VisibleFacesMesher
                 Vertex2 = new Vector3(bx + 1, by + 1, bz),
                 Vertex3 = new Vector3(bx + 1, by, bz),
                 Normal = new Vector3(0, 0, -1),
-                VoxelID = voxelId
+                VoxelId = voxelId
             },
             _ => throw new ArgumentOutOfRangeException()
         };
