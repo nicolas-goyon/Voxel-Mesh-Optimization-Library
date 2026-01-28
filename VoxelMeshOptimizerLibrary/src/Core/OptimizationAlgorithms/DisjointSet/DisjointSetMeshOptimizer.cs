@@ -1,9 +1,10 @@
 using CommunityToolkit.Diagnostics;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms;
+using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 
 namespace VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
 
-public class DisjointSetMeshOptimizer : MeshOptimizer
+public class DisjointSetMeshOptimizer
 {
     private Mesh mesh;
 
@@ -14,19 +15,16 @@ public class DisjointSetMeshOptimizer : MeshOptimizer
     }
 
 
-    public Mesh Optimize(Chunk<Voxel> chunk)
+    public Mesh Optimize(Chunk chunk)
     {
-        var occluder = new VoxelOcclusionOptimizer(chunk);
-        var visibileFaces = occluder.ComputeVisibleFaces();
+        VoxelOcclusionOptimizer occluder = new(chunk);
+        VisibleFaces visibileFaces = occluder.ComputeVisibleFaces();
 
-        foreach (var visibleFace in visibileFaces.PlanesByAxis){
-            foreach (var face in visibleFace.Value)
-            {
-                var optimizer = new DisjointSetVisiblePlaneOptimizer(face, chunk);
-                optimizer.Optimize();
-                var quads = optimizer.ToMeshQuads();
-                mesh.Quads.AddRange(quads);
-            }
+        foreach (DisjointSetVisiblePlaneOptimizer? optimizer in from visibleFace in visibileFaces.PlanesByAxis from face in visibleFace.Value select new DisjointSetVisiblePlaneOptimizer(face, chunk))
+        {
+            optimizer.Optimize();
+            List<MeshQuad> quads = optimizer.ToMeshQuads();
+            mesh.Quads.AddRange(quads);
         }
 
         return mesh;

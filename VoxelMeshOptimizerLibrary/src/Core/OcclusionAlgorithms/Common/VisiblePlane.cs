@@ -43,7 +43,7 @@ public class VisiblePlane
     /// The exact dimensions depend on the axes forming the plane. For instance:
     /// - If MinorAxis is Z, the plane dimensions are Voxels[x, y].
     /// </summary>
-    public Voxel?[,] Voxels { get; set; } // FIXME : The set is not good, and the current access and modification of voxels is not protected through methods nor clarified.
+    public Voxel?[,] Voxels { get; init; } 
 
     /// <summary>
     /// Initializes a new instance of the VisiblePlane class.
@@ -90,7 +90,7 @@ public class VisiblePlane
             {
                 for (int y = 0; y < h; y++)
                 {
-                    if (Voxels[x, y] != null && Voxels[x, y]!.IsSolid) return false;
+                    if (Voxels[x, y] is { IsSolid: true }) return false;
                 }
             }
             return true;
@@ -120,7 +120,7 @@ public class VisiblePlane
     /// </summary>
     public string Describe()
     {
-        var sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
         // Indique les signes +/- selon AxisOrder
         string majorSign = MajorAxisOrder == AxisOrder.Ascending ? "+" : "-";
@@ -139,8 +139,8 @@ public class VisiblePlane
             sb.Append($"Row {y}: ");
             for (int x = 0; x < width; x++)
             {
-                var v = Voxels[x, y];
-                sb.Append(v is null ? ". " : $"{v.ID} ");
+                Voxel? v = Voxels[x, y];
+                sb.Append(v is null ? ". " : $"{v.Value.ID} ");
             }
             sb.AppendLine();
         }
@@ -165,8 +165,8 @@ public class VisiblePlane
         {
             for (int y = 0; y < height; y++)
             {
-                var voxel = Voxels[x, y];
-                pixelArray[x, y] = (voxel != null) ? voxel.ID : -1; // TODO : Get a look at this later on, we may need to throw errors.
+                Voxel? voxel = Voxels[x, y];
+                pixelArray[x, y] = voxel?.ID ?? -1; // TODO : Get a look at this later on, we may need to throw errors.
             }
         }
         return pixelArray;

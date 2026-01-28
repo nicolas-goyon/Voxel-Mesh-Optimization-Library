@@ -4,6 +4,11 @@ A C# library that converts a chunk of coloured voxels into an optimized triangle
 
 ![Scheme](./docs/Readme_images/Scheme.png)
 
+## Known issues
+
+- **Compatibility** : The library as missing compatibility for multithreading, job system, async operations or coroutines
+- **Not 100% optimized** : Some parts of the algorithm isn't fully optimized.
+
 
 ## Features
 
@@ -12,7 +17,7 @@ A C# library that converts a chunk of coloured voxels into an optimized triangle
 - **OBJ exporter** to inspect generated meshes.
 - **Chunk utilities** such as a Perlin noise generator and simple save/load helpers.
 - **Benchmark suite** with GitHub Actions and published results.
-- Targets **.NET 8** and is entirely engine agnostic.
+- Targets **.NET 8** and is engine agnostic.
 
 ## Installation
 ```bash
@@ -56,6 +61,14 @@ For detailed guidelines on setting up a development environment, contributing co
   ```
 - Example applications and benchmarks live in the `examples` folder.
 - Benchmark results are published on the project’s GitHub Pages.
+
+### Benchmark
+- Move to benchmark directory
+- Execute : 
+  ```bash
+  dotnet restore
+  dotnet run --configuration Release
+  ```
 
 ## Support
 

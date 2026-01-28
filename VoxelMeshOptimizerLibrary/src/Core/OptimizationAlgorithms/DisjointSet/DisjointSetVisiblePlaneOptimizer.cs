@@ -9,16 +9,16 @@ namespace VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
 /// </summary>
 public class DisjointSetVisiblePlaneOptimizer
 {
-    private readonly DisjointSet disjointSet;
+    private DisjointSet disjointSet;
     private readonly VisiblePlane plane;
     private readonly Voxel?[,] voxels;
     private readonly int width;
     private readonly int height;
-    private readonly Chunk<Voxel> chunk;
+    private readonly Chunk chunk;
 
-    public DisjointSetVisiblePlaneOptimizer(VisiblePlane plane, Chunk<Voxel> chunk)
+    public DisjointSetVisiblePlaneOptimizer(VisiblePlane plane, Chunk chunk)
     {
-        Guard.IsNotNull(plane, nameof(plane));
+        Guard.IsNotNull(plane);
         Guard.IsNotNull(plane.Voxels, nameof(plane.Voxels));
         this.plane = plane;
         voxels = plane.Voxels;
@@ -27,8 +27,8 @@ public class DisjointSetVisiblePlaneOptimizer
         width = voxels.GetLength(0);
         height = voxels.GetLength(1);
 
-        Guard.IsGreaterThan(width, 0, nameof(width));
-        Guard.IsGreaterThan(height, 0, nameof(height));
+        Guard.IsGreaterThan(width, 0);
+        Guard.IsGreaterThan(height, 0);
 
         disjointSet = new DisjointSet(width * height);
     }
@@ -49,10 +49,10 @@ public class DisjointSetVisiblePlaneOptimizer
 
     private void CreateOneSet(int x, int y)
     {
-        Guard.IsInRange(x, 0, width, nameof(x));
-        Guard.IsInRange(y, 0, height, nameof(y));
+        Guard.IsInRange(x, 0, width);
+        Guard.IsInRange(y, 0, height);
 
-        var rootVoxel = voxels[x, y];
+        Voxel? rootVoxel = voxels[x, y];
         if (rootVoxel == null) return;
 
         int currentWidth = 1;
@@ -60,7 +60,7 @@ public class DisjointSetVisiblePlaneOptimizer
 
         // Expand to the right
         while (x + currentWidth < width &&
-               voxels[x + currentWidth, y]?.ID == rootVoxel.ID &&
+               voxels[x + currentWidth, y]?.ID == rootVoxel?.ID &&
                !IsNotAlone(x + currentWidth, y))
         {
             currentWidth++;
@@ -72,8 +72,8 @@ public class DisjointSetVisiblePlaneOptimizer
             bool canExpand = true;
             for (int dx = 0; dx < currentWidth; dx++)
             {
-                var v = voxels[x + dx, y + currentHeight];
-                if (v?.ID != rootVoxel.ID || IsNotAlone(x + dx, y + currentHeight))
+                Voxel? v = voxels[x + dx, y + currentHeight];
+                if (v?.ID != rootVoxel?.ID || IsNotAlone(x + dx, y + currentHeight))
                 {
                     canExpand = false;
                     break;
@@ -96,10 +96,10 @@ public class DisjointSetVisiblePlaneOptimizer
 
     private bool IsNotAlone(int x, int y)
     {
-        Guard.IsInRange(x, 0, width, nameof(x));
-        Guard.IsInRange(y, 0, height, nameof(y));
+        Guard.IsInRange(x, 0, width);
+        Guard.IsInRange(y, 0, height);
 
-        var voxel = voxels[x, y];
+        Voxel? voxel = voxels[x, y];
         if (voxel == null) return true;
 
         int root = disjointSet.Find(ToIndex(x, y));
@@ -113,10 +113,10 @@ public class DisjointSetVisiblePlaneOptimizer
 
     private bool AreSame(int x1, int y1, int x2, int y2)
     {
-        var v1 = voxels[x1, y1];
-        var v2 = voxels[x2, y2];
-        if (v1 == null || v2 == null) return false;
-        return v1.ID == v2.ID &&
+        Voxel? v1 = voxels[x1, y1];
+        Voxel? v2 = voxels[x2, y2];
+        if (!v1.HasValue || !v2.HasValue) return false;
+        return v1.Value.ID == v2.Value.ID &&
                disjointSet.Find(ToIndex(x2, y2)) == disjointSet.Find(ToIndex(x1, y1));
     }
 
@@ -125,7 +125,7 @@ public class DisjointSetVisiblePlaneOptimizer
 
     public List<MeshQuad> ToMeshQuads()
     {
-        var groups = new Dictionary<int, List<(int x, int y)>>();
+        Dictionary<int, List<(int x, int y)>> groups = new();
 
 
         for (int y = 0; y < height; y++)
@@ -135,36 +135,33 @@ public class DisjointSetVisiblePlaneOptimizer
                 if (voxels[x, y] == null) continue;
 
                 int root = disjointSet.Find(ToIndex(x, y));
-                if (!groups.ContainsKey(root))
+                if (!groups.TryGetValue(root, out List<(int x, int y)>? value))
                 {
-                    groups[root] = [];
+                    value = [];
+                    groups[root] = value;
                 }
-                groups[root].Add((x, y));
+
+                value.Add((x, y));
             }
         }
 
 
 
 
-        var quads = new List<MeshQuad>();
-        MeshQuad? quad;
-        foreach (var group in groups)
+        List<MeshQuad> quads = [];
+        MeshQuad? quad; // Keep outside of loop, it keeps being re-created
+        foreach (KeyValuePair<int, List<(int x, int y)>> group in groups)
         {
 
-            var groupVoxels = group.Value;
+            List<(int x, int y)> groupVoxels = group.Value;
 
-            var minX = groupVoxels.Min(p => p.x);
-            var maxX = groupVoxels.Max(p => p.x);
-            var minY = groupVoxels.Min(p => p.y);
-            var maxY = groupVoxels.Max(p => p.y);
-
-
-            int width = maxX - minX + 1;
-            int height = maxY - minY + 1;
+            int minX = groupVoxels.Min(p => p.x);
+            int maxX = groupVoxels.Max(p => p.x);
+            int minY = groupVoxels.Min(p => p.y);
+            int maxY = groupVoxels.Max(p => p.y);
 
 
-
-            int voxelId = voxels[minX, minY]!.ID;
+            int voxelId = voxels[minX, minY]!.Value.ID;
 
 
             switch (plane.MajorAxis, plane.MajorAxisOrder)
@@ -172,10 +169,10 @@ public class DisjointSetVisiblePlaneOptimizer
                 case (Axis.X, AxisOrder.Descending):
                     {
                         uint x = chunk.XDepth - plane.SliceIndex;
-                        var y1 = chunk.YDepth - minX;
-                        var y2 = chunk.YDepth - maxX - 1;
-                        var z1 = chunk.ZDepth - minY;
-                        var z2 = chunk.ZDepth - maxY - 1;
+                        long y1 = chunk.YDepth - minX;
+                        long y2 = chunk.YDepth - maxX - 1;
+                        long z1 = chunk.ZDepth - minY;
+                        long z2 = chunk.ZDepth - maxY - 1;
                         quad = new MeshQuad
                         {
                             Vertex0 = new Vector3(x, y1, z1),
@@ -183,7 +180,7 @@ public class DisjointSetVisiblePlaneOptimizer
                             Vertex2 = new Vector3(x, y2, z2),
                             Vertex3 = new Vector3(x, y1, z2),
                             Normal = new Vector3(1, 0, 0),
-                            VoxelID = voxelId
+                            VoxelId = voxelId
                         };
                         break;
                     }
@@ -191,10 +188,10 @@ public class DisjointSetVisiblePlaneOptimizer
                     {
                         
                         uint x = plane.SliceIndex;
-                        var y1 = minX;
-                        var y2 = maxX + 1;
-                        var z1 = minY;
-                        var z2 = maxY + 1;
+                        int y1 = minX;
+                        int y2 = maxX + 1;
+                        int z1 = minY;
+                        int z2 = maxY + 1;
                         quad = new MeshQuad
                         {
                             Vertex1 = new Vector3(x, y1, z1),
@@ -202,17 +199,17 @@ public class DisjointSetVisiblePlaneOptimizer
                             Vertex3 = new Vector3(x, y2, z2),
                             Vertex2 = new Vector3(x, y1, z2),
                             Normal = new Vector3(1, 0, 0),
-                            VoxelID = voxelId
+                            VoxelId = voxelId
                         };
                         break;
                     }
                 case (Axis.Y, AxisOrder.Descending):
                 {
-                        var x1 = chunk.XDepth - minY;
-                        var x2 = chunk.XDepth - maxY - 1;
+                        long x1 = chunk.XDepth - minY;
+                        long x2 = chunk.XDepth - maxY - 1;
                         uint y = chunk.YDepth - plane.SliceIndex;
-                        var z1 = chunk.ZDepth - minX;
-                        var z2 = chunk.ZDepth - maxX - 1;
+                        long z1 = chunk.ZDepth - minX;
+                        long z2 = chunk.ZDepth - maxX - 1;
                         quad = new MeshQuad
                         {
                             Vertex0 = new Vector3(x1, y, z1),
@@ -220,17 +217,17 @@ public class DisjointSetVisiblePlaneOptimizer
                             Vertex2 = new Vector3(x2, y, z2),
                             Vertex3 = new Vector3(x2, y, z1),
                             Normal = new Vector3(1, 0, 0),
-                            VoxelID = voxelId
+                            VoxelId = voxelId
                         };
                         break;
                     }
                 case (Axis.Y, AxisOrder.Ascending):
                 {
-                        var x1 = minY;
-                        var x2 = maxY + 1;
+                        int x1 = minY;
+                        int x2 = maxY + 1;
                         uint y = plane.SliceIndex;
-                        var z1 = minX;
-                        var z2 = maxX + 1;
+                        int z1 = minX;
+                        int z2 = maxX + 1;
                         quad = new MeshQuad
                         {
                             Vertex1 = new Vector3(x1, y, z1),
@@ -238,16 +235,16 @@ public class DisjointSetVisiblePlaneOptimizer
                             Vertex3 = new Vector3(x2, y, z2),
                             Vertex2 = new Vector3(x2, y, z1),
                             Normal = new Vector3(1, 0, 0),
-                            VoxelID = voxelId
+                            VoxelId = voxelId
                         };
                         break;
                     }
                 case (Axis.Z, AxisOrder.Descending):
                 {
-                        var x1 = chunk.XDepth - minY;
-                        var x2 = chunk.XDepth - maxY - 1;
-                        var y1 = chunk.YDepth - minX;
-                        var y2 = chunk.YDepth - maxX - 1;
+                        long x1 = chunk.XDepth - minY;
+                        long x2 = chunk.XDepth - maxY - 1;
+                        long y1 = chunk.YDepth - minX;
+                        long y2 = chunk.YDepth - maxX - 1;
                         uint z = chunk.ZDepth - plane.SliceIndex;
                         quad = new MeshQuad
                         {
@@ -256,16 +253,16 @@ public class DisjointSetVisiblePlaneOptimizer
                             Vertex3 = new Vector3(x2, y2, z),
                             Vertex2 = new Vector3(x2, y1, z),
                             Normal = new Vector3(1, 0, 0),
-                            VoxelID = voxelId
+                            VoxelId = voxelId
                         };
                         break;
                     }
                 case (Axis.Z, AxisOrder.Ascending):
                     {
-                        var x1 = minY;
-                        var x2 = maxY + 1;
-                        var y1 = minX;
-                        var y2 = maxX + 1;
+                        int x1 = minY;
+                        int x2 = maxY + 1;
+                        int y1 = minX;
+                        int y2 = maxX + 1;
                         uint z = plane.SliceIndex;
                         quad = new MeshQuad
                         {
@@ -274,7 +271,7 @@ public class DisjointSetVisiblePlaneOptimizer
                             Vertex2 = new Vector3(x2, y2, z),
                             Vertex3 = new Vector3(x2, y1, z),
                             Normal = new Vector3(1, 0, 0),
-                            VoxelID = voxelId
+                            VoxelId = voxelId
                         };
                         break;
                     }
@@ -282,9 +279,9 @@ public class DisjointSetVisiblePlaneOptimizer
             }
 
 
-            if (quad == null) throw new Exception("Unexpected null value");
+            if (!quad.HasValue) throw new Exception("Unexpected null value");
 
-            quads.Add(quad);
+            quads.Add(quad.Value);
         }
 
         return quads;

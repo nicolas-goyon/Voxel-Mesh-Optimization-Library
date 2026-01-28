@@ -1,5 +1,6 @@
 using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OptimizationAlgorithms.DisjointSet;
+using VoxelMeshOptimizer.Core.Toolkit;
 
 namespace ConsoleAppExample;
 using System.Numerics;
@@ -11,6 +12,8 @@ class Program
 {
     static void Main(string[] args)
     {
+        
+        
         // ushort[,,] voxels = {
         //     { {0,0,0} , {0,0,0}, {0,0,0}},
         //     { {0,0,0} , {0,0,0}, {0,0,0}},
@@ -36,27 +39,25 @@ class Program
         // // Act
         // ObjExporter.Export(optimizedMesh, path);
 
+        Chunk exampleChunk = new Chunk(PerlinNoiseChunkGen.CreatePerlinLandscape(50, 123));
 
-
-        var exampleChunk = new ExampleChunk(PerlinNoiseChunkGen.CreatePerlinLandscape(50, 123));
-
-        var baseMesh = exampleChunk.ToMesh();
-        var filePath = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/Resources", "ChunkBase" + ".obj");
+        Mesh baseMesh = exampleChunk.ToMesh();
+        string filePath = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/Resources", "ChunkBase" + ".obj");
         File.WriteAllText(filePath, ObjExporter.MeshToObjString(baseMesh));
         Console.WriteLine(filePath);
 
         
-        var occluder = new VoxelOcclusionOptimizer(exampleChunk);
-        var visibileFaces = occluder.ComputeVisibleFaces();
-        var occludedQuads = VisibleFacesMesher.Build(visibileFaces, exampleChunk);
-        var occludedMesh = new ExampleMesh(occludedQuads);
+        VoxelOcclusionOptimizer occluder = new VoxelOcclusionOptimizer(exampleChunk);
+        VisibleFaces visibileFaces = occluder.ComputeVisibleFaces();
+        List<MeshQuad> occludedQuads = VisibleFacesMesher.Build(visibileFaces, exampleChunk);
+        Mesh occludedMesh = new Mesh(occludedQuads);
         filePath = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/Resources", "ChunkBaseOccluded" + ".obj");
         File.WriteAllText(filePath, ObjExporter.MeshToObjString(occludedMesh));
         Console.WriteLine(filePath);
 
 
         // var mesh = exampleChunk.ToMesh();
-        var optimizer = new DisjointSetMeshOptimizer(new ExampleMesh());
+        DisjointSetMeshOptimizer optimizer = new DisjointSetMeshOptimizer(new Mesh());
         Mesh optimizedMesh = optimizer.Optimize(exampleChunk);
         filePath = Path.Combine("/workspaces/Voxel-Mesh-Optimization-Library/VoxelMeshOptimizerLibrary/examples/ConsoleAppExample/Resources", "ChunkOptimized" + ".obj");
         File.WriteAllText(filePath, ObjExporter.MeshToObjString(optimizedMesh));

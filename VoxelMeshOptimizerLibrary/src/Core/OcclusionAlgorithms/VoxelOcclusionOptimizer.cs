@@ -1,18 +1,16 @@
-using System.Collections.Generic;
 using System.Data;
-using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 
 namespace VoxelMeshOptimizer.Core.OcclusionAlgorithms;
 /// <summary>
 /// Optimizes voxel occlusion by computing visible voxel planes based on the provided voxel chunk.
 /// </summary>
-public class VoxelOcclusionOptimizer : Occluder
+public class VoxelOcclusionOptimizer
 {
     /// <summary>
     /// The voxel chunk to be processed.
     /// </summary>
-    private readonly Chunk<Voxel> chunk;
+    private readonly Chunk chunk;
 
     /// <summary>
     /// The visibility map generated from the voxel chunk.
@@ -23,11 +21,9 @@ public class VoxelOcclusionOptimizer : Occluder
     /// Initializes a new instance of the <see cref="VoxelOcclusionOptimizer"/> class.
     /// </summary>
     /// <param name="chunk">The voxel chunk to optimize.</param>
-    public VoxelOcclusionOptimizer(Chunk<Voxel> chunk)
+    public VoxelOcclusionOptimizer(Chunk chunk)
     {
-        if (chunk == null) throw new NoNullAllowedException();
-
-        this.chunk = chunk;
+        this.chunk = chunk ?? throw new NoNullAllowedException();
         visibilityMap = new VoxelVisibilityMap(chunk);
     }
 
@@ -39,16 +35,18 @@ public class VoxelOcclusionOptimizer : Occluder
     /// </returns>
     public VisibleFaces ComputeVisibleFaces()
     {
-        var result = new VisibleFaces();
-
-        result.PlanesByAxis[(Axis.X, AxisOrder.Ascending)] = BuildPlanesForAxis(Axis.X, AxisOrder.Ascending);
-        result.PlanesByAxis[(Axis.X, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.X, AxisOrder.Descending);
-
-        result.PlanesByAxis[(Axis.Y, AxisOrder.Ascending)] = BuildPlanesForAxis(Axis.Y, AxisOrder.Ascending);
-        result.PlanesByAxis[(Axis.Y, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.Y, AxisOrder.Descending);
-
-        result.PlanesByAxis[(Axis.Z, AxisOrder.Ascending)] = BuildPlanesForAxis(Axis.Z, AxisOrder.Ascending);
-        result.PlanesByAxis[(Axis.Z, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.Z, AxisOrder.Descending);
+        VisibleFaces result = new VisibleFaces
+        {
+            PlanesByAxis =
+            {
+                [(Axis.X, AxisOrder.Ascending)] = BuildPlanesForAxis(Axis.X, AxisOrder.Ascending),
+                [(Axis.X, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.X, AxisOrder.Descending),
+                [(Axis.Y, AxisOrder.Ascending)] = BuildPlanesForAxis(Axis.Y, AxisOrder.Ascending),
+                [(Axis.Y, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.Y, AxisOrder.Descending),
+                [(Axis.Z, AxisOrder.Ascending)] = BuildPlanesForAxis(Axis.Z, AxisOrder.Ascending),
+                [(Axis.Z, AxisOrder.Descending)] = BuildPlanesForAxis(Axis.Z, AxisOrder.Descending)
+            }
+        };
 
         return result;
     }
@@ -71,62 +69,54 @@ public class VoxelOcclusionOptimizer : Occluder
     private List<VisiblePlane> BuildPlanesForAxis(Axis sliceAxis, AxisOrder axisOrder)
     {
         // Map the slice axis to the corresponding voxel face flag.
-        var faceFlag = AxisExtensions.ToVoxelFace(sliceAxis, axisOrder);
+        VoxelFace faceFlag = AxisExtensions.ToVoxelFace(sliceAxis, axisOrder);
 
         // Determine the order in which the voxels are iterated.
-        var (majorA, majorAO, middleA, middleAO, minorA, minorAO) = AxisExtensions.DefineIterationOrder(sliceAxis, axisOrder);
+        (Axis majorA, AxisOrder majorAO, Axis middleA, AxisOrder middleAO, Axis minorA, AxisOrder minorAO) = AxisExtensions.DefineIterationOrder(sliceAxis, axisOrder);
 
         // Retrieve the dimensions of the 2D plane slice.
         (uint planeWidth, uint planeHeight) = chunk.GetPlaneDimensions(majorA, middleA, minorA);
 
         // Dictionary to store the visible planes keyed by the slice index.
         uint sliceCount = chunk.GetDepth(sliceAxis);
-        var planesBySlice = new VisiblePlane[sliceCount];
+        VisiblePlane?[] planesBySlice = new VisiblePlane?[sliceCount];
 
         chunk.ForEachCoordinate(
-            major: majorA, majorAsc: majorAO,
-            middle: middleA, middleAsc: middleAO,
-            minor: minorA, minorAsc: minorAO,
-            (uint x, uint y, uint z) =>
+            majorA: majorA, majorAsc: majorAO,
+            middleA: middleA, middleAsc: middleAO,
+            minorA: minorA, minorAsc: minorAO,
+            (x, y, z) =>
             {
-                var faces = visibilityMap.GetVisibleFaces(x, y, z);
+                VoxelFace faces = visibilityMap.GetVisibleFaces(x, y, z);
                 if (!faces.HasFlag(faceFlag)) return;
 
                 // Retrieve the current slice index.
                 uint sliceIndex = AxisExtensions.GetDepthFromAxis(sliceAxis, axisOrder, x, y, z, chunk);
 
                 // Select the appropriate visible plane.
-                if (planesBySlice[sliceIndex] == null){
-                    planesBySlice[sliceIndex] = new VisiblePlane(
-                        majorA, majorAO, 
-                        middleA, middleAO, 
-                        minorA, minorAO,
-                        sliceIndex,
-                        planeWidth, planeHeight
-                    );
-                }
-                var plane = planesBySlice[sliceIndex];
+                planesBySlice[sliceIndex] ??= new VisiblePlane(
+                    majorA, majorAO,
+                    middleA, middleAO,
+                    minorA, minorAO,
+                    sliceIndex,
+                    planeWidth, planeHeight
+                );
+                VisiblePlane? plane = planesBySlice[sliceIndex];
 
                 // Compute the 2D position on the plane from the 3D coordinates.
-                var (planeX, planeY) = AxisExtensions.GetSlicePlanePosition(
+                (uint planeX, uint planeY) = AxisExtensions.GetSlicePlanePosition(
                     majorA, majorAO,
                     middleA, middleAO,
                     minorA, minorAO,
                     x, y, z, chunk);
 
-                plane.Voxels[planeX, planeY] = chunk.Get(x, y, z);
+                plane!.Voxels[planeX, planeY] = chunk.Get(x, y, z);
             }
         );
 
         // Gather the resulting non-empty planes.
-        var result = new List<VisiblePlane>();
-        foreach (var plane in planesBySlice)
-        {
-            if (plane != null && !plane.IsPlaneEmpty)
-            {
-                result.Add(plane);
-            }
-        }
+        List<VisiblePlane> result = [];
+        result.AddRange(planesBySlice.OfType<VisiblePlane>().Where(plane => !plane.IsPlaneEmpty));
 
         return result;
     }

@@ -1,5 +1,5 @@
 using VoxelMeshOptimizer.Core;
-using VoxelMeshOptimizer.Tests.DummyClasses;
+using VoxelMeshOptimizer.Tests.Helpers;
 using Xunit;
 
 namespace VoxelMeshOptimizer.Tests.Core;
@@ -8,13 +8,13 @@ public class ChunkInterfaceTests
 
     [Fact]
     public void ChunkCreation_Error_WhenThedimentionsAre0(){
-        Assert.Throws<ArgumentOutOfRangeException>(() => new TestChunk(0,0,0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => ChunkGen.GenerateChunk(0,0,0));
     }
     
     [Fact]
     public void ChunkDimensionsAndPlaneDimensions(){
         // Arrange
-        var chunk = new TestChunk(2, 2, 1);
+        Chunk chunk = ChunkGen.GenerateChunk(2, 2, 1);
 
         // Only one voxel => set it to solid
         chunk.ForEachCoordinate(
@@ -24,7 +24,7 @@ public class ChunkInterfaceTests
             (x,y,z) => 
             {
                 // pos.X, pos.Y, pos.Z are all zero
-                chunk.Set(x,y,z, new TestVoxel(id: 1, isSolid: true));
+                chunk.Set(x,y,z, new Voxel(id: 1));
             }
         );
 
@@ -41,7 +41,7 @@ public class ChunkInterfaceTests
     [Fact]
     public void AreDifferentAxis(){
         // Arrange
-        var chunk = new TestChunk(2, 2, 1);
+        Chunk chunk = ChunkGen.GenerateChunk(2, 2, 1);
 
         // Only one voxel => set it to solid
         chunk.ForEachCoordinate(
@@ -51,26 +51,26 @@ public class ChunkInterfaceTests
             (x,y,z) => 
             {
                 // pos.X, pos.Y, pos.Z are all zero
-                chunk.Set(x,y,z, new TestVoxel(id: 1, isSolid: true));
+                chunk.Set(x,y,z, new Voxel(id: 1));
             }
         );
 
-        Assert.True(chunk.AreDifferentAxis(Axis.X,Axis.Y,Axis.Z));
-        Assert.False(chunk.AreDifferentAxis(Axis.X,Axis.X,Axis.Z));
-        Assert.False(chunk.AreDifferentAxis(Axis.X,Axis.Y,Axis.X));
-        Assert.False(chunk.AreDifferentAxis(Axis.Y,Axis.Y,Axis.Z));
-        Assert.False(chunk.AreDifferentAxis(Axis.X,Axis.Y,Axis.Y));
-        Assert.False(chunk.AreDifferentAxis(Axis.Z,Axis.Y,Axis.Z));
-        Assert.False(chunk.AreDifferentAxis(Axis.X,Axis.Z,Axis.Z));
-        Assert.False(chunk.AreDifferentAxis(Axis.X,Axis.X,Axis.X));
+        Assert.True(Chunk.AreDifferentAxis(Axis.X,Axis.Y,Axis.Z));
+        Assert.False(Chunk.AreDifferentAxis(Axis.X,Axis.X,Axis.Z));
+        Assert.False(Chunk.AreDifferentAxis(Axis.X,Axis.Y,Axis.X));
+        Assert.False(Chunk.AreDifferentAxis(Axis.Y,Axis.Y,Axis.Z));
+        Assert.False(Chunk.AreDifferentAxis(Axis.X,Axis.Y,Axis.Y));
+        Assert.False(Chunk.AreDifferentAxis(Axis.Z,Axis.Y,Axis.Z));
+        Assert.False(Chunk.AreDifferentAxis(Axis.X,Axis.Z,Axis.Z));
+        Assert.False(Chunk.AreDifferentAxis(Axis.X,Axis.X,Axis.X));
     }
 
     [Fact]
     public void GetDimension_ForEachCoordinate_CorrectOrder(){
         // Arrange
-        var chunk = new TestChunk(2, 2, 2);
+        Chunk chunk = ChunkGen.GenerateChunk(2, 2, 2);
 
-        var expectedOrder = new (uint, uint, uint)[]{
+        (uint, uint, uint)[] expectedOrder = new (uint, uint, uint)[]{
             (0,0,0),
             (0,0,1),
             (0,1,0),
@@ -282,7 +282,7 @@ public class ChunkInterfaceTests
     [Fact]
     public void GetDimension_ForEachCoordinate_Throws_WhenAxisEquals(){
         // Arrange
-        var chunk = new TestChunk(2, 2, 1);
+        Chunk chunk = ChunkGen.GenerateChunk(2, 2, 1);
 
         // Only one voxel => set it to solid
         chunk.ForEachCoordinate(
@@ -292,7 +292,7 @@ public class ChunkInterfaceTests
             (x,y,z) => 
             {
                 // pos.X, pos.Y, pos.Z are all zero
-                chunk.Set(x,y,z, new TestVoxel(id: 1, isSolid: true));
+                chunk.Set(x,y,z, new Voxel(id: 1));
             }
         );
 
@@ -326,10 +326,10 @@ public class ChunkInterfaceTests
 
     [Fact]
     public void SetGet_ThrowsError_WhenOutOfBound(){
-        var chunk = new TestChunk(2, 2, 1);
-        Assert.Throws<ArgumentOutOfRangeException>(()=>chunk.Set(2,0,0, new TestVoxel(id: 1, isSolid: true)));
-        Assert.Throws<ArgumentOutOfRangeException>(()=>chunk.Set(0,2,0, new TestVoxel(id: 1, isSolid: true)));
-        Assert.Throws<ArgumentOutOfRangeException>(()=>chunk.Set(0,0,2, new TestVoxel(id: 1, isSolid: true)));
+        Chunk chunk = ChunkGen.GenerateChunk(2, 2, 1);
+        Assert.Throws<ArgumentOutOfRangeException>(()=>chunk.Set(2,0,0, new Voxel(id: 1)));
+        Assert.Throws<ArgumentOutOfRangeException>(()=>chunk.Set(0,2,0, new Voxel(id: 1)));
+        Assert.Throws<ArgumentOutOfRangeException>(()=>chunk.Set(0,0,2, new Voxel(id: 1)));
 
         
         Assert.Throws<ArgumentOutOfRangeException>(()=>chunk.Get(2,0,0));

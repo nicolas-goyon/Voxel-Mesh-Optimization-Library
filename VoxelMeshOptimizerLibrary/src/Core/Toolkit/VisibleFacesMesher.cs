@@ -1,9 +1,7 @@
-using System.Collections.Generic;
 using System.Numerics;
-using VoxelMeshOptimizer.Core;
 using VoxelMeshOptimizer.Core.OcclusionAlgorithms.Common;
 
-namespace VoxelMeshOptimizer.Toolkit;
+namespace VoxelMeshOptimizer.Core.Toolkit;
 
 /// <summary>
 /// Utility class that converts <see cref="VisibleFaces"/> produced by
@@ -20,15 +18,15 @@ public static class VisibleFacesMesher
     /// <param name="visibleFaces">The result of <see cref="VoxelOcclusionOptimizer.ComputeVisibleFaces"/>.</param>
     /// <param name="chunk">The chunk from which the visibility information was computed.</param>
     /// <returns>A list of quads representing each visible voxel face.</returns>
-    public static List<MeshQuad> Build(VisibleFaces visibleFaces, Chunk<Voxel> chunk)
+    public static List<MeshQuad> Build(VisibleFaces visibleFaces, Chunk chunk)
     {
-        var quads = new List<MeshQuad>();
+        List<MeshQuad> quads = [];
 
-        foreach (var kvp in visibleFaces.PlanesByAxis)
+        foreach (KeyValuePair<(Axis, AxisOrder), List<VisiblePlane>> kvp in visibleFaces.PlanesByAxis)
         {
-            var sliceAxis = kvp.Key.Item1;
-            var axisOrder = kvp.Key.Item2;
-            foreach (var plane in kvp.Value)
+            Axis sliceAxis = kvp.Key.Item1;
+            AxisOrder axisOrder = kvp.Key.Item2;
+            foreach (VisiblePlane plane in kvp.Value)
             {
                 uint width = (uint)plane.Voxels.GetLength(0);
                 uint height = (uint)plane.Voxels.GetLength(1);
@@ -37,12 +35,12 @@ public static class VisibleFacesMesher
                 {
                     for (uint py = 0; py < height; py++)
                     {
-                        var voxel = plane.Voxels[px, py];
-                        if (voxel == null || !voxel.IsSolid) continue;
+                        Voxel? voxel = plane.Voxels[px, py];
+                        if (!voxel.HasValue || !voxel!.Value.IsSolid) continue;
 
                         // reconstruct absolute coordinates
-                        var coords = ReconstructCoordinates(plane, px, py, chunk);
-                        quads.Add(CreateQuad(coords.x, coords.y, coords.z, voxel.ID, sliceAxis, axisOrder));
+                        (uint x, uint y, uint z) coords = ReconstructCoordinates(plane, px, py, chunk);
+                        quads.Add(CreateQuad(coords.x, coords.y, coords.z, voxel!.Value.ID, sliceAxis, axisOrder));
                     }
                 }
             }
@@ -51,7 +49,7 @@ public static class VisibleFacesMesher
         return quads;
     }
 
-    private static (uint x, uint y, uint z) ReconstructCoordinates(VisiblePlane plane, uint planeX, uint planeY, Chunk<Voxel> chunk)
+    private static (uint x, uint y, uint z) ReconstructCoordinates(VisiblePlane plane, uint planeX, uint planeY, Chunk chunk)
     {
         uint majorCoord = plane.MajorAxisOrder == AxisOrder.Ascending
             ? plane.SliceIndex
@@ -103,7 +101,7 @@ public static class VisibleFacesMesher
                 Vertex2 = new Vector3(bx + 1, by + 1, bz),
                 Vertex3 = new Vector3(bx + 1, by + 1, bz + 1),
                 Normal = new Vector3(1, 0, 0),
-                VoxelID = voxelId
+                VoxelId = voxelId
             },
             (Axis.X, AxisOrder.Ascending) => new MeshQuad
             {
@@ -112,7 +110,7 @@ public static class VisibleFacesMesher
                 Vertex2 = new Vector3(bx, by + 1, bz + 1),
                 Vertex3 = new Vector3(bx, by + 1, bz),
                 Normal = new Vector3(-1, 0, 0),
-                VoxelID = voxelId
+                VoxelId = voxelId
             },
             (Axis.Y, AxisOrder.Descending) => new MeshQuad
             {
@@ -121,7 +119,7 @@ public static class VisibleFacesMesher
                 Vertex2 = new Vector3(bx + 1, by + 1, bz),
                 Vertex3 = new Vector3(bx, by + 1, bz),
                 Normal = new Vector3(0, 1, 0),
-                VoxelID = voxelId
+                VoxelId = voxelId
             },
             (Axis.Y, AxisOrder.Ascending) => new MeshQuad
             {
@@ -130,7 +128,7 @@ public static class VisibleFacesMesher
                 Vertex2 = new Vector3(bx + 1, by, bz + 1),
                 Vertex3 = new Vector3(bx, by, bz + 1),
                 Normal = new Vector3(0, -1, 0),
-                VoxelID = voxelId
+                VoxelId = voxelId
             },
             (Axis.Z, AxisOrder.Descending) => new MeshQuad
             {
@@ -139,7 +137,7 @@ public static class VisibleFacesMesher
                 Vertex2 = new Vector3(bx + 1, by + 1, bz + 1),
                 Vertex3 = new Vector3(bx, by + 1, bz + 1),
                 Normal = new Vector3(0, 0, 1),
-                VoxelID = voxelId
+                VoxelId = voxelId
             },
             (Axis.Z, AxisOrder.Ascending) => new MeshQuad
             {
@@ -148,7 +146,7 @@ public static class VisibleFacesMesher
                 Vertex2 = new Vector3(bx + 1, by + 1, bz),
                 Vertex3 = new Vector3(bx + 1, by, bz),
                 Normal = new Vector3(0, 0, -1),
-                VoxelID = voxelId
+                VoxelId = voxelId
             },
             _ => throw new ArgumentOutOfRangeException()
         };

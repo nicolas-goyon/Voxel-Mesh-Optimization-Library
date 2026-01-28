@@ -1,4 +1,6 @@
-﻿namespace ConsoleAppExample;
+﻿using BenchmarkGithubPages;
+
+namespace ConsoleAppExample;
 using BenchmarkDotNet.Running;
 
 class Program
