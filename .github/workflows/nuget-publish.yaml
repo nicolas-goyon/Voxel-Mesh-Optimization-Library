@@ -33,7 +33,7 @@ jobs:
       - name: Check for core version change
         id: check_version
         run: |
-          PROJECT=VoxelMeshOptimizerLibrary/src/Core/VoxelMeshOptimizer.Core.csproj
+          PROJECT=VoxelMeshOptimizerLibrary/src/VoxelMeshOptimizer.csproj
           if git diff HEAD^ HEAD -- "$PROJECT" | \
             grep -E '^[+-].*<Version>'; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -45,7 +45,7 @@ jobs:
         if: steps.check_version.outputs.changed == 'true'
         run: |
           dotnet pack \
-            VoxelMeshOptimizerLibrary/src/Core/VoxelMeshOptimizer.Core.csproj \
+            VoxelMeshOptimizerLibrary/src/VoxelMeshOptimizer.csproj \
             -c Release \
             -o ./artifacts
 

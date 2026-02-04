@@ -30,7 +30,7 @@ Thank you for considering contributing to the Voxel Mesh Optimization Library! W
 
 3. **Set Up the Development Environment:**  
    - Ensure you have the required version of .NET installed.
-   - Open the solution file (`VoxelMeshOptimizerLibrary.sln`) in your preferred IDE (e.g., Visual Studio).
+   - Open the solution file (`VoxelMeshOptimizerLibrary.sln`) in your preferred IDE (e.g., Rider).
    - Build the project to ensure all dependencies are correctly configured.
 
 4. **Read the Documentation:**  

@@ -16,6 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Documentation refreshed to describe current workflow and features.
 
+## [v1.1.0] - 2026-02-04
+### Added
+- Multithread support with the `TaskManager` in `VoxelMeshOptimizer.Core` namespace
+
+### Changed 
+- **Most of the interfaces are removed** for better readability 
+- **Toolkit's namespace changed** to `VoxelMeshOptimizer.Toolkit`
+- Added benchmarks and tests for multithreading
+
 ## [v1.0.1] - 2025-04-19
 ### Changed
 - **DisjointSet plane optimization:**

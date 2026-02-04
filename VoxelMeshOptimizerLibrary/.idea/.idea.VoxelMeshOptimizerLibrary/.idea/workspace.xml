@@ -10,14 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57ec01b6-9c1d-4417-9027-8388abc94bac" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Core/TaskManager/TaskManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.VoxelMeshOptimizerLibrary/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.VoxelMeshOptimizerLibrary/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/Benchmark/MultithreadBenchmarks.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ConsoleAppExample/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ConsoleAppExample/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Core/Multithreading/ChunkGenerationThread.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Core/Multithreading/ChunkMeshGenerationWorker.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Multithreading/ChunkGenerationThreadTests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/Multithreading/ChunkMeshGenerationWorkerTests.cs" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/examples/BenchmarkGithubPages/TasksBenchmark.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/BenchmarkGithubPages/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/BenchmarkGithubPages/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +30,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/examples/Benchmark/TasksBenchmark.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/Axis.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/Chunk.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/Mesh.cs" root0="FORCE_HIGHLIGHTING" />
@@ -46,7 +41,6 @@
     <setting file="file://$PROJECT_DIR$/src/Core/OptimizationAlgorithms/DisjointSet/DisjointSet.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/OptimizationAlgorithms/DisjointSet/DisjointSetMeshOptimizer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/OptimizationAlgorithms/DisjointSet/DisjointSetVisiblePlaneOptimizer.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/Core/TaskManager/OptimisationTaskManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/Toolkit/ObjExporter.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/Toolkit/PerlinNoiseChunkGen.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/Toolkit/VisibleFacesMesher.cs" root0="FORCE_HIGHLIGHTING" />
@@ -54,6 +48,7 @@
     <setting file="file://$PROJECT_DIR$/src/Core/VoxelVisibilityMap.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Helper/Int3.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/tests/Helpers/ChunkGen.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/tests/TaskManager/TaskManagerTests.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="Toolset" />
@@ -67,25 +62,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Project.Benchmark.executor": "Run",
-    ".NET Project.ConsoleAppExample.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "Tasks",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "editor.preferences.completion",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Project.Benchmark.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Project.ConsoleAppExample.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Tasks&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.completion&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Project.Benchmark">
     <configuration name="Benchmark" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/examples/Benchmark/bin/Debug/net8.0/Benchmark.exe" />
@@ -166,11 +161,32 @@
       <workItem from="1760444023415" duration="1670000" />
       <workItem from="1769509289348" duration="205000" />
       <workItem from="1769510164483" duration="8614000" />
+      <workItem from="1770210755706" duration="2965000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnitTestsCoverage.Settings">
+    <option name="coveragePercentColumnWidth" value="150" />
+    <option name="sortOrder" value="DESCENDING" />
+    <option name="sortedColumn" value="1" />
+    <option name="symbolColumnWidth" value="359" />
+    <coverage-tree-state>
+      <expand>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 82% 381/2129" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+        <path>
+          <item name="rootNode" type="c53c71d1:RiderDotCoverCoverageTreeModel$RootNode" />
+          <item name="Total 82% 381/2129" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+          <item name="tests 88% 130/1090" type="8b8fad3a:RiderDotCoverCoverageTreeNode" />
+        </path>
+      </expand>
+      <select />
+    </coverage-tree-state>
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
