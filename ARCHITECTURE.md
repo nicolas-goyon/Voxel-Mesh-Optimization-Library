@@ -9,7 +9,7 @@ The Voxel Mesh Optimization Library converts a voxel chunk into a compact mesh. 
 4. **Toolkit & Export** – Helpers such as `PerlinNoiseChunkGen` create sample chunks and `ObjExporter` writes meshes as Wavefront OBJ for inspection.
 
 ## Major Components
-- **Core types** – `Voxel`, `Chunk<TVoxel>`, `Mesh`, `MeshQuad`.
+- **Core types** – `Voxel`, `Chunk<Voxel>`, `Mesh`, `MeshQuad`.
 - **OcclusionAlgorithms** – exposes `VoxelOcclusionOptimizer` and supporting utilities.
 - **OptimizationAlgorithms** – contains `DisjointSetMeshOptimizer` and plane optimisers.
 - **Toolkit** – utilities for chunk generation, meshing of visible faces and mesh export.
@@ -21,9 +21,8 @@ Chunk -> VoxelOcclusionOptimizer -> VisibleFaces -> DisjointSetVisiblePlaneOptim
 ```
 
 ## Design Decisions
-- **Interface‑driven**: key abstractions (`MeshOptimizer`, `Chunk`, `Voxel`, `Mesh`) allow engine‑agnostic usage.
-- **Modular**: occlusion, optimisation and export modules can be replaced or extended without affecting others.
 - **Performance awareness**: benchmarks run in CI to guard against regressions; results are published on GitHub Pages.
+- **Chunk and voxel implementations** : Implemented inside the library for code easy to read. Dependency injection could be added later.
 
 ## Future Work
 Potential future enhancements include SIMD/vectorised operations, more advanced meshing strategies and parallel processing.
