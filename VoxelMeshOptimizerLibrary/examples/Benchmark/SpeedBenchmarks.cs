@@ -10,7 +10,7 @@ using VoxelMeshOptimizer.Toolkit;
 [MarkdownExporter, AsciiDocExporter, HtmlExporter, CsvExporter, RPlotExporter,JsonExporter]
 public class SpeedBenchmarks
 {
-    private Chunk exampleChunk;
+    private Chunk exampleChunk = null!;
 
 
     [IterationSetup]

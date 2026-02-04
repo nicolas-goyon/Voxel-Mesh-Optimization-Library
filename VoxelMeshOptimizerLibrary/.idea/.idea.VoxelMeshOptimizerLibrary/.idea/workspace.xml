@@ -10,18 +10,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57ec01b6-9c1d-4417-9027-8388abc94bac" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Core/Multithreading/ChunkGenerationThread.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Core/Multithreading/ChunkGenerationWorker.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Helper/Int3.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Core/TaskManager/TaskManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.VoxelMeshOptimizerLibrary/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.VoxelMeshOptimizerLibrary/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/VoxelMeshOptimizerLibrary.sln" beforeDir="false" afterPath="$PROJECT_DIR$/VoxelMeshOptimizerLibrary.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/Benchmark/Benchmark.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/examples/Benchmark/Benchmark.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/BenchmarkGithubPages/BenchmarkGithubPages.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/examples/BenchmarkGithubPages/BenchmarkGithubPages.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/BenchmarkGithubPages/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/BenchmarkGithubPages/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/BenchmarkGithubPages/SpeedBenchmarks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/BenchmarkGithubPages/SpeedBenchmarks.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/ConsoleAppExample/ConsoleAppExample.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ConsoleAppExample/ConsoleAppExample.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Core/VoxelMeshOptimizer.Core.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/VoxelMeshOptimizer.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/tests/VoxelMeshOptimizer.Tests.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/Benchmark/MultithreadBenchmarks.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/ConsoleAppExample/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/ConsoleAppExample/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Core/Multithreading/ChunkGenerationThread.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Core/Multithreading/ChunkMeshGenerationWorker.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Multithreading/ChunkGenerationThreadTests.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/Multithreading/ChunkMeshGenerationWorkerTests.cs" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,14 +40,13 @@
     <setting file="file://$PROJECT_DIR$/src/Core/Chunk.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/Mesh.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/MeshQuad.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/Core/Multithreading/ChunkGenerationThread.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/Core/Multithreading/ChunkGenerationWorker.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/OcclusionAlgorithms/Common/VisibleFaces.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/OcclusionAlgorithms/Common/VisiblePlane.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/OcclusionAlgorithms/VoxelOcclusionOptimizer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/OptimizationAlgorithms/DisjointSet/DisjointSet.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/OptimizationAlgorithms/DisjointSet/DisjointSetMeshOptimizer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/OptimizationAlgorithms/DisjointSet/DisjointSetVisiblePlaneOptimizer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/Core/TaskManager/OptimisationTaskManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/Toolkit/ObjExporter.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/Toolkit/PerlinNoiseChunkGen.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Core/Toolkit/VisibleFacesMesher.cs" root0="FORCE_HIGHLIGHTING" />
@@ -81,7 +76,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "32-rework-use-multithreading-reduce-complexity",
+    "git-widget-placeholder": "Tasks",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
